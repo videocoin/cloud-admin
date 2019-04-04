@@ -4,7 +4,7 @@
 
 # admin-panel
 
-A golang app created with `yo go-lang`.
+Used for managing vc cloud database
 
 ## Getting Started
 

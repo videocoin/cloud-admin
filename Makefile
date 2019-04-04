@@ -17,9 +17,7 @@ test: ## run tests, except integration tests
 	@go test ${RACE} ${PACKAGES}
 
 deps:
-	go get -u github.com/tcnksm/ghr
-	go get -u github.com/mitchellh/gox
-	go get -u github.com/golang/dep/cmd/dep
+	go get -u cmd/main.go
 
 build:
 	@echo "Compiling..."
