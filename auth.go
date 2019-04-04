@@ -1,58 +1,39 @@
 package adminpanel
 
-// import (
-// 	"fmt"
+import (
+	"github.com/qor/admin"
+	"github.com/qor/qor"
+)
 
-// 	pb "github.com/VideoCoin/common/proto"
-// 	"github.com/jinzhu/gorm"
-// 	"github.com/qor/admin"
-// 	"github.com/qor/auth"
-// 	"github.com/qor/auth/authority"
-// 	"github.com/qor/auth_themes/clean"
-// 	"github.com/qor/qor"
-// )
+func (a auth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
+	var userid uint
 
-// var (
-// 	// Auth initialize Auth for Authentication
-// 	Auth = clean.New(&auth.Config{
-// 		DB:        db,
-// 		UserModel: pb.User{},
-// 	})
+	s, err := a.session.store.Get(c.Request, a.session.name)
+	if err != nil {
+		return nil
+	}
+	if v, ok := s.Values[a.session.key]; ok {
+		userid = v.(uint)
+	} else {
+		return nil
+	}
 
-// 	// Authority initialize Authority for Authorization
-// 	Authority = authority.New(&authority.Config{
-// 		Auth: Auth,
-// 	})
+	var user AdminUser
+	if !a.db.First(&user, "id = ?", userid).RecordNotFound() {
+		return &user
+	}
 
-// 	_ = Authority
-// )
+	return nil
+}
 
-// type AdminAuth struct{}
+// LoginURL statisfies the Auth interface and returns the route used to log
+// users in
+func (a auth) LoginURL(c *admin.Context) string { // nolint: unparam
+	return a.paths.login
+}
 
-// func (AdminAuth) LoginURL(c *admin.Context) string {
-// 	return "/auth/login"
-// }
-
-// func (AdminAuth) LogoutURL(c *admin.Context) string {
-// 	return "/auth/logout"
-// }
-
-// func (AdminAuth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
-// 	currentUser := Auth.GetCurrentUser(c.Request)
-// 	if currentUser != nil {
-// 		qorCurrentUser, ok := currentUser.(qor.CurrentUser)
-// 		if !ok {
-// 			fmt.Printf("User %#v haven't implement qor.CurrentUser interface\n", currentUser)
-// 		}
-// 		return qorCurrentUser
-// 	}
-// 	return nil
-// }
-
-// func initAuth(db *gorm.DB) {
-
-// 	Admin := admin.New(&admin.AdminConfig{
-// 		Auth: AdminAuth{},
-// 	})
-
-// }
+// LogoutURL statisfies the Auth interface and returns the route used to logout
+// a user
+func (a auth) LogoutURL(c *admin.Context) string { // nolint: unparam
+	return a.paths.logout
+}
