@@ -1,44 +1,58 @@
 package adminpanel
 
-import (
-	"github.com/go-bootstrap/go-bootstrap/project-templates/mysql/models"
-	"github.com/qor/admin"
-	"github.com/qor/auth"
-	"github.com/qor/auth_themes/clean"
-	"github.com/qor/qor"
-)
+// import (
+// 	"fmt"
 
-var Auth = clean.New(&auth.Config{
-	DB: DB,
-	// User model needs to implement qor.CurrentUser interface (https://godoc.org/github.com/qor/qor#CurrentUser) to use it in QOR Admin
-	UserModel: models.User{},
-})
+// 	pb "github.com/VideoCoin/common/proto"
+// 	"github.com/jinzhu/gorm"
+// 	"github.com/qor/admin"
+// 	"github.com/qor/auth"
+// 	"github.com/qor/auth/authority"
+// 	"github.com/qor/auth_themes/clean"
+// 	"github.com/qor/qor"
+// )
 
-type AdminAuth struct{}
+// var (
+// 	// Auth initialize Auth for Authentication
+// 	Auth = clean.New(&auth.Config{
+// 		DB:        db,
+// 		UserModel: pb.User{},
+// 	})
 
-func (AdminAuth) LoginURL(c *admin.Context) string {
-	return "/auth/login"
-}
+// 	// Authority initialize Authority for Authorization
+// 	Authority = authority.New(&authority.Config{
+// 		Auth: Auth,
+// 	})
 
-func (AdminAuth) LogoutURL(c *admin.Context) string {
-	return "/auth/logout"
-}
+// 	_ = Authority
+// )
 
-func (AdminAuth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
-	currentUser := Auth.GetCurrentUser(c.Request)
-	if currentUser != nil {
-		qorCurrentUser, ok := 
-	}
-}
+// type AdminAuth struct{}
 
-func (AdminAuth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
-    currentUser := Auth.GetCurrentUser(c.Request)
-    if currentUser != nil {
-      qorCurrentUser, ok := currentUser.(qor.CurrentUser)
-      if !ok {
-        fmt.Printf("User %#v haven't implement qor.CurrentUser interface\n", currentUser)
-      }
-      return qorCurrentUser
-    }
-    return nil
-}
+// func (AdminAuth) LoginURL(c *admin.Context) string {
+// 	return "/auth/login"
+// }
+
+// func (AdminAuth) LogoutURL(c *admin.Context) string {
+// 	return "/auth/logout"
+// }
+
+// func (AdminAuth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
+// 	currentUser := Auth.GetCurrentUser(c.Request)
+// 	if currentUser != nil {
+// 		qorCurrentUser, ok := currentUser.(qor.CurrentUser)
+// 		if !ok {
+// 			fmt.Printf("User %#v haven't implement qor.CurrentUser interface\n", currentUser)
+// 		}
+// 		return qorCurrentUser
+// 	}
+// 	return nil
+// }
+
+// func initAuth(db *gorm.DB) {
+
+// 	Admin := admin.New(&admin.AdminConfig{
+// 		Auth: AdminAuth{},
+// 	})
+
+// }
