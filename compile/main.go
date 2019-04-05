@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/VideoCoin/ap/bindatafs"
+	"github.com/VideoCoin/adminpanel/admin/bindatafs"
 )
 
 func main() {

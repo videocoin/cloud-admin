@@ -1,0 +1,20 @@
+defaults: &defaults
+  working_directory: /go/src/github.com/VideoCoin/adminpanel
+  docker:
+    - image: ubuntu:latest
+version: 2
+jobs:
+  checkout:
+    <<: *defaults
+    steps:
+      - run:
+          name: install requirements
+          command: |
+            apt update && apt upgrade -y
+            apt install git tar golang-go curl -y
+      - checkout
+      - run:
+          name: checkout
+          command: |
+            git submodule sync;
+            git submodule update --init;
