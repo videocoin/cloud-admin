@@ -13,8 +13,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Auth is a structure to handle authentication for QOR. It will satisify the
-// qor.Auth interface.
 type auth struct {
 	db      *gorm.DB
 	session sessionConfig

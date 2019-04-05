@@ -7,3 +7,5 @@ pkg
 vendor
 
 debug
+compiler/
+bin/
