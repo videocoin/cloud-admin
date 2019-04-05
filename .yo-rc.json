@@ -1,9 +1,0 @@
-{
-  "*": {
-    "promptValues": {
-      "app": "admin-panel",
-      "vendor": false,
-      "cobra": false
-    }
-  }
-}
