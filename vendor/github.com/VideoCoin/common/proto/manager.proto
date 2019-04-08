@@ -1,0 +1,203 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "proto";
+
+import "health.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+import "profile.proto";
+import "transcoders.proto";
+
+// Enable custom Marshal method.
+option (gogoproto.marshaler_all) = true;
+// Enable custom Unmarshal method.
+option (gogoproto.unmarshaler_all) = true;
+// Enable custom Size method (Required by Marshal and Unmarshal).
+option (gogoproto.sizer_all) = true;
+// Enable registration with golang/protobuf for the grpc-gateway.
+option (gogoproto.goproto_registration) = true;
+// Enable generation of XXX_MessageName methods for grpc-go/status.
+option (gogoproto.messagename_all) = false;
+
+service ManagerService {
+  rpc AddJob(AddJobRequest) returns (AddJobResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/job"
+      body: "*"
+    };
+  };
+
+  rpc StopStream(StopStreamRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/stream/stop/{stream_id}"
+      body: "*"
+    };
+  };
+
+  rpc GetJob(GetJobRequest) returns (StreamData) {
+    option (google.api.http) = {
+      get: "/api/v1/get_job"
+    };
+  };
+
+  rpc Health(google.protobuf.Empty) returns (HealthStatus) {
+    option (google.api.http) = {
+      get: "/healthz"
+    };
+  }
+
+  rpc GetStream(GetStreamRequest) returns (StreamData) {
+    option (google.api.http) = {
+      get: "/api/v1/stream/{stream_id}"
+    };
+  };
+
+  rpc UpdateStreamStatus(UpdateStreamStatusRequest) returns (google.protobuf.Empty){
+    option (google.api.http) = {
+      post: "/api/v1/stream/{stream_id}/{status}"
+      body: "*"
+    };
+  };
+
+  rpc VerifyChunk(VerifyChunkRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/verify"
+      body: "*"
+    };
+  };
+
+  rpc UpdateContractAddr(ContractAddrRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/contract_address/{stream_id}/{contract_address}"
+      body: "*"
+    };
+  };
+
+  rpc AddProfile(AddProfileRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/profile/{stream_id}/{profile_id}"
+      body: "*"
+    };
+  };
+
+  rpc ChunkCreated(ChunkCreatedRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/chunk_created"
+      body: "*"
+    };
+  };
+
+  rpc CheckBalance(CheckBalanceRequest) returns (CheckBalanceResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/balance/{contract_address}"
+    };
+  };
+
+  rpc GetProfiles(google.protobuf.Empty) returns (Profiles) {
+    option (google.api.http) = {
+      get: "/api/v1/profiles"
+    };
+  };
+
+  rpc GetProfile(GetProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      get: "/api/v1/profile/{profile_id}"
+    };
+  };
+
+  rpc RegisterTranscoder(Transcoder) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/transcoders"
+      body: "*"
+    };
+  }; 
+
+  rpc TranscoderHeartbeat(stream Heartbeat) returns (stream google.protobuf.Empty) {}
+
+}
+
+message StreamData {
+    int64 id = 1;
+    string contract_address = 3;
+    string wallet_address = 4;
+    int64 stream_id = 7;
+    string input_url = 9;
+    string output_url =10;
+    string status = 11;
+    ProfileId profile = 19;
+    bool refunded = 20;
+}
+
+message AddProfileRequest {
+  int64 stream_id = 1;
+  ProfileId profile_id = 2;
+}
+
+message Heartbeat {
+  string id = 1;
+}
+
+message GetProfileRequest {
+  ProfileId profile_id = 1;
+}
+
+message CheckBalanceRequest {
+  string contract_address = 1;
+}
+
+message CheckBalanceResponse {
+  double balance = 1;
+}
+
+message ContractAddrRequest {
+  int64 stream_id = 1;
+  string contract_address = 2;
+}
+
+message VerifyChunkRequest {
+  int64 stream_id = 1;
+  int64 source_chunk_id = 2;
+  int64 result_chunk_id = 3;
+  int64 hash_distance = 4;
+  int64 bitrate = 5;
+}
+
+message ChunkCreatedRequest {
+  int64 stream_id = 1;
+  int64 source_chunk_id = 2;
+  int64 result_chunk_id = 3;
+  int64 bitrate = 4;
+}
+
+message StopStreamRequest {
+    int64 stream_id = 2;
+    string contract_address = 4;
+    string wallet_address = 5;
+}
+
+message UpdateStreamStatusRequest {
+  string transcoder_id = 1;
+  int64 stream_id = 2;
+  string status = 3;
+  bool refunded = 4;
+}
+
+message AddJobResponse {
+  string rtmp_input_url = 1;
+}
+
+message AddJobRequest {
+  int64 stream_id = 1;
+  string wallet_address = 2;
+  ProfileId profile_id = 3;
+}
+
+message GetJobRequest {}
+
+message GetStreamRequest {
+    int64 stream_id = 1;
+}
