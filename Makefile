@@ -5,8 +5,7 @@ help:
 	@echo 'Usage:'
 	@echo '    make deps     		Install go deps.'
 	@echo '    make build    		Compile the project.'
-	@echo '    make build/docker	Restore all dependencies.'
-	@echo '    make restore  		Restore all dependencies.'
+	@echo '    make build/docker	Restore all build binary and docker image.'
 	@echo
 
 test:
