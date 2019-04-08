@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"go/build"
 	"os"
 	"path/filepath"
@@ -11,6 +13,17 @@ import (
 
 	"github.com/VideoCoin/adminpanel/admin/bindatafs"
 )
+
+var (
+	path = "admin/templates/"
+)
+
+func init() {
+	if flag.Lookup("test.v") != nil {
+		fmt.Println("testing")
+		path = "../admin/templates/"
+	}
+}
 
 func main() {
 	var err error
@@ -29,7 +42,7 @@ func main() {
 	if err = afs.NameSpace("admin").RegisterPath(vp); err != nil {
 		log.WithError(err).Fatal("Couldn't register path")
 	}
-	if err = afs.NameSpace("login").RegisterPath("admin/templates/"); err != nil {
+	if err = afs.NameSpace("login").RegisterPath(path); err != nil {
 		log.WithError(err).Fatal("Couldn't register templates with login directory")
 	}
 	if err := afs.Compile(); err != nil {

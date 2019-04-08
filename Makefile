@@ -9,7 +9,7 @@ help:
 	@echo
 
 test:
-
+	gp trest -v ./...
 deps:
 	go get -u cmd/main.go
 
