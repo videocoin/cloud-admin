@@ -13,13 +13,11 @@ jobs:
             apt update && apt upgrade -y
       - checkout
       - run:
-          name: deps
-          command: |
-            make deps
-      - run:
           name: build
           command: |
             make build
+          environment:
+            GO111MODULE: 'off'
 workflows:
   version: 2
   test_build_upload:

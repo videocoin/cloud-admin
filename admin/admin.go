@@ -12,8 +12,8 @@ import (
 	"github.com/qor/admin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/VideoCoin/ap/bindatafs"
-	"github.com/VideoCoin/ap/resources"
+	"github.com/VideoCoin/adminpanel/admin/bindatafs"
+	"github.com/VideoCoin/adminpanel/resources"
 )
 
 // Admin abstracts the whole QOR Admin + authentication process
