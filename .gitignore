@@ -4,8 +4,6 @@ pkg
 
 # tools
 
-vendor
-
 debug
 compiler/
 bin/
