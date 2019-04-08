@@ -2,6 +2,7 @@
 bin
 pkg
 
+compile/admin
 # tools
 
 debug
