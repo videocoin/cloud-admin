@@ -64,6 +64,7 @@ var AdminUserMigration = &gormigrate.Migration{
 			Email     string `gorm:"not null;unique"`
 			FirstName string
 			LastName  string
+			Roles     string
 			Password  []byte
 			LastLogin *time.Time
 		}

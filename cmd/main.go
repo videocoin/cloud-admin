@@ -26,5 +26,5 @@ func main() {
 	r := gin.New()
 	a := admin.New(db, "", "secret")
 	a.Bind(r)
-	r.Run("127.0.0.1:8080")
+	r.Run(":8080")
 }
