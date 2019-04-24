@@ -17,8 +17,8 @@ build:
 	@echo "Compiling..."
 	@mkdir -p ./bin
 	@mkdir -p ./compiler
-	@go build -o compiler/compile compile/main.go
-	@go build -o bin/admin cmd/main.go
+	@go build -tags 'bindatafs' -o compiler/compile compile/main.go
+	@go build -tags 'bindatafs' -o bin/admin cmd/main.go
 	@echo "Compiled"
 
 build/docker: build

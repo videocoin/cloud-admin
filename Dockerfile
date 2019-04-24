@@ -1,3 +1,15 @@
-FROM scratch
-ADD bin/admin-panel_*_linux_amd64 /admin-panel
-CMD ["/admin-panel"]
+FROM debian:jessie-slim AS release
+
+LABEL maintainer="Videocoin" description="admin panel for db managment"
+
+RUN apt update && apt upgrade -y
+RUN apt install mysql-client ca-certificates -y
+
+WORKDIR /go/src/github.com/VideoCoin/adminpanel
+
+
+ADD bin/admin ./
+
+EXPOSE 9077
+
+ENTRYPOINT [ "./admin" ]
