@@ -24,6 +24,10 @@ build:
 build/docker: build
 	@docker build -t adminpanel:latest .
 
+docker:
+	@docker build -t adminpanel:latest .
+
+
 vet: ## run go vet
 	@test -z "$$(go vet ${PACKAGES} 2>&1 | grep -v '*composite literal uses unkeyed fields|exit status 0)' | tee /dev/stderr)"
 
