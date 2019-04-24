@@ -1,4 +1,4 @@
-FROM debian:jessie-slim AS release
+FROM ubuntu:latest AS release
 
 LABEL maintainer="Videocoin" description="admin panel for db managment"
 
