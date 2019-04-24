@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"github.com/VideoCoin/adminpanel/config"
-	"github.com/VideoCoin/articles/code/qor/admin"
+	profiles_v1 "github.com/VideoCoin/cloud-api/profiles/v1"
+	transcoder_v1 "github.com/VideoCoin/cloud-api/transcoder/v1"
+	workorder_v1 "github.com/VideoCoin/cloud-api/workorder/v1"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // import driver for gorm
@@ -21,16 +23,20 @@ func Start() {
 		logrus.Fatal(err)
 	}
 
+	db.AutoMigrate(&workorder_v1.WorkOrder{})
+	db.AutoMigrate(&transcoder_v1.Transcoder{})
+	db.AutoMigrate(&profiles_v1.Profile{})
+
 	// test connection before use
 	if err := db.DB().Ping(); err != nil {
 		logrus.Fatal(err)
 	}
 
-	admin.AdminUserMigration.Migrate(db)
+	//admin.AdminUserMigration.Migrate(db)
 
 	{
 		r := gin.New()
-		a := admin.New(db, "", cfg.Secret)
+		a := NewAdmin(db, "", cfg.Secret)
 		a.Bind(r)
 		r.Run(fmt.Sprintf(":%d", cfg.Port))
 	}

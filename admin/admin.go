@@ -25,10 +25,10 @@ type Admin struct {
 	prefix    string
 }
 
-// New will create a new admin using the provided gorm connection, a prefix
+// NewAdmin will create a new admin using the provided gorm connection, a prefix
 // for the various routes. Prefix can be an empty string. The cookie secret
 // will be used to encrypt/decrypt the cookie on the backend side.
-func New(db *gorm.DB, prefix, cookiesecret string) *Admin {
+func NewAdmin(db *gorm.DB, prefix, cookiesecret string) *Admin {
 	adminpath := filepath.Join(prefix, "/admin")
 	a := Admin{
 		db:        db,

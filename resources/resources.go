@@ -7,7 +7,7 @@ import (
 	"github.com/qor/admin"
 )
 
-// AddTranscoders adds the product model to the admin interface
+// AddTranscoders adds the transcoder model to the admin interface
 func AddTranscoders(adm *admin.Admin) {
 	transcoders := adm.AddResource(transcoder_v1.Transcoder{})
 	transcoders.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
