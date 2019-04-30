@@ -23,6 +23,7 @@ type Admin struct {
 	adm       *admin.Admin
 	adminpath string
 	prefix    string
+	log       *logrus.Entry
 }
 
 // NewAdmin will create a new admin using the provided gorm connection, a prefix
@@ -47,9 +48,10 @@ func NewAdmin(db *gorm.DB, prefix, cookiesecret string) *Admin {
 				store: cookie.NewStore([]byte(cookiesecret)),
 			},
 		},
+		log: logrus.WithField("service", "admin"),
 	}
 	a.adm = admin.New(&admin.AdminConfig{
-		SiteName: "My Admin Interface",
+		SiteName: "VideoCoin Admin Panel",
 		DB:       db,
 		Auth:     a.auth,
 		AssetFS:  bindatafs.AssetFS.NameSpace("admin"),
@@ -71,10 +73,13 @@ func (a Admin) Bind(r *gin.Engine) {
 	a.adm.MountTo(a.adminpath, mux)
 
 	lfs := bindatafs.AssetFS.NameSpace("login")
-	lfs.RegisterPath("admin/templates/")
+	err := lfs.RegisterPath("admin/templates/")
+	if err != nil {
+		a.log.Fatalf("failed to register path: %s", err.Error())
+	}
 	logintpl, err := lfs.Asset("login.html")
 	if err != nil {
-		logrus.WithError(err).Fatal("Unable to find HTML template for login page in admin")
+		a.log.Fatalf("failed to set html teplate: %s", err.Error())
 	}
 	r.SetHTMLTemplate(template.Must(template.New("login.html").Parse(string(logintpl))))
 
@@ -87,19 +92,3 @@ func (a Admin) Bind(r *gin.Engine) {
 		g.GET("/logout", a.auth.GetLogout)
 	}
 }
-
-// func (a Admin) Bind(r *gin.Engine) {
-// 	r.LoadHTMLGlob("admin/templates/*")
-
-// 	mux := http.NewServeMux()
-// 	a.adm.MountTo(a.adminpath, mux)
-
-// 	g := r.Group(a.prefix)
-// 	g.Use(sessions.Sessions(a.auth.session.name, a.auth.session.store))
-// 	{
-// 		g.Any("/admin/*resources", gin.WrapH(mux))
-// 		g.GET("/login", a.auth.GetLogin)
-// 		g.POST("/login", a.auth.PostLogin)
-// 		g.GET("/logout", a.auth.GetLogout)
-// 	}
-// }

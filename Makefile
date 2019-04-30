@@ -1,3 +1,17 @@
+.NOTPARALLEL:
+.EXPORT_ALL_VARIABLES:
+.DEFAULT_GOAL := main
+
+GOOS = linux
+GOARCH = amd64
+
+SERVICE_NAME = adminpanel
+DOCKER_REGISTRY = us.gcr.io
+
+IMAGE_TAG=$(DOCKER_REGISTRY)/${PROJECT_ID}/$(SERVICE_NAME):$(VERSION)
+LATEST=$(DOCKER_REGISTRY)/${PROJECT_ID}/$(SERVICE_NAME):latest
+
+VERSION=$$(git rev-parse --short HEAD)
 
 help:
 	@echo 'Available commands:'
@@ -6,6 +20,8 @@ help:
 	@echo '    make deps     		Install go deps.'
 	@echo '    make build    		Compile the project.'
 	@echo '    make build/docker	Restore all build binary and docker image.'
+	@echo '    make docker	        Build docker image.'
+	@echo '    make push            Build docker image and push to gcloud.'
 	@echo
 
 test:
@@ -25,8 +41,13 @@ build/docker: build
 	@docker build -t adminpanel:latest .
 
 docker:
-	@docker build -t adminpanel:latest .
+	@docker build -t $(IMAGE_TAG) -t $(LATEST) .
 
+docker/push: docker 
+	@docker push $(IMAGE_TAG)
+	@docker push $(LATEST)
+
+main: docker push
 
 vet: ## run go vet
 	@test -z "$$(go vet ${PACKAGES} 2>&1 | grep -v '*composite literal uses unkeyed fields|exit status 0)' | tee /dev/stderr)"

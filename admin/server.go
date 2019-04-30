@@ -38,6 +38,9 @@ func Start() {
 		r := gin.New()
 		a := NewAdmin(db, "", cfg.Secret)
 		a.Bind(r)
-		r.Run(fmt.Sprintf(":%d", cfg.Port))
+		if err := r.Run(fmt.Sprintf(":%d", cfg.Port)); err != nil {
+			a.log.Fatalf("failed to run server: %s", err.Error())
+		}
+
 	}
 }
