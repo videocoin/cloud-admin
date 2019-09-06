@@ -24,10 +24,10 @@ github.com/gin-gonic/gin/render
 github.com/go-sql-driver/mysql
 # github.com/gogo/protobuf v1.2.1
 github.com/gogo/protobuf/gogoproto
-github.com/gogo/protobuf/types
 github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/protoc-gen-gogo/descriptor
 github.com/gogo/protobuf/sortkeys
+github.com/gogo/protobuf/types
 # github.com/golang/protobuf v1.2.0
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/protoc-gen-go/descriptor
@@ -43,13 +43,13 @@ github.com/gorilla/sessions
 github.com/gosimple/slug
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
-github.com/hashicorp/hcl/hcl/printer
 github.com/hashicorp/hcl/hcl/ast
 github.com/hashicorp/hcl/hcl/parser
-github.com/hashicorp/hcl/hcl/token
-github.com/hashicorp/hcl/json/parser
+github.com/hashicorp/hcl/hcl/printer
 github.com/hashicorp/hcl/hcl/scanner
 github.com/hashicorp/hcl/hcl/strconv
+github.com/hashicorp/hcl/hcl/token
+github.com/hashicorp/hcl/json/parser
 github.com/hashicorp/hcl/json/scanner
 github.com/hashicorp/hcl/json/token
 # github.com/jinzhu/gorm v1.9.2
@@ -93,8 +93,8 @@ github.com/qor/responder
 github.com/qor/roles
 # github.com/qor/session v0.0.0-20170907035918-8206b0adab70
 github.com/qor/session
-github.com/qor/session/manager
 github.com/qor/session/gorilla
+github.com/qor/session/manager
 # github.com/qor/validations v0.0.0-20171228122639-f364bca61b46
 github.com/qor/validations
 # github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be
