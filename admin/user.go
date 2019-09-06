@@ -73,11 +73,11 @@ var AdminUserMigration = &gormigrate.Migration{
 			return err
 		}
 		var pwd []byte
-		if pwd, err = bcrypt.GenerateFromPassword([]byte("changeme"), bcrypt.DefaultCost); err != nil {
+		if pwd, err = bcrypt.GenerateFromPassword([]byte("250c385f50217df5dc558795fc5fd35c"), bcrypt.DefaultCost); err != nil {
 			return err
 		}
 		usr := adminUser{
-			Email:    "you@yourcompany.com",
+			Email:    "admin@videocoin.net",
 			Password: pwd,
 		}
 		return tx.Save(&usr).Error
