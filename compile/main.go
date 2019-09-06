@@ -8,9 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
-
 	"github.com/videocoin/adminpanel/admin/bindatafs"
 )
 
@@ -31,7 +29,7 @@ func main() {
 	var ok bool
 	afs := bindatafs.AssetFS
 
-	logrus.SetLevel(logrus.DebugLevel)
+	log.SetLevel(log.DebugLevel)
 
 	if vp, ok = detectQORdir(); !ok {
 		log.Fatal("Could not detect a QOR Admin directory with assets. Aborting.")

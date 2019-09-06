@@ -3,14 +3,14 @@ package admin
 import (
 	"fmt"
 
-	"github.com/videocoin/adminpanel/config"
-	profiles_v1 "github.com/videocoin/cloud-api/profiles/v1"
-	transcoder_v1 "github.com/videocoin/cloud-api/transcoder/v1"
-	workorder_v1 "github.com/videocoin/cloud-api/workorder/v1"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // import driver for gorm
 	"github.com/sirupsen/logrus"
+	"github.com/videocoin/adminpanel/config"
+	profiles_v1 "github.com/videocoin/cloud-api/profiles/v1"
+	transcoder_v1 "github.com/videocoin/cloud-api/transcoder/v1"
+	workorder_v1 "github.com/videocoin/cloud-api/workorder/v1"
 )
 
 // Start starts admin server
@@ -41,6 +41,5 @@ func Start() {
 		if err := r.Run(fmt.Sprintf(":%d", cfg.Port)); err != nil {
 			a.log.Fatalf("failed to run server: %s", err.Error())
 		}
-
 	}
 }

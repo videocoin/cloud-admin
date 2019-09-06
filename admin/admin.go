@@ -51,7 +51,7 @@ func NewAdmin(db *gorm.DB, prefix, cookiesecret string) *Admin {
 		log: logrus.WithField("service", "admin"),
 	}
 	a.adm = admin.New(&admin.AdminConfig{
-		SiteName: "videocoin Admin Panel",
+		SiteName: "Videocoin Admin Panel",
 		DB:       db,
 		Auth:     a.auth,
 		AssetFS:  bindatafs.AssetFS.NameSpace("admin"),
