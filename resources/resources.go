@@ -1,10 +1,11 @@
 package resources
 
 import (
+	"github.com/qor/admin"
 	profiles_v1 "github.com/videocoin/cloud-api/profiles/v1"
 	transcoder_v1 "github.com/videocoin/cloud-api/transcoder/v1"
+	users_v1 "github.com/videocoin/cloud-api/users/v1"
 	workorder_v1 "github.com/videocoin/cloud-api/workorder/v1"
-	"github.com/qor/admin"
 )
 
 // AddTranscoders adds the transcoder model to the admin interface
@@ -31,6 +32,15 @@ func AddWorkOrders(adm *admin.Admin) {
 // AddProfiles adds profiles resource and ignores the proto fields
 func AddProfiles(adm *admin.Admin) {
 	profiles := adm.AddResource(profiles_v1.Profile{})
+	profiles.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
+	profiles.Meta(&admin.Meta{Name: "XXX_NoUnkeyedLiteral", Type: "hidden"})
+	profiles.Meta(&admin.Meta{Name: "XXX_sizecache", Type: "hidden"})
+	profiles.Meta(&admin.Meta{Name: "XXX_unrecognized", Type: "hidden"})
+}
+
+// AddUsers adds users resource and ignores the proto fields
+func AddUsers(adm *admin.Admin) {
+	profiles := adm.AddResource(users_v1.User{})
 	profiles.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
 	profiles.Meta(&admin.Meta{Name: "XXX_NoUnkeyedLiteral", Type: "hidden"})
 	profiles.Meta(&admin.Meta{Name: "XXX_sizecache", Type: "hidden"})
