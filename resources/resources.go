@@ -1,9 +1,9 @@
 package resources
 
 import (
-	profiles_v1 "github.com/VideoCoin/cloud-api/profiles/v1"
-	transcoder_v1 "github.com/VideoCoin/cloud-api/transcoder/v1"
-	workorder_v1 "github.com/VideoCoin/cloud-api/workorder/v1"
+	profiles_v1 "github.com/videocoin/cloud-api/profiles/v1"
+	transcoder_v1 "github.com/videocoin/cloud-api/transcoder/v1"
+	workorder_v1 "github.com/videocoin/cloud-api/workorder/v1"
 	"github.com/qor/admin"
 )
 

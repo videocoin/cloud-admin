@@ -1,5 +1,5 @@
 defaults: &defaults
-  working_directory: /go/src/github.com/VideoCoin/adminpanel
+  working_directory: /go/src/github.com/videocoin/adminpanel
   docker:
     - image: golang:latest
 version: 2

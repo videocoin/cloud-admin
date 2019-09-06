@@ -6,8 +6,8 @@ package v1
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import v11 "github.com/VideoCoin/cloud-api/profiles/v1"
-import v1 "github.com/VideoCoin/cloud-api/workorder/v1"
+import v11 "github.com/videocoin/cloud-api/profiles/v1"
+import v1 "github.com/videocoin/cloud-api/workorder/v1"
 import _ "github.com/envoyproxy/protoc-gen-validate/validate"
 import _ "github.com/gogo/protobuf/gogoproto"
 

@@ -1,7 +1,7 @@
-# github.com/VideoCoin/cloud-api v0.0.0-20190423225955-542ef095fa18
-github.com/VideoCoin/cloud-api/profiles/v1
-github.com/VideoCoin/cloud-api/transcoder/v1
-github.com/VideoCoin/cloud-api/workorder/v1
+# github.com/videocoin/cloud-api v0.0.0-20190423225955-542ef095fa18
+github.com/videocoin/cloud-api/profiles/v1
+github.com/videocoin/cloud-api/transcoder/v1
+github.com/videocoin/cloud-api/workorder/v1
 # github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf
 github.com/asaskevich/govalidator
 # github.com/containous/go-bindata v1.0.0

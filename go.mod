@@ -1,10 +1,10 @@
-module github.com/VideoCoin/adminpanel
+module github.com/videocoin/adminpanel
 
 go 1.12
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/VideoCoin/cloud-api v0.0.0-20190423225955-542ef095fa18
+	github.com/videocoin/cloud-api v0.0.0-20190423225955-542ef095fa18
 	github.com/andybalholm/cascadia v1.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf // indirect
 	github.com/aws/aws-sdk-go v1.19.11 // indirect

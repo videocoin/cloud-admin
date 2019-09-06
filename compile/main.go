@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/VideoCoin/adminpanel/admin/bindatafs"
+	"github.com/videocoin/adminpanel/admin/bindatafs"
 )
 
 var (

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/VideoCoin/adminpanel/admin"
+import "github.com/videocoin/adminpanel/admin"
 
 func main() {
 	admin.Start()
