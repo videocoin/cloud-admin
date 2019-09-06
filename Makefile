@@ -20,7 +20,7 @@ help:
 	@echo '    make deps     		Install go deps.'
 	@echo '    make build    		Compile the project.'
 	@echo '    make docker	        Build docker image.'
-	@echo '    make docker/push            Build docker image and push to gcloud.'
+	@echo '    make docker/push     Build docker image and push to gcloud.'
 	@echo
 
 test:
