@@ -75,7 +75,7 @@ func (a *auth) PostLogin(c *gin.Context) {
 
 	role, err := a.GetUserRole(email)
 	if role != users_v1.UserRoleSuper {
-		c.Redirect(http.StatusForbidden, a.paths.login)
+		c.Redirect(http.StatusUnauthorized, a.paths.login)
 		return
 	}
 	if err != nil {
