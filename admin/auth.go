@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"time"
 
+	users_v1 "github.com/videocoin/cloud-api/users/v1"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -40,6 +42,14 @@ func (a *auth) GetLogin(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
+func (a *auth) GetUserRole(email string) (users_v1.UserRole, error) {
+	u := users_v1.User{}
+	if err := a.db.Table("users").Where("email = ?", email).First(&u).Error; err != nil {
+		return users_v1.UserRoleRegular, err
+	}
+	return u.Role, nil
+}
+
 // PostLogin is the handler to check if the user can connect
 func (a *auth) PostLogin(c *gin.Context) {
 	session := sessions.Default(c)
@@ -58,13 +68,28 @@ func (a *auth) PostLogin(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
+	if !u.CheckPassword(password) {
+		c.Redirect(http.StatusSeeOther, a.paths.login)
+		return
+	}
+
+	role, err := a.GetUserRole(email)
+	if role != users_v1.UserRoleSuper {
+		c.Redirect(http.StatusForbidden, a.paths.login)
+		return
+	}
+	if err != nil {
+		logrus.WithError(err).Warn("failed to get role")
+		c.Redirect(http.StatusNotFound, a.paths.login)
+		return
+	}
 
 	now := time.Now()
 	u.LastLogin = &now
 	a.db.Save(&u)
 
 	session.Set(a.session.key, u.ID)
-	err := session.Save()
+	err = session.Save()
 	if err != nil {
 		logrus.WithError(err).Warn("Couldn't save session")
 		c.Redirect(http.StatusSeeOther, a.paths.login)
