@@ -130,8 +130,8 @@ github.com/videocoin/cloud-admin/admin
 # github.com/videocoin/cloud-api v0.2.7
 github.com/videocoin/cloud-api/profiles/v1
 github.com/videocoin/cloud-api/transcoder/v1
-github.com/videocoin/cloud-api/workorder/v1
 github.com/videocoin/cloud-api/users/v1
+github.com/videocoin/cloud-api/workorder/v1
 github.com/videocoin/cloud-api/accounts/v1
 github.com/videocoin/cloud-api/rpc
 # golang.org/x/crypto v0.0.0-20190909091759-094676da4a83
