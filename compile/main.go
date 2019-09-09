@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/videocoin/adminpanel/admin/bindatafs"
+	"github.com/videocoin/cloud-admin/admin/bindatafs"
 )
 
 var (

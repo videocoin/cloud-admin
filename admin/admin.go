@@ -12,8 +12,8 @@ import (
 	"github.com/qor/admin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/videocoin/adminpanel/admin/bindatafs"
-	"github.com/videocoin/adminpanel/resources"
+	"github.com/videocoin/cloud-admin/admin/bindatafs"
+	"github.com/videocoin/cloud-admin/resources"
 )
 
 // Admin abstracts the whole QOR Admin + authentication process
@@ -51,7 +51,7 @@ func NewAdmin(db *gorm.DB, prefix, cookiesecret string) *Admin {
 		log: logrus.WithField("service", "admin"),
 	}
 	a.adm = admin.New(&admin.AdminConfig{
-		SiteName: "Videocoin Admin Panel",
+		SiteName: "videocoin Admin Panel",
 		DB:       db,
 		Auth:     a.auth,
 		AssetFS:  bindatafs.AssetFS.NameSpace("admin"),

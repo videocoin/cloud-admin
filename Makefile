@@ -5,7 +5,7 @@
 GOOS = linux
 GOARCH = amd64
 
-SERVICE_NAME = adminpanel
+SERVICE_NAME = cloud-admin
 DOCKER_REGISTRY = us.gcr.io
 
 IMAGE_TAG=$(DOCKER_REGISTRY)/${PROJECT_ID}/$(SERVICE_NAME):$(VERSION)
