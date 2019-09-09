@@ -12,6 +12,7 @@ import (
 	profiles_v1 "github.com/videocoin/cloud-api/profiles/v1"
 	transcoder_v1 "github.com/videocoin/cloud-api/transcoder/v1"
 	workorder_v1 "github.com/videocoin/cloud-api/workorder/v1"
+	users_v1 "github.com/videocoin/cloud-api/users/v1"
 )
 
 // Start starts admin server
@@ -27,6 +28,7 @@ func Start() {
 	db.AutoMigrate(&workorder_v1.WorkOrder{})
 	db.AutoMigrate(&transcoder_v1.Transcoder{})
 	db.AutoMigrate(&profiles_v1.Profile{})
+	db.AutoMigrate(&users_v1.User{})
 
 	// test connection before use
 	if err := db.DB().Ping(); err != nil {
