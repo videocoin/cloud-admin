@@ -7,7 +7,6 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // import driver for gorm
 	"github.com/sirupsen/logrus"
-	"github.com/videocoin/cloud-admin/admin"
 	"github.com/videocoin/cloud-admin/config"
 	profiles_v1 "github.com/videocoin/cloud-api/profiles/v1"
 	transcoder_v1 "github.com/videocoin/cloud-api/transcoder/v1"
@@ -21,7 +20,7 @@ func Start() {
 	cfg := config.FromEnv()
 
 	db, err := gorm.Open("mysql", cfg.SQLURI)
-		if err != nil {
+	if err != nil {
 		logrus.Fatal(err)
 	}
 
@@ -35,7 +34,7 @@ func Start() {
 		logrus.Fatal(err)
 	}
 
-	admin.AdminUserMigration.Migrate(db)
+	AdminUserMigration.Migrate(db)
 
 	{
 		r := gin.New()
