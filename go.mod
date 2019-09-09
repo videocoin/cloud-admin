@@ -1,4 +1,4 @@
-module github.com/videocoin/adminpanel
+module github.com/videocoin/cloud-admin
 
 go 1.12
 
@@ -22,7 +22,6 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.4.0
 	github.com/theplant/cldr v0.0.0-20190423050709-9f76f7ce4ee8 // indirect
-	github.com/videocoin/cloud-admin v0.0.0-20190909175215-0976ea7d3a9f
 	github.com/videocoin/cloud-api v0.2.7
 	golang.org/x/crypto v0.0.0-20190909091759-094676da4a83
 	gopkg.in/gormigrate.v1 v1.6.0
