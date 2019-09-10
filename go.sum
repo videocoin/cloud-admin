@@ -207,6 +207,8 @@ github.com/videocoin/cloud-admin v0.0.0-20190909175215-0976ea7d3a9f h1:uCBThoSiA
 github.com/videocoin/cloud-admin v0.0.0-20190909175215-0976ea7d3a9f/go.mod h1:1aRCvFzj6Ems7J+d0oSi9MApbTrqKQw/0KoSX5kUGcg=
 github.com/videocoin/cloud-api v0.2.7 h1:mzqKoCl6fDZeUmJXHO6UTRzf/AZ13WIO0jeqiUFcGbo=
 github.com/videocoin/cloud-api v0.2.7/go.mod h1:6HhpNaw1C8VsYtRpaF2gNZCKJmZjWjeQwXHn4lvm1QQ=
+github.com/videocoin/cloud-api v0.2.8-0.20190910222345-a150a85f5059 h1:xjHodTeTAPRYZTxS5ow+Qupod6zWeA6G8YJCmd8mxKs=
+github.com/videocoin/cloud-api v0.2.8-0.20190910222345-a150a85f5059/go.mod h1:6HhpNaw1C8VsYtRpaF2gNZCKJmZjWjeQwXHn4lvm1QQ=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
