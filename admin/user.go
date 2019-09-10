@@ -79,7 +79,7 @@ var AdminUserMigration = &gormigrate.Migration{
 }
 
 func addUser(adm *admin.Admin) {
-	usr := adm.AddResource(&User{}, &admin.Config{Menu: []string{"User Management"}})
+	usr := adm.AddResource(&users_v1.User{}, &admin.Config{Menu: []string{"User Management"}})
 	usr.IndexAttrs("-Password")
 	usr.Meta(&admin.Meta{
 		Name: "Password",
