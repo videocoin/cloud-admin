@@ -68,10 +68,6 @@ func (a *auth) PostLogin(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
-	if !u.CheckPassword(password) {
-		c.Redirect(http.StatusSeeOther, a.paths.login)
-		return
-	}
 
 	role, err := a.GetUserRole(email)
 	if role != users_v1.UserRoleSuper {

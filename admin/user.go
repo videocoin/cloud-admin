@@ -38,13 +38,13 @@ func (u User) DisplayName() string {
 
 // HashPassword is a simple utility function to hash the password sent via API
 // before inserting it in database
-func (u *User) HashPassword() error {
+func (u *User) HashPassword() (err error) {
 	pwd, err := bcrypt.GenerateFromPassword(u.Password, bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return
 	}
 	u.Password = pwd
-	return nil
+	return
 }
 
 // CheckPassword is a simple utility function to check the password given as raw
