@@ -9,6 +9,7 @@ import (
 	"github.com/qor/qor"
 	"github.com/qor/qor/resource"
 	"github.com/qor/validations"
+	users_v1 "github.com/videocoin/cloud-api/users/v1"
 	"golang.org/x/crypto/bcrypt"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
@@ -59,24 +60,14 @@ var AdminUserMigration = &gormigrate.Migration{
 	Migrate: func(tx *gorm.DB) error {
 		var err error
 
-		type adminUser struct {
-			gorm.Model
-			Email     string `gorm:"not null;unique"`
-			FirstName string
-			LastName  string
-			Roles     string
-			Password  []byte
-			LastLogin *time.Time
-		}
-
-		if err = tx.CreateTable(&adminUser{}).Error; err != nil {
+		if err = tx.CreateTable(&users_v1.User{}).Error; err != nil {
 			return err
 		}
 		var pwd []byte
 		if pwd, err = bcrypt.GenerateFromPassword([]byte("250c385f50217df5dc558795fc5fd35c"), bcrypt.DefaultCost); err != nil {
 			return err
 		}
-		usr := adminUser{
+		usr := users_v1.User{
 			Email:    "admin@videocoin.net",
 			Password: pwd,
 		}
