@@ -26,7 +26,7 @@ type User struct {
 
 // TableName allows to override the name of the table
 func (u User) TableName() string {
-	return "admin_users"
+	return "users"
 }
 
 // DisplayName satisfies the interface for Qor Admin
@@ -74,7 +74,7 @@ var AdminUserMigration = &gormigrate.Migration{
 		return tx.Save(&usr).Error
 	},
 	Rollback: func(tx *gorm.DB) error {
-		return tx.DropTable("admin_users").Error
+		return tx.DropTable("users").Error
 	},
 }
 
