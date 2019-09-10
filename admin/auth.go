@@ -60,7 +60,7 @@ func (a *auth) PostLogin(c *gin.Context) {
 		return
 	}
 	var u User
-	if a.db.Where(&User{Email: email}).First(&u).RecordNotFound() {
+	if a.db.Table("users").Where(&users_v1.User{Email: email}).First(&u).RecordNotFound() {
 		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
