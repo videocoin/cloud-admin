@@ -1,9 +1,6 @@
 package admin
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/jinzhu/gorm"
 	"github.com/qor/admin"
 	"github.com/qor/qor"
@@ -13,46 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
-
-// User defines how an admin user is represented in database
-type User struct {
-	gorm.Model
-	Email     string `gorm:"not null;unique"`
-	FirstName string
-	LastName  string
-	Password  []byte
-	LastLogin *time.Time
-}
-
-// TableName allows to override the name of the table
-func (u User) TableName() string {
-	return "users"
-}
-
-// DisplayName satisfies the interface for Qor Admin
-func (u User) DisplayName() string {
-	if u.FirstName != "" && u.LastName != "" {
-		return fmt.Sprintf("%s %s", u.FirstName, u.LastName)
-	}
-	return u.Email
-}
-
-// HashPassword is a simple utility function to hash the password sent via API
-// before inserting it in database
-func (u *User) HashPassword() (err error) {
-	pwd, err := bcrypt.GenerateFromPassword(u.Password, bcrypt.DefaultCost)
-	if err != nil {
-		return
-	}
-	u.Password = pwd
-	return
-}
-
-// CheckPassword is a simple utility function to check the password given as raw
-// against the user's hashed password
-func (u User) CheckPassword(raw string) bool {
-	return bcrypt.CompareHashAndPassword(u.Password, []byte(raw)) == nil
-}
 
 // AdminUserMigration is the migration that creates our user model
 var AdminUserMigration = &gormigrate.Migration{
@@ -93,7 +50,7 @@ func addUser(adm *admin.Admin) {
 						context.DB.AddError(validations.NewError(usr, "Password", "Can't encrypt password")) // nolint: gosec,errcheck
 						return
 					}
-					u := resource.(*User)
+					u := resource.(*users_v1.User)
 					u.Password = pwd
 				}
 			}
