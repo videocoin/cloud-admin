@@ -2,9 +2,6 @@ package admin
 
 import (
 	"net/http"
-	"time"
-
-	users_v1 "github.com/videocoin/cloud-api/users/v1"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -13,6 +10,7 @@ import (
 	"github.com/qor/admin"
 	"github.com/qor/qor"
 	"github.com/sirupsen/logrus"
+	users_v1 "github.com/videocoin/cloud-api/users/v1"
 )
 
 type auth struct {
@@ -80,11 +78,9 @@ func (a *auth) PostLogin(c *gin.Context) {
 		return
 	}
 
-	now := time.Now()
-	u.LastLogin = &now
 	a.db.Save(&u)
 
-	session.Set(a.session.key, u.ID)
+	session.Set(a.session.key, u.Id)
 	err = session.Save()
 	if err != nil {
 		logrus.WithError(err).Warn("Couldn't save session")
@@ -118,7 +114,7 @@ func (a auth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
 		return nil
 	}
 
-	var user User
+	var user users_v1.User
 	if !a.db.First(&user, "id = ?", userid).RecordNotFound() {
 		return &user
 	}
