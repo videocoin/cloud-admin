@@ -106,14 +106,14 @@ func (a *auth) GetLogout(c *gin.Context) {
 
 // GetCurrentUser satisfies the Auth interface and returns the current user
 func (a auth) GetCurrentUser(c *admin.Context) qor.CurrentUser {
-	var userid uint
+	var userid string
 
 	s, err := a.session.store.Get(c.Request, a.session.name)
 	if err != nil {
 		return nil
 	}
 	if v, ok := s.Values[a.session.key]; ok {
-		userid = v.(uint)
+		userid = v.(string)
 	} else {
 		return nil
 	}
