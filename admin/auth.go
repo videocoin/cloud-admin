@@ -59,22 +59,25 @@ func (a *auth) PostLogin(c *gin.Context) {
 	}
 	var u users_v1.User
 	if a.db.Table("users").Where(&users_v1.User{Email: email}).First(&u).RecordNotFound() {
+		logrus.Warn("Record Not Found")
 		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
 	if !u.CheckPassword(password) {
+		logrus.Warn("Password does not match")
 		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
 
 	role, err := a.GetUserRole(email)
 	if role != users_v1.UserRoleSuper {
-		c.Redirect(http.StatusUnauthorized, a.paths.login)
+		logrus.Warn("User has no role")
+		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
 	if err != nil {
 		logrus.WithError(err).Warn("failed to get role")
-		c.Redirect(http.StatusNotFound, a.paths.login)
+		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
 
@@ -87,6 +90,7 @@ func (a *auth) PostLogin(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, a.paths.login)
 		return
 	}
+	logrus.Info("redirecting")
 	c.Redirect(http.StatusSeeOther, a.paths.admin)
 }
 
