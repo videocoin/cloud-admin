@@ -19,10 +19,11 @@ require (
 	github.com/qor/session v0.0.0-20170907035918-8206b0adab70 // indirect
 	github.com/qor/validations v0.0.0-20171228122639-f364bca61b46
 	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.4.0
 	github.com/theplant/cldr v0.0.0-20190423050709-9f76f7ce4ee8 // indirect
-	github.com/videocoin/cloud-api v0.2.9
+	github.com/videocoin/cloud-api v0.2.12
 	golang.org/x/crypto v0.0.0-20190911031432-227b76d455e7
 	gopkg.in/gormigrate.v1 v1.6.0
 )

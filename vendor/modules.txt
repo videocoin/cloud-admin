@@ -108,6 +108,8 @@ github.com/qor/session/gorilla
 github.com/qor/validations
 # github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be
 github.com/rainycape/unidecode
+# github.com/satori/go.uuid v1.2.0
+github.com/satori/go.uuid
 # github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 # github.com/spf13/afero v1.1.2
@@ -125,7 +127,7 @@ github.com/spf13/viper
 github.com/theplant/cldr
 # github.com/ugorji/go v1.1.4
 github.com/ugorji/go/codec
-# github.com/videocoin/cloud-api v0.2.9
+# github.com/videocoin/cloud-api v0.2.12
 github.com/videocoin/cloud-api/profiles/v1
 github.com/videocoin/cloud-api/transcoder/v1
 github.com/videocoin/cloud-api/users/v1

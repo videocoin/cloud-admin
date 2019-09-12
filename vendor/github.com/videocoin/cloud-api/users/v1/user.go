@@ -1,6 +1,23 @@
 package v1
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	time "time"
+
+	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
+)
+
+func (u *User) BeforeCreate(scope *gorm.Scope) error {
+	uuid := uuid.NewV4()
+
+	err := scope.SetColumn("id", uuid.String())
+	if err != nil {
+		return err
+	}
+
+	return scope.SetColumn("created_at", time.Now())
+}
 
 // DisplayName satisfies the interface for Qor Admin
 func (u User) DisplayName() string {
