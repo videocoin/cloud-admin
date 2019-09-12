@@ -88,9 +88,8 @@ func detectQORdir() (string, bool) {
 	}
 
 	var candidates = []string{
-		filepath.Join(gopath, "/pkg/mod/"),
-		filepath.Join(gopath, "/src/"),
 		filepath.Join(d, "/vendor/"),
+		filepath.Join(gopath, "/src/"),
 	}
 	for _, c := range candidates {
 		if found, ok = detectViewsDir(c); ok {
