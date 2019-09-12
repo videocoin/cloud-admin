@@ -62,7 +62,7 @@ func NewAdmin(db *gorm.DB, prefix, cookiesecret string) *Admin {
 		resources.AddTranscoders(a.adm)
 		resources.AddProfiles(a.adm)
 		resources.AddWorkOrders(a.adm)
-		resources.AddUsers(a.adm)
+		// resources.AddUsers(a.adm)
 	}
 
 	return &a
