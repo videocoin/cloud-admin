@@ -213,6 +213,10 @@ github.com/videocoin/cloud-api v0.2.11 h1:ygMebg8ZNYuIDK9IrNUSZgrwIY+wE704wZzeNA
 github.com/videocoin/cloud-api v0.2.11/go.mod h1:6HhpNaw1C8VsYtRpaF2gNZCKJmZjWjeQwXHn4lvm1QQ=
 github.com/videocoin/cloud-api v0.2.12 h1:6lA8kY47InLxj+xMWJFXg31/Pwh5qsJohOhlOXf4/+Y=
 github.com/videocoin/cloud-api v0.2.12/go.mod h1:6HhpNaw1C8VsYtRpaF2gNZCKJmZjWjeQwXHn4lvm1QQ=
+github.com/videocoin/cloud-api v0.2.13 h1:v/QHQFjLLlOImEdENje+kSrlazG3sZapEgELyQSyDD0=
+github.com/videocoin/cloud-api v0.2.13/go.mod h1:6HhpNaw1C8VsYtRpaF2gNZCKJmZjWjeQwXHn4lvm1QQ=
+github.com/videocoin/cloud-api v0.2.14-0.20190912224348-d7df30ec9905 h1:i9/uvkGwieoIJmlI10TIvTyJb0SFIH6dkoQ8nq64h6M=
+github.com/videocoin/cloud-api v0.2.14-0.20190912224348-d7df30ec9905/go.mod h1:6HhpNaw1C8VsYtRpaF2gNZCKJmZjWjeQwXHn4lvm1QQ=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

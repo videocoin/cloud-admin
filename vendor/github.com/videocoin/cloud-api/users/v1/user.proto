@@ -34,7 +34,7 @@ message User {
         (gogoproto.moretags) = "gorm:\"unique_index\""
     ];
     bytes password = 3 [
-        (gogoproto.moretags) = "gorm:\"type:binary(64)\""
+        (gogoproto.moretags) = "gorm:\"type:binary(60)\""
     ];
     string name = 4 [
         (gogoproto.moretags) = "gorm:\"type:varchar(100)\""

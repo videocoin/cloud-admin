@@ -23,7 +23,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.4.0
 	github.com/theplant/cldr v0.0.0-20190423050709-9f76f7ce4ee8 // indirect
-	github.com/videocoin/cloud-api v0.2.12
+	github.com/videocoin/cloud-api v0.2.14-0.20190912224348-d7df30ec9905
 	golang.org/x/crypto v0.0.0-20190911031432-227b76d455e7
 	gopkg.in/gormigrate.v1 v1.6.0
 )

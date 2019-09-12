@@ -127,7 +127,7 @@ github.com/spf13/viper
 github.com/theplant/cldr
 # github.com/ugorji/go v1.1.4
 github.com/ugorji/go/codec
-# github.com/videocoin/cloud-api v0.2.12
+# github.com/videocoin/cloud-api v0.2.14-0.20190912224348-d7df30ec9905
 github.com/videocoin/cloud-api/profiles/v1
 github.com/videocoin/cloud-api/transcoder/v1
 github.com/videocoin/cloud-api/users/v1
