@@ -198,6 +198,9 @@
 /* Shadows */
 /* Animations */
 /* Dialog */
+[qor-icon-name*="Transcoders"] > a::before {
+  content: "\E2BF";
+}
 .datepicker-container {
   font-size: 12px;
   line-height: 30px;
