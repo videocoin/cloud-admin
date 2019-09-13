@@ -10,7 +10,7 @@ import (
 
 // AddTranscoders adds the transcoder model to the admin interface
 func AddTranscoders(adm *admin.Admin) {
-	transcoders := adm.AddResource(transcoder_v1.Transcoder{})
+	transcoders := adm.AddResource(&transcoder_v1.Transcoder{})
 	transcoders.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
 	transcoders.Meta(&admin.Meta{Name: "XXX_NoUnkeyedLiteral", Type: "hidden"})
 	transcoders.Meta(&admin.Meta{Name: "XXX_sizecache", Type: "hidden"})
@@ -31,7 +31,7 @@ func AddWorkOrders(adm *admin.Admin) {
 
 // AddProfiles adds profiles resource and ignores the proto fields
 func AddProfiles(adm *admin.Admin) {
-	profiles := adm.AddResource(profiles_v1.Profile{})
+	profiles := adm.AddResource(profiles_v1.Profile{}, &admin.Config{IconName: "Products"})
 	profiles.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
 	profiles.Meta(&admin.Meta{Name: "XXX_NoUnkeyedLiteral", Type: "hidden"})
 	profiles.Meta(&admin.Meta{Name: "XXX_sizecache", Type: "hidden"})
@@ -40,9 +40,9 @@ func AddProfiles(adm *admin.Admin) {
 
 // AddUsers adds users resource and ignores the proto fields
 func AddUsers(adm *admin.Admin) {
-	profiles := adm.AddResource(users_v1.User{})
-	profiles.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
-	profiles.Meta(&admin.Meta{Name: "XXX_NoUnkeyedLiteral", Type: "hidden"})
-	profiles.Meta(&admin.Meta{Name: "XXX_sizecache", Type: "hidden"})
-	profiles.Meta(&admin.Meta{Name: "XXX_unrecognized", Type: "hidden"})
+	user := adm.AddResource(users_v1.User{})
+	user.IndexAttrs("-XXX_NoUnkeyedLiteral", "-XXX_sizecache", "-XXX_unrecognized")
+	user.Meta(&admin.Meta{Name: "XXX_NoUnkeyedLiteral", Type: "hidden"})
+	user.Meta(&admin.Meta{Name: "XXX_sizecache", Type: "hidden"})
+	user.Meta(&admin.Meta{Name: "XXX_unrecognized", Type: "hidden"})
 }
