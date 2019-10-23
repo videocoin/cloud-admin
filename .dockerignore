@@ -1,0 +1,6 @@
+.git
+__pycache__/
+*.py[cod]
+src/static/bundles/
+src/static_src/node_modules
+src/static_src/dist

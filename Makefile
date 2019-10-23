@@ -1,54 +1,39 @@
-.NOTPARALLEL:
-.EXPORT_ALL_VARIABLES:
-.DEFAULT_GOAL := main
+GOOS?=linux
+GOARCH?=amd64
 
-GOOS = linux
-GOARCH = amd64
-
-SERVICE_NAME = cloud-admin
-DOCKER_REGISTRY = us.gcr.io
-
-IMAGE_TAG=$(DOCKER_REGISTRY)/${PROJECT_ID}/$(SERVICE_NAME):$(VERSION)
-LATEST=$(DOCKER_REGISTRY)/${PROJECT_ID}/$(SERVICE_NAME):latest
-
+DOCKER_REGISTRY?=gcr.io
+GOOGLE_PROJECT?=videocoin-network
+NAME=admin
+NAME_STATIC=admin-static
+GCP_PROJECT=videocoin-network
 VERSION=$$(git rev-parse --short HEAD)
+IMAGE_TAG=${DOCKER_REGISTRY}/${GOOGLE_PROJECT}/${NAME}:${VERSION}
+IMAGE_TAG_STATIC=${DOCKER_REGISTRY}/${GOOGLE_PROJECT}/${NAME_STATIC}:${VERSION}
 
-help:
-	@echo 'Available commands:'
-	@echo
-	@echo 'Usage:'
-	@echo '    make deps     		Install go deps.'
-	@echo '    make build    		Compile the project.'
-	@echo '    make docker	        Build docker image.'
-	@echo '    make docker/push     Build docker image and push to gcloud.'
-	@echo
+DBM_MSQLURI=root:@tcp(127.0.0.1:3306)/videocoin?charset=utf8&parseTime=True&loc=Local
 
-test:
-	go test -v ./...
-deps:
-	go get -u cmd/main.go
+.PHONY: deploy
 
-build:
-	@echo "Compiing..."
-	@mkdir -p ./bin
-	@mkdir -p ./compiler
-	@go build -tags 'bindatafs' -o compiler/compile compile/main.go
-	@go build -tags 'bindatafs' -o bin/admin cmd/main.go
-	@echo "Compiled"
+default: build
 
-docker:
-	@docker build -t $(IMAGE_TAG) -t $(LATEST) .
+version:
+	@echo ${VERSION}
 
-docker/push: docker 
-	@docker push $(IMAGE_TAG)
-	@docker push $(LATEST)
+docker-build:
+	docker build -t ${IMAGE_TAG} -f Dockerfile .
 
-main: docker/push
+docker-build-static:
+	docker build -t ${IMAGE_TAG_STATIC} -f Dockerfile.static .
 
-vet: ## run go vet
-	@test -z "$$(go vet ${PACKAGES} 2>&1 | grep -v '*composite literal uses unkeyed fields|exit status 0)' | tee /dev/stderr)"
+docker-push:
+	@echo "==> Pushing ${NAME} docker image..."
+	docker push ${IMAGE_TAG}
 
-ci: vet test
+docker-push-static:
+	@echo "==> Pushing ${NAME_STATIC} docker image..."
+	docker push ${IMAGE_TAG_STATIC}
 
-restore:
-	@dep ensure
+release: docker-build docker-push docker-build-static docker-push-static
+
+deploy:
+	ENV=${ENV} deploy/deploy.sh

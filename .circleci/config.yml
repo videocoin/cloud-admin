@@ -1,26 +1,26 @@
-defaults: &defaults
-  working_directory: /go/src/github.com/videocoin/cloud-admin
-  docker:
-    - image: golang:latest
-version: 2
-jobs:
-  build:
-    <<: *defaults
-    steps:
-      - run:
-          name: install requirements
-          command: |
-            apt update && apt upgrade -y
-      - checkout
-      - run:
-          name: build
-          command: |
-            make build
-          environment:
-            GO111MODULE: 'off'
-workflows:
-  version: 2
-  test_build_upload:
-    jobs:
-      - checkout
-      - build:
+#defaults: &defaults
+#  working_directory: /go/src/github.com/videocoin/cloud-admin
+#  docker:
+#    - image: golang:latest
+#version: 2
+#jobs:
+#  build:
+#    <<: *defaults
+#    steps:
+#      - run:
+#          name: install requirements
+#          command: |
+#            apt update && apt upgrade -y
+#      - checkout
+#      - run:
+#          name: build
+#          command: |
+#            make build
+#          environment:
+#            GO111MODULE: 'off'
+#workflows:
+#  version: 2
+#  test_build_upload:
+#    jobs:
+#      - checkout
+#      - build:

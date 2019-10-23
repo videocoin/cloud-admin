@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    component: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.maxUnavailableCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | replace "#" ""}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["gunicorn", "project.wsgi.staging:application", "-b", "0.0.0.0:8000", "-w", "4", "-k", "tornado"]
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+#          livenessProbe:
+#            httpGet:
+#              path: /healthz
+#              port: {{ .Values.service.internalPort }}
+#          readinessProbe:
+#            httpGet:
+#              path: /healthz
+#              port: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{ include (print $.Template.BasePath "/_container_env.yaml") . | indent 10 }}
+{{ include (print $.Template.BasePath "/_container_volume_mounts.yaml") . | indent 10 }}
+{{ include (print $.Template.BasePath "/_pod_volumes.yaml") . | indent 6 }}

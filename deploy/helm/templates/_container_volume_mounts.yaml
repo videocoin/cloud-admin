@@ -1,0 +1,3 @@
+volumeMounts:
+  - name: secrets
+    mountPath: /etc/secrets

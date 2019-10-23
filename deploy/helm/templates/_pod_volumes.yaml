@@ -1,0 +1,10 @@
+volumes:
+  - name: ssl-certs
+    hostPath:
+      path: /etc/ssl/certs
+  - name: config
+    configMap:
+      name: {{ .Release.Name }}
+  - name: secrets
+    secret:
+      secretName: {{ .Release.Name }}

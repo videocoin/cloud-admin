@@ -1,10 +1,97 @@
-# dist
-bin
-pkg
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-compile/admin
-# tools
+# C extensions
+*.so
 
-debug
-compiler/
-bin/
+# Distribution / packaging
+.Python
+env/
+venv/
+build/
+develop-eggs/
+#dist/
+downloads/
+eggs/
+.eggs/
+#lib/
+lib64/
+parts/
+sdist/
+#var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Other
+*.pyc
+*.DS_Store
+.idea
+#assets/vendor
+media
+node_modules
+src/node_modules
+bower_components
+src/bower_components
+celeryev.pid
+dump.rdb
+
+celerybeat.pid
+deploy/hosts
+.vagrant/
+src/static_src/dist/
+src/static_src/node_modules/
+src/static_src/typings/index.d.ts
+src/static_src/typings/globals
+src/static_src/typings/modules
+
+src/static/app/
+src/static/bundles/
+!src/static/home.js
+Vagrantfile
+src/conf/kubeconf
+src/webpack-stats.json
+.env
+src/celerybeat-schedule
+src/assets
+.env.v1
+.env.v2
+.vscode/
+.venv/*
+src/project/settings/development.py

@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Videocoin admin
+name: admin
+version: 0.0.1

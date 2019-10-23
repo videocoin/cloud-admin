@@ -1,4 +1,4 @@
-FROM gcr.io/liveplanet-backend/python:3.7-ubuntu
+FROM gcr.io/liveplanet-backend/python:3.7-ubuntu as base
 
 ENV BUILD_DEPS build-essential git-core xz-utils
 ENV C_FORCE_ROOT y
@@ -28,11 +28,18 @@ RUN apt-get update && \
     apt-get purge -y --auto-remove wget curl gcc git-core xz-utils && \
     rm -rf /var/lib/apt/lists/* /usr/src /tmp/*
 
-
 ADD ./src /srv/src
 
 WORKDIR /srv/src
 
-EXPOSE 8000
+ENV VC_ADMIN_ENV_FILE=project/settings/.env.example
 
-CMD ["gunicorn", "project.wsgi.staging:application", "-b", "0.0.0.0:8000", "-w", "4", "-k", "tornado"]
+RUN python manage.py collectstatic --noinput
+
+FROM nginx:1.11.8-alpine
+
+COPY --from=base /srv/src/assets/ /usr/share/nginx/html/imsgx72bs1pxd72mxs/assets/
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

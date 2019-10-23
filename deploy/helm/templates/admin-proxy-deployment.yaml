@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-proxy
+  labels:
+    app: {{ .Release.Name }}
+    component: {{ .Release.Name }}-proxy
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.proxyReplicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: {{ .Release.Name }}-proxy
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.proxyImage.repository }}:{{ .Values.proxyImage.tag }}"
+          imagePullPolicy: {{ .Values.proxyImage.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.proxyService.internalPort }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d
+          resources:
+{{ toYaml .Values.adminProxyResources | indent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-proxy
+            items:
+            - key: nginx.conf
+              path: nginx.conf

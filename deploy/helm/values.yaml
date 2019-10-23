@@ -1,0 +1,118 @@
+replicaCount: 1
+proxyReplicaCount: 1
+workerReplicaCount: 1
+maxUnavailableCount: 0
+
+image:
+  repository: gcr.io/videocoin-network/admin
+  tag: latest
+  pullPolicy: Always
+proxyImage:
+  repository: nginx
+  tag: 1.11.10-alpine
+  pullPolicy: IfNotPresent
+staticImage:
+  repository: gcr.io/videocoin-network/admin-static
+  tag: latest
+  pullPolicy: Always
+
+service:
+  name: http
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 8000
+proxyService:
+  name: http
+  type: NodePort
+  externalPort: 80
+  internalPort: 80
+cacheService:
+  name: redis
+  type: ClusterIP
+  externalPort: 6379
+  internalPort: 6379
+staticService:
+  name: http
+  type: NodePort
+  externalPort: 80
+  internalPort: 80
+
+db:
+  connectionName:
+  port: 3306
+
+admin:
+  email:
+  password:
+
+resources:
+  requests:
+    cpu: 2000m
+    memory: 2000Mi
+  limits:
+    cpu: 2000m
+    memory: 2000Mi
+
+adminProxyResources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+dbResources:
+  requests:
+    cpu: 500m
+    memory: 500Mi
+  limits:
+    memory: 500Mi
+    cpu: 500m
+
+staticResources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+autoscaler:
+  minCount: 3
+  maxCount: 10
+  targets:
+    targetCPUUtilizationPercentage: 70
+proxyAutoscaler:
+  minCount: 3
+  maxCount: 10
+  targets:
+    targetCPUUtilizationPercentage: 70
+
+managerConfig: {}
+proxyConfig: {}
+
+secrets: {}
+dbSecrets: {}
+jobSecrets: {}
+
+staticConfig:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+
+        server {
+            listen 80;
+
+            server_name localhost;
+
+            root /usr/share/nginx/html;
+
+            location / {
+                try_files $uri /index.html;
+            }
+        }
+    }
