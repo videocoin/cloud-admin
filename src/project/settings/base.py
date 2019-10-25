@@ -51,6 +51,8 @@ LOCAL_APPS = (
     'base',
     'users',
     'streams',
+    'profiles',
+    'miners',
 )
 
 DEPRECATED_APPS = ()

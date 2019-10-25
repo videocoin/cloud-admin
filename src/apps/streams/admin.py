@@ -34,7 +34,8 @@ class TaskAdmin(admin.ModelAdmin):
 class StreamAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'status', 'input_status', 'refunded', 'created_at', 'ready_at', 'completed_at')
     list_filter = ('status', 'input_status', 'created_at', 'ready_at', 'completed_at')
-    readonly_fields = ('id', 'stream_contract_address', 'created_at',  'updated_at', 'id', 'task_id', 'task_status', 'task_cmdline', 'task_input', 'task_output', )
+    readonly_fields = ('id', 'stream_contract_address', 'created_at',  'updated_at', 'id', 'task_id', 'task_status',
+                       'task_cmdline', 'task_input', 'task_output', 'task_render', )
     change_form_template = 'admin/streams/stream_change_form.html'
 
     fieldsets = (
@@ -72,6 +73,7 @@ class StreamAdmin(admin.ModelAdmin):
                 'task_cmdline',
                 'task_input',
                 'task_output',
+                'task_render',
             )
         }),
     )

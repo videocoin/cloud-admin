@@ -1,10 +1,12 @@
 import logging
+import json
 
 from django.db import models
 
 from django_mysql.models import JSONField
 
 from users.models import User
+from profiles.models import Profile
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +46,49 @@ class Task(models.Model):
     @property
     def can_be_stopped(self):
         return self.status in [self.PENDING, self.ASSIGNED, self.ENCODING]
+
+    @property
+    def input_dict(self):
+        if self.input is None:
+            return {}
+
+        if isinstance(self.input, str):
+            self.input = json.loads(self.input)
+
+        return self.input
+
+    @property
+    def output_dict(self):
+        if self.output is None:
+            return {}
+
+        if isinstance(self.output, str):
+            self.output = json.loads(self.output)
+
+        return self.output
+
+    @property
+    def render(self):
+        p = Profile.objects.get(id=str(self.profile_id))
+        built = ["ffmpeg"]
+
+        if p.name == "test":
+            input = "/tmp/in.mp4"
+        else:
+            input = self.input_dict.get('uri')
+        built.extend(["-i", input])
+
+        for c in p.spec_dict.get('components', {}):
+            if not c.get('params'):
+                continue
+            for i in c.get('params', []):
+                built.extend([i.get('key'), i.get('value')])
+        output = self.output_dict.get('path')
+
+        output += "/index.m3u8"
+
+        built.extend([output])
+        return ' '.join(built)
 
     class Meta:
         db_table = 'tasks'
@@ -137,6 +182,10 @@ class Stream(models.Model):
     @property
     def task_can_be_stopped(self):
         return self.task.can_be_stopped
+
+    @property
+    def task_render(self):
+        return self.task.render
 
     class Meta:
         db_table = 'streams'
