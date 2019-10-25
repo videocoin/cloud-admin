@@ -29,13 +29,22 @@ class TaskAdmin(admin.ModelAdmin):
         requests.post('{}/api/v1/streams/{}/stop"'.format(domain, original.id), headers={'Authorization': 'Bearer {}'.format(request.user.token)})
         return redirect(reverse('admin:streams_task_change', args=[original.id]))
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(Stream)
 class StreamAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'status', 'input_status', 'refunded', 'created_at', 'ready_at', 'completed_at')
     list_filter = ('status', 'input_status', 'created_at', 'ready_at', 'completed_at')
     readonly_fields = ('id', 'stream_contract_address', 'created_at',  'updated_at', 'id', 'task_id', 'task_status',
-                       'task_cmdline', 'task_input', 'task_output', 'task_render', )
+                       'task_cmdline', 'task_input', 'task_output', 'task_client_id')
     change_form_template = 'admin/streams/stream_change_form.html'
 
     fieldsets = (
@@ -73,7 +82,7 @@ class StreamAdmin(admin.ModelAdmin):
                 'task_cmdline',
                 'task_input',
                 'task_output',
-                'task_render',
+                'task_client_id',
             )
         }),
     )

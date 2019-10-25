@@ -15,3 +15,5 @@ gunicorn==19.6.0
 raven==5.32.0
 passlib==1.7.1
 bcrypt==3.1.7
+django-prettyjson==0.4.1
+standardjson==0.3.1

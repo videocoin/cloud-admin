@@ -44,6 +44,7 @@ DJANGO_APPS = (
 
 THIRDPARTY_APPS = (
     'django_mysql',
+    'prettyjson',
 )
 
 LOCAL_APPS = (

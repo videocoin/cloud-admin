@@ -67,29 +67,6 @@ class Task(models.Model):
 
         return self.output
 
-    @property
-    def render(self):
-        p = Profile.objects.get(id=str(self.profile_id))
-        built = ["ffmpeg"]
-
-        if p.name == "test":
-            input = "/tmp/in.mp4"
-        else:
-            input = self.input_dict.get('uri')
-        built.extend(["-i", input])
-
-        for c in p.spec_dict.get('components', {}):
-            if not c.get('params'):
-                continue
-            for i in c.get('params', []):
-                built.extend([i.get('key'), i.get('value')])
-        output = self.output_dict.get('path')
-
-        output += "/index.m3u8"
-
-        built.extend([output])
-        return ' '.join(built)
-
     class Meta:
         db_table = 'tasks'
 
@@ -184,8 +161,8 @@ class Stream(models.Model):
         return self.task.can_be_stopped
 
     @property
-    def task_render(self):
-        return self.task.render
+    def task_client_id(self):
+        return self.task.client_id
 
     class Meta:
         db_table = 'streams'

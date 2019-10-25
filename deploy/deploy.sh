@@ -1,4 +1,6 @@
 #!/bin/bash
+docker run -it --rm -a stdout --entrypoint cat dfe2d3ff8875 /etc/sentry/sentry.conf.py
+
 
 readonly CHART_NAME=admin
 readonly CHART_DIR=./deploy/helm

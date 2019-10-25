@@ -27,5 +27,19 @@ class Profile(models.Model):
 
         return self.spec
 
+    @property
+    def render(self):
+        built = ["ffmpeg"]
+        built.extend(["-i", "/tmp/in.mp4"])
+
+        for c in self.spec_dict.get('components', {}):
+            if not c.get('params'):
+                continue
+            for i in c.get('params', []):
+                built.extend([i.get('key'), i.get('value')])
+
+        built.extend(["$OUTPUT/index.m3u8"])
+        return ' '.join(built)
+
     class Meta:
         db_table = 'profiles'
