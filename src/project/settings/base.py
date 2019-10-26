@@ -187,18 +187,10 @@ USE_HTTPS = False
 
 SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
 if SENTRY_DSN:
-    INSTALLED_APPS += (
-        'raven.contrib.django.raven_compat',
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()]
     )
-
-    RAVEN_CONFIG = {
-        'dsn': SENTRY_DSN,
-    }
-
-    LOGGING['handlers']['sentry'] = {
-            'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-    }
-
-    for key, logger, in LOGGING['loggers'].items():
-        logger['handlers'].append('sentry')
