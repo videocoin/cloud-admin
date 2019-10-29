@@ -6,7 +6,6 @@ from django.db import models
 from django_mysql.models import JSONField
 
 from users.models import User
-from profiles.models import Profile
 
 logger = logging.getLogger(__name__)
 
