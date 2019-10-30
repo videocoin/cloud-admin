@@ -60,15 +60,21 @@ class Miner(models.Model):
 
     @property
     def memory_free(self):
-        return self.system_info_dict.get('memory', {}).get('free')
+        m = self.system_info_dict.get('memory', {}).get('free')
+        if m:
+            return round(m / 1024 / 1024 / 1024, 2)
 
     @property
     def memory_used(self):
-        return self.system_info_dict.get('memory', {}).get('used')
+        m = self.system_info_dict.get('memory', {}).get('used')
+        if m:
+            return round(m / 1024 / 1024 / 1024, 2)
 
     @property
     def memory_total(self):
-        return self.system_info_dict.get('memory', {}).get('total')
+        m = self.system_info_dict.get('memory', {}).get('total')
+        if m:
+            return round(m / 1024 / 1024 / 1024, 2)
 
     @property
     def cpu_percent_sys(self):

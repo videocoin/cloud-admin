@@ -7,13 +7,9 @@ from .models import Miner
 
 @admin.register(Miner)
 class MinerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'status', 'current_stream_link', 'cpu_freq',  'cpu_cores',  'load1',  'load5',  'load15',
-                    'memory_free',  'memory_used',  'memory_total', 'cpu_percent_sys', 'cpu_percent_idle',
-                    'cpu_percent_intr', 'cpu_percent_nice', 'cpu_percent_user', 'cpu_percent_states')
+    list_display = ('id', 'status', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'memory_used',  'memory_total', 'cpu_percent_idle')
 
-    readonly_fields = ('id', 'current_stream_link', 'cpu_freq',  'cpu_cores',  'load1',  'load5',  'load15',
-                       'memory_free',  'memory_used',  'memory_total', 'cpu_percent_sys', 'cpu_percent_idle',
-                       'cpu_percent_intr', 'cpu_percent_nice', 'cpu_percent_user', 'cpu_percent_states')
+    readonly_fields = ('id', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'memory_used',  'memory_total', 'cpu_percent_idle')
     list_filter = ('status', )
 
     def current_stream_link(self, obj):
@@ -21,6 +17,9 @@ class MinerAdmin(admin.ModelAdmin):
             return format_html('<a href="{}">{}</a>', reverse('admin:streams_stream_change', args=[obj.current_task_id]),
                                obj.current_task_id)
         return ''
+
+    current_stream_link.short_description = 'Stream'
+    current_stream_link.allow_tags = True
 
     def has_delete_permission(self, request, obj=None):
         return False
