@@ -8,8 +8,7 @@ from .models import Miner
 @admin.register(Miner)
 class MinerAdmin(admin.ModelAdmin):
     list_display = ('id', 'status', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used',)
-
-    readonly_fields = ('id', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used',)
+    readonly_fields = ('id', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used',)
     list_filter = ('status', )
 
     def current_stream_link(self, obj):
@@ -25,7 +24,4 @@ class MinerAdmin(admin.ModelAdmin):
         return False
 
     def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
         return False
