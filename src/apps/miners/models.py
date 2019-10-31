@@ -82,7 +82,9 @@ class Miner(models.Model):
 
     @property
     def cpu_percent_idle(self):
-        return self.system_info_dict.get('cpu_percent', {}).get('idle')
+        c = self.system_info_dict.get('cpu_percent', {}).get('idle')
+        if c:
+            return 100 - c
 
     @property
     def cpu_percent_intr(self):
