@@ -11,6 +11,7 @@ IMAGE_TAG=${DOCKER_REGISTRY}/${GOOGLE_PROJECT}/${NAME}:${VERSION}
 IMAGE_TAG_STATIC=${DOCKER_REGISTRY}/${GOOGLE_PROJECT}/${NAME_STATIC}:${VERSION}
 
 DBM_MSQLURI=root:@tcp(127.0.0.1:3306)/videocoin?charset=utf8&parseTime=True&loc=Local
+ENV?=snb
 
 .PHONY: deploy
 
