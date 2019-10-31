@@ -7,9 +7,9 @@ from .models import Miner
 
 @admin.register(Miner)
 class MinerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'status', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'memory_used',  'memory_total', 'cpu_percent_idle')
+    list_display = ('id', 'status', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used',)
 
-    readonly_fields = ('id', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'memory_used',  'memory_total', 'cpu_percent_idle')
+    readonly_fields = ('id', 'current_stream_link', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used',)
     list_filter = ('status', )
 
     def current_stream_link(self, obj):

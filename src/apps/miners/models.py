@@ -47,6 +47,10 @@ class Miner(models.Model):
         return self.system_info_dict.get('cpu', {}).get('cores')
 
     @property
+    def cpu_usage(self):
+        return self.system_info_dict.get('cpu_usage', None)
+
+    @property
     def load1(self):
         return self.system_info_dict.get('load', {}).get('load1')
 
@@ -75,32 +79,6 @@ class Miner(models.Model):
         m = self.system_info_dict.get('memory', {}).get('total')
         if m:
             return round(m / 1024 / 1024 / 1024, 2)
-
-    @property
-    def cpu_percent_sys(self):
-        return self.system_info_dict.get('cpu_percent', {}).get('sys')
-
-    @property
-    def cpu_percent_idle(self):
-        c = self.system_info_dict.get('cpu_percent', {}).get('idle')
-        if c:
-            return 100 - c
-
-    @property
-    def cpu_percent_intr(self):
-        return self.system_info_dict.get('cpu_percent', {}).get('intr')
-
-    @property
-    def cpu_percent_nice(self):
-        return self.system_info_dict.get('cpu_percent', {}).get('nice')
-
-    @property
-    def cpu_percent_user(self):
-        return self.system_info_dict.get('cpu_percent', {}).get('user')
-
-    @property
-    def cpu_percent_states(self):
-        return self.system_info_dict.get('cpu_percent', {}).get('states')
 
     class Meta:
         db_table = 'miners'
