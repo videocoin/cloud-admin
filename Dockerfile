@@ -1,4 +1,4 @@
-FROM gcr.io/liveplanet-backend/python:3.7-ubuntu
+FROM gcr.io/videocoin-network/python:3.7-ubuntu
 
 ENV BUILD_DEPS build-essential git-core xz-utils
 ENV C_FORCE_ROOT y
