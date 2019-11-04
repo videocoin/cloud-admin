@@ -18,6 +18,9 @@ class Miner(models.Model):
     tags = JSONField(null=True, blank=True)
     system_info = JSONField(null=True, blank=True)
 
+    class Meta:
+        db_table = 'miners'
+
     @property
     def tags_dict(self):
         if self.tags is None:
@@ -80,5 +83,6 @@ class Miner(models.Model):
         if m:
             return round(m / 1024 / 1024 / 1024, 2)
 
-    class Meta:
-        db_table = 'miners'
+    @property
+    def version(self):
+        return self.system_info_dict.get('app_version', None)
