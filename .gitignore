@@ -94,4 +94,3 @@ src/assets
 .env.v2
 .vscode/
 .venv/*
-src/project/settings/development.py
