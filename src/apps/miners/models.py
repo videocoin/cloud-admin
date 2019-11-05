@@ -21,12 +21,6 @@ class Miner(models.Model):
     class Meta:
         db_table = 'miners'
 
-    def set_tag(self, key, value):
-        if not self.tags:
-            self.tags = {}
-        self.tags[key] = value
-        self.save(update_fields=['tags'])
-
     @property
     def tags_dict(self):
         if self.tags is None:
@@ -46,14 +40,6 @@ class Miner(models.Model):
             self.system_info = json.loads(self.system_info)
 
         return self.system_info
-
-    @property
-    def tags_force_task_id(self):
-        return self.tags_dict.get('force_task_id')
-
-    @property
-    def tags_internal(self):
-        return self.tags_dict.get('internal')
 
     @property
     def cpu_freq(self):

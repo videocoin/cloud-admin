@@ -45,6 +45,7 @@ DJANGO_APPS = (
 THIRDPARTY_APPS = (
     'django_mysql',
     'prettyjson',
+    'jsoneditor',
 )
 
 LOCAL_APPS = (
@@ -183,8 +184,9 @@ AUTHENTICATION_BACKENDS = [
     'users.backends.ModelBackend',
 ]
 
-# project settings
 USE_HTTPS = False
+
+JSON_EDITOR_INIT_JS = "jsoneditor-init.js"
 
 SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
 if SENTRY_DSN:
