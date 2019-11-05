@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings.staging')
 
 application = Celery('application')
 application.config_from_object('django.conf:settings')

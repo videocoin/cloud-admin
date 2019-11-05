@@ -9,11 +9,11 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role')
+    list_display = ('id', 'email', 'name', 'role', 'balance')
     list_filter = ('role', 'is_active', 'created_at',)
     search_fields = ('email', 'name')
     exclude = ('password',)
-    readonly_fields = ["id", "token"]
+    readonly_fields = ['id', 'token', 'balance']
 
     change_form_template = 'admin/users/user_change_form.html'
 

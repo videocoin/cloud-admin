@@ -1,9 +1,10 @@
 import logging
 
 from django.db import models
-from django.contrib.auth.hashers import  make_password
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import BaseUserManager,  AbstractBaseUser, PermissionsMixin
 
+from accounts.models import Account
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,15 @@ class User(PermissionsMixin, AbstractBaseUser):
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
         self._password = raw_password
+
+    @property
+    def account(self):
+        return Account.objects.filter(user_id=str(self.id)).first()
+
+    @property
+    def balance(self):
+        if self.account:
+            return self.account.balance
 
     class Meta:
         db_table = 'users'
