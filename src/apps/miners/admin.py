@@ -15,7 +15,7 @@ class MinerAdmin(admin.ModelAdmin):
     }
     list_display = (
         'id', 'status', 'current_stream_link', 'version', 'internal', 'cpu_freq', 'cpu_cores',  'cpu_usage',
-        'memory_total', 'memory_used'
+        'memory_total', 'memory_used', 'address'
     )
     readonly_fields = (
         'id', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used', 'user_id', 'last_ping_at',
@@ -36,6 +36,32 @@ class MinerAdmin(admin.ModelAdmin):
 
     current_stream_link.short_description = 'Stream'
     current_stream_link.allow_tags = True
+
+    def internal(self, instance):
+        return instance.internal
+    internal.boolean = True
+
+    def cpu_freq(self, instance):
+        return instance.cpu_freq
+    cpu_freq.short_description = 'CPU Freq (MHz)'
+    cpu_freq.admin_order_field = 'system_info__cpu__freq'
+
+    def cpu_usage(self, instance):
+        return instance.cpu_usage
+    cpu_usage.short_description = 'CPU Usage (%)'
+    cpu_usage.admin_order_field = 'system_info__cpu_usage'
+
+    def memory_total(self, instance):
+        return instance.memory_total
+    memory_total.short_description = 'Memory total (GB)'
+    memory_total.admin_order_field = 'system_info__memory__total'
+
+    def memory_used(self, instance):
+        return instance.memory_used
+    memory_used.short_description = 'Memory used (GB)'
+    memory_used.admin_order_field = 'system_info__memory__used'
+
+
 
     def has_delete_permission(self, request, obj=None):
         return False

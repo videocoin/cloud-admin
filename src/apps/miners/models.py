@@ -15,6 +15,7 @@ class Miner(models.Model):
     last_ping_at = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=100, null=True, blank=True)
     current_task_id = models.CharField(max_length=255, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
     tags = JSONField(null=True, blank=True)
     system_info = JSONField(null=True, blank=True)
 
@@ -51,7 +52,9 @@ class Miner(models.Model):
 
     @property
     def cpu_usage(self):
-        return self.system_info_dict.get('cpu_usage', None)
+        c = self.system_info_dict.get('cpu_usage', None)
+        if c:
+            return round(c, 2)
 
     @property
     def load1(self):
