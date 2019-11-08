@@ -86,3 +86,7 @@ class Miner(models.Model):
     @property
     def version(self):
         return self.system_info_dict.get('app_version', None)
+
+    @property
+    def internal(self):
+        return self.system_info_dict.get('host', {}).get('hostname', '').startswith('transcoder-')
