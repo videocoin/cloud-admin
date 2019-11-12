@@ -116,9 +116,9 @@ class Stream(models.Model):
     stream_contract_id = models.BigIntegerField(null=True, blank=True)
     stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
 
-    input_url = models.URLField(max_length=255, null=True, blank=True)
-    output_url = models.URLField(max_length=255, null=True, blank=True)
-    rtmp_url = models.URLField(max_length=255, null=True, blank=True)
+    input_url = models.CharField(max_length=255, null=True, blank=True)
+    output_url = models.CharField(max_length=255, null=True, blank=True)
+    rtmp_url = models.CharField(max_length=255, null=True, blank=True)
 
     refunded = models.BooleanField(default=False)
 
