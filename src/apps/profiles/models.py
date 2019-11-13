@@ -1,5 +1,6 @@
 import logging
 import json
+import uuid
 
 from django.db import models
 
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class Profile(models.Model):
 
-    id = models.CharField(primary_key=True, max_length=255, editable=False)
+    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
     name = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
     is_enabled = models.BooleanField(default=False)

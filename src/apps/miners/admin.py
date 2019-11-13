@@ -61,8 +61,6 @@ class MinerAdmin(admin.ModelAdmin):
     memory_used.short_description = 'Memory used (GB)'
     memory_used.admin_order_field = 'system_info__memory__used'
 
-
-
     def has_delete_permission(self, request, obj=None):
         return False
 

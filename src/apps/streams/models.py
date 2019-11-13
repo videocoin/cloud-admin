@@ -1,5 +1,6 @@
 import logging
 import json
+import uuid
 
 from django.db import models
 
@@ -30,7 +31,7 @@ class Task(models.Model):
         (CANCELED, "CANCELED"),
     )
 
-    id = models.CharField(primary_key=True, max_length=255, editable=False)
+    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     owner_id = models.IntegerField()
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default=CREATED)
@@ -107,7 +108,7 @@ class Stream(models.Model):
         (INPUT_STATUS_ERROR, "Error"),
     )
 
-    id = models.CharField(primary_key=True, max_length=255, editable=False)
+    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
     user_id = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     profile_id = models.CharField(max_length=255, null=True, blank=True)

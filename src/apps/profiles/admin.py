@@ -5,6 +5,7 @@ from .models import Profile
 
 from prettyjson import PrettyJSONWidget
 
+
 class JsonForm(forms.ModelForm):
   class Meta:
     model = Profile
@@ -12,6 +13,7 @@ class JsonForm(forms.ModelForm):
     widgets = {
       'spec': PrettyJSONWidget(),
     }
+
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
