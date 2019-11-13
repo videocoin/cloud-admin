@@ -85,6 +85,12 @@ function deploy() {
         --wait ${CHART_NAME} ${CHART_DIR}
 }
 
+function delete_jobs {
+    log_info "Removing ${CHART_NAME} jobs"
+    kubectl --context ${KUBE_CONTEXT} delete job ${CHART_NAME}-db-migrate
+    true
+}
+
 if ! $(has_jq); then
     log_error "Could not find jq"
     exit 1
@@ -108,5 +114,6 @@ fi
 
 update_deps
 deploy
+delete_jobs
 
 exit $?
