@@ -86,4 +86,18 @@ class User(PermissionsMixin, AbstractBaseUser):
             return self.account.balance
 
     class Meta:
+        ordering = ('-created_at',)
         db_table = 'users'
+
+
+class ApiToken(models.Model):
+
+    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=36)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    token = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+        db_table = 'user_api_tokens'

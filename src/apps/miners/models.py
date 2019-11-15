@@ -5,13 +5,15 @@ from django.db import models
 
 from django_mysql.models import JSONField
 
+from users.models import User
+
 logger = logging.getLogger(__name__)
 
 
 class Miner(models.Model):
 
     id = models.CharField(primary_key=True, max_length=255, editable=False)
-    user_id = models.CharField(max_length=255, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     last_ping_at = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=100, null=True, blank=True)
     current_task_id = models.CharField(max_length=255, null=True, blank=True)

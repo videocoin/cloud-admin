@@ -109,7 +109,7 @@ class Stream(models.Model):
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
-    user_id = models.CharField(max_length=255, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=255, null=True, blank=True)
     profile_id = models.CharField(max_length=255, null=True, blank=True)
     status = models.IntegerField(choices=STREAM_STATUS_CHOICES, null=True, blank=True)
@@ -127,10 +127,6 @@ class Stream(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ready_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-
-    @property
-    def user(self):
-        return User.objects.get(id=str(self.user_id))
 
     @property
     def task(self):
@@ -165,4 +161,5 @@ class Stream(models.Model):
         return self.task.client_id
 
     class Meta:
+        ordering = ('-created_at',)
         db_table = 'streams'
