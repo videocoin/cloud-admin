@@ -85,6 +85,11 @@ class User(PermissionsMixin, AbstractBaseUser):
         if self.account:
             return self.account.balance
 
+    @property
+    def address(self):
+        if self.account:
+            return self.account.address
+
     class Meta:
         ordering = ('-created_at',)
         db_table = 'users'

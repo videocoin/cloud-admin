@@ -15,10 +15,20 @@
                 text-align: left;
                 color: #fff;">Activate</a>
             {% endif %}
+            {% if original.address %}
+                <a href="{%url 'admin:users_user_faucet' original.id %}" class="btn btn-success"
+                style="display: inline-block;
+                background: #609ab6;
+                border-radius: 4px;
+                padding: 10px 15px;
+                height: 15px;
+                width: 75px;
+                line-height: 15px;
+                text-align: left;
+                color: #fff;">Faucet</a>
+            {% endif %}
         </div>
-
     </div>
-
     {{ block.super }}
 
 {% endblock %}

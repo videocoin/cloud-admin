@@ -3,6 +3,7 @@ import requests
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect
+from django.conf import settings
 
 from .models import User, ApiToken
 from transfers.models import Transfer
@@ -63,6 +64,7 @@ class UserAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         my_urls = [
             path(r'<slug:id>/activate/', self.activate, name='users_user_activate'),
+            path(r'<slug:id>/faucet/', self.faucet, name='users_user_faucet'),
         ]
         return my_urls + urls
 
@@ -75,6 +77,19 @@ class UserAdmin(admin.ModelAdmin):
         requests.post('{}/api/v1/user/{}/activate'.format(domain, original.id), headers={'Authorization': 'Bearer {}'.format(request.user.token)})
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
+    def faucet(self, request, id):
+        if not request.user.is_superuser:
+            raise PermissionError('you can\'t')
+        original = User.objects.get(id=id)
+        faucet_user = settings.FAUCET_BASE_AUTH.split(':')[0]
+        faucet_password = settings.FAUCET_BASE_AUTH.split(':')[1]
+        r = requests.post(
+            settings.FAUCET_URL,
+            auth=requests.auth.HTTPBasicAuth(faucet_user, faucet_password),
+            json={"account": original.address, "amount": 100},
+        )
+        assert r.status_code == 200
+        return redirect(reverse('admin:users_user_change', args=[original.id]))
 
 @admin.register(ApiToken)
 class ApiTokenAdmin(admin.ModelAdmin):

@@ -190,6 +190,10 @@ USE_HTTPS = False
 JSON_EDITOR_INIT_JS = "jsoneditor-init.js"
 
 SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
+
+FAUCET_URL = env.str('VC_ADMIN_FAUCET_URL', None)
+FAUCET_BASE_AUTH = env.str('VC_ADMIN_FAUCET_BASE_AUTH', None)
+
 if SENTRY_DSN:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration

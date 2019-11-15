@@ -51,23 +51,14 @@ function get_vars() {
     readonly KUBE_CONTEXT=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/common/kube_context`
     readonly DATABASE_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/databaseUrl`
     readonly SECRET_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/secretKey`
+    readonly FAUCET_BASE_AUTH=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetBaseAuth`
+    readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/faucetUrl`
     readonly DJANGO_SETTINGS_MODULE=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule`
     readonly STATIC_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/staticUrl`
 
     readonly SENTRY_DSN=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/sentryDsn`
 }
 
-function get_vars_ci() {
-    log_info "Getting ci variables..."
-    readonly KUBE_CONTEXT=`curl --silent --user ${CONSUL_AUTH} http://consul.${ENV}.videocoin.network/v1/kv/config/${ENV}/common/kube_context?raw`
-    readonly DATABASE_URL=`curl --silent --user ${CONSUL_AUTH} http://consul.${ENV}.videocoin.network/v1/kv/config/${ENV}/services/${CHART_NAME}/secrets/databaseUrl?raw `
-    readonly SECRET_KEY=`curl --silent --user ${CONSUL_AUTH} http://consul.${ENV}.videocoin.network/v1/kv/config/${ENV}/services/${CHART_NAME}/secrets/secretKey?raw `
-
-    readonly DJANGO_SETTINGS_MODULE=`curl --silent --user ${CONSUL_AUTH} http://consul.${ENV}.videocoin.network/v1/kv/config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule?raw`
-    readonly STATIC_URL=`curl --silent --user ${CONSUL_AUTH} http://consul.${ENV}.videocoin.network/v1/kv/config/${ENV}/services/${CHART_NAME}/vars/staticUrl?raw`
-
-    readonly SENTRY_DSN=`curl --silent --user ${CONSUL_AUTH} http://consul.${ENV}.videocoin.network/v1/kv/config/${ENV}/services/${CHART_NAME}/secrets/sentryDsn?raw`
-}
 
 function deploy() {
     log_info "Deploying ${CHART_NAME} version ${VERSION}"
@@ -80,6 +71,8 @@ function deploy() {
         --set managerConfig.djangoSettingsModule="${DJANGO_SETTINGS_MODULE}" \
         --set managerConfig.staticUrl="${STATIC_URL}" \
         --set managerConfig.sentryDsn="${SENTRY_DSN}" \
+        --set managerConfig.faucetUrl="${FAUCET_URL}" \
+        --set secrets.faucetBaseAuth="${FAUCET_BASE_AUTH}" \
         --set secrets.databaseUrl="${DATABASE_URL}" \
         --set secrets.secretKey="${SECRET_KEY}" \
         --wait ${CHART_NAME} ${CHART_DIR}
@@ -106,12 +99,7 @@ if ! $(has_helm); then
     exit 1
 fi
 
-if [ "${CI_ENABLED}" = "1" ]; then
-  get_vars_ci
-else
-  get_vars
-fi
-
+get_vars
 update_deps
 deploy
 delete_jobs
