@@ -101,6 +101,7 @@ class UserAdmin(admin.ModelAdmin):
         assert r.status_code == 200
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
+
 @admin.register(ApiToken)
 class ApiTokenAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'token', 'name', 'created_at')

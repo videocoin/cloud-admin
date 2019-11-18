@@ -3,8 +3,8 @@
 {% block submit_buttons_bottom %}
     <div class="submit-row">
         <div style="text-align: left;">
-            {% if  original.task_can_be_stopped %}
-                <a href="{%url 'admin:streams_task_stop' original.id %}" class="btn btn-success"
+            {% if  original.can_be_started %}
+                <a href="{%url 'admin:streams_stream_start' original.id %}" class="btn btn-success"
                 style="display: inline-block;
                 background: #609ab6;
                 border-radius: 4px;
@@ -13,7 +13,19 @@
                 width: 75px;
                 line-height: 15px;
                 text-align: left;
-                color: #fff;">Stop task</a>
+                color: #fff;">Start</a>
+            {% endif %}
+            {% if  original.can_be_stopped %}
+                <a href="{%url 'admin:streams_stream_stop' original.id %}" class="btn btn-success"
+                style="display: inline-block;
+                background: #609ab6;
+                border-radius: 4px;
+                padding: 10px 15px;
+                height: 15px;
+                width: 75px;
+                line-height: 15px;
+                text-align: left;
+                color: #fff;">Stop</a>
             {% endif %}
         </div>
 

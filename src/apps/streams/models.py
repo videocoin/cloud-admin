@@ -160,6 +160,20 @@ class Stream(models.Model):
     def task_client_id(self):
         return self.task.client_id
 
+    @property
+    def can_be_started(self):
+        return self.status in [self.STREAM_STATUS_NONE]
+
+    @property
+    def can_be_stopped(self):
+        return self.status in [
+            self.STREAM_STATUS_PREPARING,
+            self.STREAM_STATUS_PREPARED,
+            self.STREAM_STATUS_PENDING,
+            self.STREAM_STATUS_PROCESSING,
+            self.STREAM_STATUS_READY
+        ]
+
     class Meta:
         ordering = ('-created_at',)
         db_table = 'streams'
