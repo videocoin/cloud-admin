@@ -51,8 +51,7 @@ function get_vars() {
     readonly KUBE_CONTEXT=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/common/kube_context`
     readonly DATABASE_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/databaseUrl`
     readonly SECRET_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/secretKey`
-    readonly FAUCET_BASE_AUTH=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetBaseAuth`
-    readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/faucetUrl`
+    readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetUrl`
     readonly DJANGO_SETTINGS_MODULE=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule`
     readonly STATIC_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/staticUrl`
 
@@ -71,8 +70,7 @@ function deploy() {
         --set managerConfig.djangoSettingsModule="${DJANGO_SETTINGS_MODULE}" \
         --set managerConfig.staticUrl="${STATIC_URL}" \
         --set managerConfig.sentryDsn="${SENTRY_DSN}" \
-        --set managerConfig.faucetUrl="${FAUCET_URL}" \
-        --set secrets.faucetBaseAuth="${FAUCET_BASE_AUTH}" \
+        --set secrets.faucetUrl="${FAUCET_URL}" \
         --set secrets.databaseUrl="${DATABASE_URL}" \
         --set secrets.secretKey="${SECRET_KEY}" \
         --wait ${CHART_NAME} ${CHART_DIR}

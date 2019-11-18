@@ -5,8 +5,6 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import BaseUserManager,  AbstractBaseUser, PermissionsMixin
 
-from accounts.models import Account
-
 logger = logging.getLogger(__name__)
 
 
@@ -78,12 +76,13 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def account(self):
+        from accounts.models import Account
         return Account.objects.filter(user_id=str(self.id)).first()
 
     @property
-    def balance(self):
+    def balance_wei(self):
         if self.account:
-            return self.account.balance
+            return self.account.balance_wei
 
     @property
     def address(self):

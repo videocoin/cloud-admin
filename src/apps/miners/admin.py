@@ -14,7 +14,7 @@ class MinerAdmin(admin.ModelAdmin):
         JSONField: {'widget': JSONEditor},
     }
     list_display = (
-        'id', 'status', 'current_stream_link', 'version', 'internal', 'cpu_freq', 'cpu_cores',  'cpu_usage',
+        'id', 'name', 'status', 'current_stream_link', 'version', 'internal', 'cpu_freq', 'cpu_cores',  'cpu_usage',
         'memory_total', 'memory_used', 'address'
     )
     readonly_fields = (

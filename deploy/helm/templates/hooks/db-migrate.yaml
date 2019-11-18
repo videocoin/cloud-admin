@@ -42,14 +42,9 @@ spec:
                 key: sentryDsn
           - name: VC_ADMIN_FAUCET_URL
             valueFrom:
-              configMapKeyRef:
-                name: {{ .Release.Name }}
-                key: faucetUrl
-          - name: VC_ADMIN_FAUCET_BASE_AUTH
-            valueFrom:
               secretKeyRef:
                 name: {{ .Release.Name }}
-                key: faucetBaseAuth
+                key: faucetUrl
           - name: VC_ADMIN_SECRET_KEY
             valueFrom:
               secretKeyRef:

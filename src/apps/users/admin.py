@@ -9,46 +9,59 @@ from .models import User, ApiToken
 from transfers.models import Transfer
 from streams.models import Stream
 from miners.models import Miner
+from accounts.models import Account
 
 
 class ApiTokenInlineAdmin(admin.TabularInline):
     model = ApiToken
-    extra = 1
+    extra = 0
     readonly_fields = ('id', 'token', )
     fields = ('id', 'token', 'name', 'created_at')
+    show_change_link = True
 
 
 class TransfersInlineAdmin(admin.TabularInline):
     model = Transfer
-    extra = 1
+    extra = 0
     readonly_fields = ('id', 'pin', 'kind', 'status', 'to_address', 'amount', 'created_at', 'expires_at')
     fields = ('id', 'pin', 'kind', 'status', 'to_address', 'amount', 'created_at', 'expires_at')
+    show_change_link = True
 
 
 class StreamInlineAdmin(admin.TabularInline):
     model = Stream
-    extra = 1
+    extra = 0
     fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
     readonly_fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
+    show_change_link = True
 
 
 class MinerInlineAdmin(admin.TabularInline):
     model = Miner
-    extra = 1
+    extra = 0
     readonly_fields = ('id', 'last_ping_at', 'status', 'current_task_id', 'address', 'tags',  'system_info')
     fields = ('id', 'last_ping_at', 'status', 'current_task_id', 'address', 'tags',  'system_info')
+    show_change_link = True
+
+
+class AccountsInlineAdmin(admin.TabularInline):
+    model = Account
+    extra = 0
+    readonly_fields = ('id', 'address', 'key', 'balance_wei', 'updated_at')
+    fields = ('id', 'address', 'key', 'balance_wei', 'updated_at')
+    show_change_link = True
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role', 'balance')
+    list_display = ('id', 'email', 'name', 'role', 'balance_wei', 'address')
     list_filter = ('role', 'is_active', 'created_at',)
     search_fields = ('id', 'email', 'name')
     exclude = ('password',)
-    readonly_fields = ['id', 'token', 'balance']
+    readonly_fields = ['id', 'token', 'balance_wei', 'address']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
-    inlines = [ApiTokenInlineAdmin, TransfersInlineAdmin, StreamInlineAdmin, MinerInlineAdmin]
+    inlines = [AccountsInlineAdmin, ApiTokenInlineAdmin, TransfersInlineAdmin, StreamInlineAdmin, MinerInlineAdmin]
 
     def get_search_results(self, request, queryset, search_term):
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)
@@ -81,11 +94,8 @@ class UserAdmin(admin.ModelAdmin):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
         original = User.objects.get(id=id)
-        faucet_user = settings.FAUCET_BASE_AUTH.split(':')[0]
-        faucet_password = settings.FAUCET_BASE_AUTH.split(':')[1]
         r = requests.post(
             settings.FAUCET_URL,
-            auth=requests.auth.HTTPBasicAuth(faucet_user, faucet_password),
             json={"account": original.address, "amount": 100},
         )
         assert r.status_code == 200

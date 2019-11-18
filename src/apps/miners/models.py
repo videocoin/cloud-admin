@@ -14,6 +14,7 @@ class Miner(models.Model):
 
     id = models.CharField(primary_key=True, max_length=255, editable=False)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=255, null=True, blank=True)
     last_ping_at = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=100, null=True, blank=True)
     current_task_id = models.CharField(max_length=255, null=True, blank=True)
