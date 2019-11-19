@@ -3,7 +3,7 @@ import json
 import uuid
 
 from django.db import models
-
+from django.utils.html import format_html
 from django_mysql.models import JSONField
 
 from users.models import User
@@ -128,6 +128,18 @@ class Stream(models.Model):
     ready_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 
+    def get_rtmp_url(self):
+         return format_html('<a target="_blank" href="{}" />Link</a>', self.rtmp_url)
+    get_rtmp_url.short_description = "RTMP"
+
+    def get_input_url(self):
+         return format_html('<a target="_blank" href="{}" />Link</a>', self.input_url)
+    get_input_url.short_description = "Input"
+
+    def get_output_url(self):
+         return format_html('<a target="_blank" href="{}" />Link</a>', self.output_url)
+    get_output_url.short_description = "Output"
+
     @property
     def task(self):
         return Task.objects.get(id=str(self.id))
@@ -146,11 +158,11 @@ class Stream(models.Model):
 
     @property
     def task_input(self):
-        return self.task.input
+        return self.task.input.get('uri', None)
 
     @property
     def task_output(self):
-        return self.task.output
+        return self.task.output.get('path', None)
 
     @property
     def task_can_be_stopped(self):

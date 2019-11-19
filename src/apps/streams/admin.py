@@ -10,10 +10,50 @@ from .models import Stream
 
 @admin.register(Stream)
 class StreamAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'name', 'status', 'user', 'input_status', 'refunded', 'created_at', 'ready_at', 'completed_at')
-    list_filter = ('status', 'input_status', 'created_at', 'ready_at', 'completed_at')
-    readonly_fields = ('id', 'stream_contract_address', 'created_at',  'updated_at', 'id', 'task_id', 'task_status',
-                       'task_cmdline', 'task_input', 'task_output', 'task_client_id')
+    list_display = (
+        'id',
+        'name',
+        'status',
+        'user',
+        'input_status',
+        'get_input_url',
+        'get_output_url',
+        'created_at',
+        'ready_at',
+        'completed_at',
+    )
+
+    list_filter = (
+        'status',
+        'input_status',
+        'created_at',
+        'ready_at',
+        'completed_at',
+    )
+
+    readonly_fields = (
+        'id',
+        'profile_id',
+        'status',
+        'refunded',
+        'input_status',
+        'stream_contract_id',
+        'stream_contract_address',
+        'get_input_url',
+        'get_output_url',
+        'get_rtmp_url',
+        'task_id',
+        'task_status',
+        'task_cmdline',
+        'task_input',
+        'task_output',
+        'task_client_id',
+        'created_at',
+        'ready_at',
+        'updated_at',
+        'completed_at',
+    )
+
     change_form_template = 'admin/streams/stream_change_form.html'
     search_fields = ('id', 'name')
 
@@ -28,14 +68,13 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'stream_contract_id',
                 'stream_contract_address',
                 'refunded',
-
             )
         }),
         ('Stream urls', {
             'fields': (
-                'input_url',
-                'output_url',
-                'rtmp_url',
+                'get_input_url',
+                'get_output_url',
+                'get_rtmp_url',
             )
         }),
         ('Stream dates', {
