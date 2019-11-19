@@ -97,7 +97,7 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         original = User.objects.get(id=id)
         r = requests.post(
             settings.FAUCET_URL,
-            json={"account": original.address, "amount": 100},
+            json={"account": original.address, "amount": 10},
         )
         assert r.status_code == 200
         return redirect(reverse('admin:users_user_change', args=[original.id]))
