@@ -5,11 +5,12 @@ from django.urls import reverse
 from django_mysql.models import JSONField
 from jsoneditor.forms import JSONEditor
 
+from common.admin import DontLog
 from .models import Miner
 
 
 @admin.register(Miner)
-class MinerAdmin(admin.ModelAdmin):
+class MinerAdmin(DontLog, admin.ModelAdmin):
     formfield_overrides = {
         JSONField: {'widget': JSONEditor},
     }

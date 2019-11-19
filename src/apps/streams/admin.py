@@ -4,11 +4,12 @@ from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect
 
+from common.admin import DontLog
 from .models import Stream
 
 
 @admin.register(Stream)
-class StreamAdmin(admin.ModelAdmin):
+class StreamAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'name', 'status', 'user', 'input_status', 'refunded', 'created_at', 'ready_at', 'completed_at')
     list_filter = ('status', 'input_status', 'created_at', 'ready_at', 'completed_at')
     readonly_fields = ('id', 'stream_contract_address', 'created_at',  'updated_at', 'id', 'task_id', 'task_status',

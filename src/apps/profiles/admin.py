@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django import forms
 
-from .models import Profile
-
 from prettyjson import PrettyJSONWidget
+
+from .models import Profile
+from common.admin import DontLog
 
 
 class JsonForm(forms.ModelForm):
@@ -16,7 +17,7 @@ class JsonForm(forms.ModelForm):
 
 
 @admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(DontLog, admin.ModelAdmin):
     form = JsonForm
     list_display = ('id', 'name', 'is_enabled')
     list_filter = ('is_enabled', )

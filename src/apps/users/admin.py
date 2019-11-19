@@ -10,6 +10,7 @@ from transfers.models import Transfer
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
+from common.admin import DontLog
 
 
 class ApiTokenInlineAdmin(admin.TabularInline):
@@ -53,7 +54,7 @@ class AccountsInlineAdmin(admin.TabularInline):
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'email', 'name', 'role', 'balance_wei', 'address')
     list_filter = ('role', 'is_active', 'created_at',)
     search_fields = ('id', 'email', 'name')
@@ -103,7 +104,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(ApiToken)
-class ApiTokenAdmin(admin.ModelAdmin):
+class ApiTokenAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'user', 'token', 'name', 'created_at')
     readonly_fields = ('id', 'token', 'user',)
 

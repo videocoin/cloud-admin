@@ -1,10 +1,11 @@
 from django.contrib import admin
 
+from common.admin import DontLog
 from .models import Transfer
 
 
 @admin.register(Transfer)
-class TransferAdmin(admin.ModelAdmin):
+class TransferAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'user_id', 'to_address', 'amount', 'kind', 'status')
     list_filter = ('kind', 'status')
     readonly_fields = ('id', )
