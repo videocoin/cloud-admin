@@ -13,7 +13,7 @@ from accounts.models import Account
 from common.admin import DontLog
 
 
-class ApiTokenInlineAdmin(admin.TabularInline):
+class ApiTokensInlineAdmin(admin.TabularInline):
     model = ApiToken
     extra = 0
     readonly_fields = ('id', 'token', )
@@ -29,7 +29,7 @@ class TransfersInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-class StreamInlineAdmin(admin.TabularInline):
+class StreamsInlineAdmin(admin.TabularInline):
     model = Stream
     extra = 0
     fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
@@ -37,7 +37,7 @@ class StreamInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-class MinerInlineAdmin(admin.TabularInline):
+class MinersInlineAdmin(admin.TabularInline):
     model = Miner
     extra = 0
     readonly_fields = ('id', 'last_ping_at', 'status', 'current_task_id', 'address', 'tags',  'system_info')
@@ -55,14 +55,29 @@ class AccountsInlineAdmin(admin.TabularInline):
 
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role', 'balance_wei', 'address')
+    list_display = ('id', 'email', 'name', 'role', 'balance', 'address')
     list_filter = ('role', 'is_active', 'created_at',)
     search_fields = ('id', 'email', 'name')
     exclude = ('password',)
-    readonly_fields = ['id', 'token', 'balance_wei', 'address']
+    readonly_fields = ['id', 'token',]
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
-    inlines = [AccountsInlineAdmin, ApiTokenInlineAdmin, TransfersInlineAdmin, StreamInlineAdmin, MinerInlineAdmin]
+    inlines = [AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin]
+
+    fieldsets = (
+        ('USER', {
+            'fields': (
+                'id',
+                'email',
+                'name',
+                'role',
+                'token',
+                'created_at',
+                'activated_at',
+                'is_active',
+            )
+        }),
+    )
 
     def get_search_results(self, request, queryset, search_term):
         queryset, use_distinct = super().get_search_results(request, queryset, search_term)

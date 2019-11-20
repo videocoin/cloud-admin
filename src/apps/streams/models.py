@@ -109,7 +109,7 @@ class Stream(models.Model):
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, db_column='user_id')
     name = models.CharField(max_length=255, null=True, blank=True)
     profile_id = models.CharField(max_length=255, null=True, blank=True)
     status = models.IntegerField(choices=STREAM_STATUS_CHOICES, null=True, blank=True)
@@ -139,6 +139,13 @@ class Stream(models.Model):
     def get_output_url(self):
          return format_html('<a target="_blank" href="{}" />Link</a>', self.output_url)
     get_output_url.short_description = "Output"
+
+    def by_user(self):
+        from django.shortcuts import resolve_url
+        from django.contrib.admin.templatetags.admin_urls import admin_urlname
+        url = resolve_url(admin_urlname(self.by._meta, 'change'), self.by.id)
+        return format_html('<a target="_blank" href={} />{}</a>', url, self.by)
+    by_user.short_description = "By"
 
     @property
     def task(self):
@@ -179,7 +186,6 @@ class Stream(models.Model):
     @property
     def can_be_stopped(self):
         return self.status in [
-            self.STREAM_STATUS_PREPARING,
             self.STREAM_STATUS_PREPARED,
             self.STREAM_STATUS_PENDING,
             self.STREAM_STATUS_PROCESSING,

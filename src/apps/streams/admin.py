@@ -14,7 +14,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'id',
         'name',
         'status',
-        'user',
+        'by_user',
         'input_status',
         'get_input_url',
         'get_output_url',
@@ -52,6 +52,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'ready_at',
         'updated_at',
         'completed_at',
+        'by_user',
     )
 
     change_form_template = 'admin/streams/stream_change_form.html'
@@ -67,7 +68,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'profile_id',
                 'stream_contract_id',
                 'stream_contract_address',
-                'refunded',
+                'by_user',
             )
         }),
         ('Stream urls', {
