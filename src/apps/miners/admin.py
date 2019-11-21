@@ -1,42 +1,104 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
+from django import forms
+from django.shortcuts import resolve_url
+from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
 from django_mysql.models import JSONField
 from jsoneditor.forms import JSONEditor
+from prettyjson import PrettyJSONWidget
 
 from common.admin import DontLog
 from .models import Miner
 
 
-@admin.register(Miner)
-class MinerAdmin(DontLog, admin.ModelAdmin):
-    formfield_overrides = {
-        JSONField: {'widget': JSONEditor},
+class MinerForm(forms.ModelForm):
+  class Meta:
+    model = Miner
+    fields = '__all__'
+    widgets = {
+      'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
+      'tags': JSONEditor(),
     }
-    list_display = (
-        'id', 'name', 'user', 'status', 'current_stream_link', 'version', 'internal', 'cpu_freq', 'cpu_cores',  'cpu_usage',
-        'memory_total', 'memory_used', 'address'
-    )
-    readonly_fields = (
-        'id', 'user', 'status', 'address', 'current_task_id', 'cpu_freq', 'cpu_cores',  'cpu_usage', 'memory_total', 'memory_used', 'user_id', 'last_ping_at',
-        'system_info', 'internal'
-    )
+
+    def __init__(self, *args, **kwargs):
+        super(MinerForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['system_info'].widget.attrs['disabled'] = True
+
+@admin.register(Miner)
+class MinerAdmin(admin.ModelAdmin, DontLog):
+    form = MinerForm
+
     list_filter = ('status', )
+
+    list_display = (
+        'name',
+        'is_internal',
+        'id',
+        'status',
+        'version',
+        'owned_by',
+        'stream_assigned',
+        'address',
+        'cpu_freq',
+        'cpu_cores', 
+        'cpu_usage',
+        'memory_total',
+        'memory_used',
+    )
+
+    readonly_fields = (
+        'id',
+        'owned_by',
+        'is_internal',
+        'status',
+        'address',
+        'stream_assigned',
+        'last_ping_at',
+    )
+
+    fieldsets = (
+        ('Miner', {
+            'fields': (
+                'id',
+                'name',
+                'owned_by',
+                'is_internal',
+                'last_ping_at',
+                'address',
+                'tags',
+                'system_info',
+            )
+        }),
+    )
 
     class Media:
         css = {
             'all': ('admin.css',)
         }
 
-    def current_stream_link(self, obj):
-        if obj.current_task_id:
-            return format_html('<a href="{}">{}</a>', reverse('admin:streams_stream_change', args=[obj.current_task_id]),
-                               obj.current_task_id)
-        return ''
+    def is_internal(self, obj):
+        return obj.system_info_dict.get('host', {}).get('hostname', '').startswith('transcoder-')
+    is_internal.boolean = True
 
-    current_stream_link.short_description = 'Stream'
-    current_stream_link.allow_tags = True
+    def owned_by(self, obj):
+        if obj.by:
+            url = resolve_url(admin_urlname(obj.by._meta, 'change'), obj.by.id)
+            return format_html('<a href="{}">{}</a>', url, obj.by.email)
+        return ''
+    owned_by.short_description = 'Owner'
+    owned_by.allow_tags = True
+
+    def stream_assigned(self, obj):
+        if obj.current_task_id:
+            url = reverse('admin:streams_stream_change', args=[obj.current_task_id])
+            return format_html('<a href="{}">{}</a>', url, obj.current_task_id)
+        return ''
+    stream_assigned.short_description = 'Stream'
+    stream_assigned.allow_tags = True
 
     def internal(self, instance):
         return instance.internal

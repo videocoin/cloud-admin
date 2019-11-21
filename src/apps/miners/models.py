@@ -2,7 +2,6 @@ import logging
 import json
 
 from django.db import models
-
 from django_mysql.models import JSONField
 
 from users.models import User
@@ -13,16 +12,18 @@ logger = logging.getLogger(__name__)
 class Miner(models.Model):
 
     id = models.CharField(primary_key=True, max_length=255, editable=False)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, db_column='user_id')
     name = models.CharField(max_length=255, null=True, blank=True)
     last_ping_at = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=100, null=True, blank=True)
     current_task_id = models.CharField(max_length=255, null=True, blank=True)
-    address = models.CharField(max_length=255, null=True, blank=True)
+    address = models.CharField("Public Key", max_length=255, null=True, blank=True)
     tags = JSONField(null=True, blank=True)
     system_info = JSONField(null=True, blank=True)
 
     class Meta:
+        verbose_name = "Miner"
+        verbose_name_plural = "Miners"
         db_table = 'miners'
 
     @property
@@ -92,7 +93,3 @@ class Miner(models.Model):
     @property
     def version(self):
         return self.system_info_dict.get('app_version', None)
-
-    @property
-    def internal(self):
-        return self.system_info_dict.get('host', {}).get('hostname', '').startswith('transcoder-')

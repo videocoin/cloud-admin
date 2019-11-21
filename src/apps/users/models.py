@@ -103,5 +103,7 @@ class ApiToken(models.Model):
     created_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        verbose_name = "Token"
+        verbose_name_plural = "Tokens"
         ordering = ('-created_at',)
         db_table = 'user_api_tokens'

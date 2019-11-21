@@ -2,7 +2,9 @@ import requests
 
 from django.contrib import admin
 from django.urls import path, reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
+from django.utils.html import format_html
+from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
 from common.admin import DontLog
 from .models import Stream
@@ -11,10 +13,11 @@ from .models import Stream
 @admin.register(Stream)
 class StreamAdmin(DontLog, admin.ModelAdmin):
     list_display = (
-        'id',
         'name',
+        'id',
+        'owned_by',
+        'profile_set',
         'status',
-        'by_user',
         'input_status',
         'get_input_url',
         'get_output_url',
@@ -33,7 +36,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
 
     readonly_fields = (
         'id',
-        'profile_id',
+        'profile_set',
         'status',
         'refunded',
         'input_status',
@@ -52,7 +55,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'ready_at',
         'updated_at',
         'completed_at',
-        'by_user',
+        'owned_by',
     )
 
     change_form_template = 'admin/streams/stream_change_form.html'
@@ -65,10 +68,10 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'name',
                 'status',
                 'input_status',
-                'profile_id',
+                'profile_set',
                 'stream_contract_id',
                 'stream_contract_address',
-                'by_user',
+                'owned_by',
             )
         }),
         ('Stream urls', {
@@ -96,6 +99,34 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
             )
         }),
     )
+
+    def profile_set(self, obj):
+        if obj.profile:
+            url = resolve_url(admin_urlname(obj.profile._meta, 'change'), obj.profile.id)
+            return format_html('<a href="{}">{}</a>', url, obj.profile.name)
+        return ''
+    profile_set.short_description = 'Profile'
+    profile_set.allow_tags = True
+
+    def owned_by(self, obj):
+        if obj.by:
+            url = resolve_url(admin_urlname(obj.by._meta, 'change'), obj.by.id)
+            return format_html('<a href="{}">{}</a>', url, obj.by.email)
+        return ''
+    owned_by.short_description = 'By'
+    owned_by.allow_tags = True
+
+    def get_rtmp_url(self, obj):
+         return format_html('<a target="_blank" href="{}" />Link</a>', obj.rtmp_url)
+    get_rtmp_url.short_description = "RTMP"
+
+    def get_input_url(self, obj):
+         return format_html('<a target="_blank" href="{}" />Link</a>', obj.input_url)
+    get_input_url.short_description = "Input"
+
+    def get_output_url(self, obj):
+         return format_html('<a target="_blank" href="{}" />Link</a>', obj.output_url)
+    get_output_url.short_description = "Output"
 
     def get_urls(self):
         urls = super().get_urls()

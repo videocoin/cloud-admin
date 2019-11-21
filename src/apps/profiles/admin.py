@@ -7,21 +7,32 @@ from .models import Profile
 from common.admin import DontLog
 
 
-class JsonForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
   class Meta:
     model = Profile
     fields = '__all__'
     widgets = {
-      'spec': PrettyJSONWidget(),
+      'spec': PrettyJSONWidget(attrs={'initial': 'parsed'}),
     }
 
 
 @admin.register(Profile)
 class ProfileAdmin(DontLog, admin.ModelAdmin):
-    form = JsonForm
-    list_display = ('id', 'name', 'is_enabled')
+
+    form = ProfileForm
+
+    list_display = (
+      'name',
+      'id',
+      'is_enabled',
+    )
+
     list_filter = ('is_enabled', )
-    readonly_fields = ('id', 'render', )
+
+    readonly_fields = (
+      'id',
+      'render',
+    )
 
     fieldsets = (
         ('Profile', {

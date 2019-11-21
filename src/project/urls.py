@@ -6,7 +6,9 @@ from django.contrib import admin
 from django.urls import path
 
 admin.autodiscover()
-admin.site.site_header = 'Videocoin Administration'
+admin.site.site_header = 'VideoCoin God Mode'
+admin.site.index_title = 'Models'
+admin.site.site_title = 'VideoCoin'
 
 
 def health(request):

@@ -3,10 +3,10 @@ import json
 import uuid
 
 from django.db import models
-from django.utils.html import format_html
 from django_mysql.models import JSONField
 
 from users.models import User
+from profiles.models import Profile
 
 logger = logging.getLogger(__name__)
 
@@ -109,11 +109,13 @@ class Stream(models.Model):
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
-    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, db_column='user_id')
     name = models.CharField(max_length=255, null=True, blank=True)
-    profile_id = models.CharField(max_length=255, null=True, blank=True)
+    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, db_column='user_id')
+    profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.SET_NULL)
+
     status = models.IntegerField(choices=STREAM_STATUS_CHOICES, null=True, blank=True)
     input_status = models.IntegerField(choices=INPUT_STATUS_CHOICES, null=True, blank=True)
+    
     stream_contract_id = models.BigIntegerField(null=True, blank=True)
     stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
 
@@ -127,25 +129,6 @@ class Stream(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ready_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-
-    def get_rtmp_url(self):
-         return format_html('<a target="_blank" href="{}" />Link</a>', self.rtmp_url)
-    get_rtmp_url.short_description = "RTMP"
-
-    def get_input_url(self):
-         return format_html('<a target="_blank" href="{}" />Link</a>', self.input_url)
-    get_input_url.short_description = "Input"
-
-    def get_output_url(self):
-         return format_html('<a target="_blank" href="{}" />Link</a>', self.output_url)
-    get_output_url.short_description = "Output"
-
-    def by_user(self):
-        from django.shortcuts import resolve_url
-        from django.contrib.admin.templatetags.admin_urls import admin_urlname
-        url = resolve_url(admin_urlname(self.by._meta, 'change'), self.by.id)
-        return format_html('<a target="_blank" href={} />{}</a>', url, self.by)
-    by_user.short_description = "By"
 
     @property
     def task(self):
@@ -193,5 +176,7 @@ class Stream(models.Model):
         ]
 
     class Meta:
+        verbose_name = "Stream"
+        verbose_name_plural = "Streams"
         ordering = ('-created_at',)
         db_table = 'streams'
