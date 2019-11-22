@@ -27,8 +27,6 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.staticService.internalPort }}
-          resources:
-{{ toYaml .Values.staticResources | indent 12 }}
           volumeMounts:
           - mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf

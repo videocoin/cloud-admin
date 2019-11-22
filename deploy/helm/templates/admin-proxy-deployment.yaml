@@ -24,8 +24,6 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/nginx/conf.d
-          resources:
-{{ toYaml .Values.adminProxyResources | indent 12 }}
       volumes:
         - name: config
           configMap:

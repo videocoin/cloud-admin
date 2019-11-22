@@ -45,38 +45,6 @@ admin:
   email:
   password:
 
-resources:
-  requests:
-    cpu: 2000m
-    memory: 2000Mi
-  limits:
-    cpu: 2000m
-    memory: 2000Mi
-
-adminProxyResources:
-  requests:
-    cpu: 100m
-    memory: 100Mi
-  limits:
-    cpu: 100m
-    memory: 100Mi
-
-dbResources:
-  requests:
-    cpu: 500m
-    memory: 500Mi
-  limits:
-    memory: 500Mi
-    cpu: 500m
-
-staticResources:
-  requests:
-    cpu: 100m
-    memory: 100Mi
-  limits:
-    cpu: 100m
-    memory: 100Mi
-
 autoscaler:
   minCount: 3
   maxCount: 10
