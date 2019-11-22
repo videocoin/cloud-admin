@@ -35,6 +35,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Release.Name }}
                 key: staticUrl
+          - name: VC_ADMIN_STREAMS_RPC_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}
+                key: streamsRpcAddr
           - name: VC_ADMIN_SENTRY_DSN
             valueFrom:
               configMapKeyRef:

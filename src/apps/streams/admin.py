@@ -7,6 +7,8 @@ from django.utils.html import format_html
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
 from common.admin import DontLog
+from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
+
 from .models import Stream
 
 
@@ -142,7 +144,8 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         original = Stream.objects.get(id=id)
         if not original.can_be_started:
             return redirect(reverse('admin:streams_stream_change', args=[original.id]))
-
+        client = StreamsServiceClient()
+        client.start_stream(original.id)
         return redirect(reverse('admin:streams_stream_change', args=[original.id]))
 
     def stop_stream(self, request, id):
@@ -151,7 +154,8 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         original = Stream.objects.get(id=id)
         if not original.can_be_stopped:
             return redirect(reverse('admin:streams_stream_change', args=[original.id]))
-
+        client = StreamsServiceClient()
+        client.stop_stream(original.id)
         return redirect(reverse('admin:streams_stream_change', args=[original.id]))
 
     def has_add_permission(self, request):

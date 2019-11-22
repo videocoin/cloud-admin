@@ -54,6 +54,7 @@ function get_vars() {
     readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetUrl`
     readonly DJANGO_SETTINGS_MODULE=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule`
     readonly STATIC_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/staticUrl`
+    readonly PRIVATE_STREAMS_RPC_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/privateStreamsRpcAddr`
 
     readonly SENTRY_DSN=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/sentryDsn`
 }
@@ -69,6 +70,7 @@ function deploy() {
         --set adminStaticImage.tag=\\"${VERSION}\\" \
         --set managerConfig.djangoSettingsModule="${DJANGO_SETTINGS_MODULE}" \
         --set managerConfig.staticUrl="${STATIC_URL}" \
+        --set managerConfig.privateStreamsRpcAddr="${PRIVATE_STREAMS_RPC_ADDR}" \
         --set managerConfig.sentryDsn="${SENTRY_DSN}" \
         --set secrets.faucetUrl="${FAUCET_URL}" \
         --set secrets.databaseUrl="${DATABASE_URL}" \

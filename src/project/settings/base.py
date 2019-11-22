@@ -20,6 +20,9 @@ from django.utils.translation import ugettext_lazy as _
 SITE_ROOT = root()
 sys.path.append(os.path.join(SITE_ROOT, 'apps'))
 sys.path.append(os.path.join(SITE_ROOT, 'libs'))
+sys.path.append(os.path.join(SITE_ROOT, 'libs/cloud-api'))
+# sys.path.append(os.path.join(
+#     SITE_ROOT, 'libs/github/com/grpc_ecosystem/grpc_gateway/third_party/googleapis'))
 
 DEBUG = env('VC_ADMIN_DEBUG')
 TEMPLATE_DEBUG = DEBUG
@@ -192,6 +195,8 @@ JSON_EDITOR_INIT_JS = "jsoneditor-init.js"
 SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
 
 FAUCET_URL = env.str('VC_ADMIN_FAUCET_URL', None)
+
+PRIVATE_STREAMS_RPC_ADDR = env.str('VC_ADMIN_PRIVATE_STREAMS_RPC_ADDR', None)
 
 if SENTRY_DSN:
     import sentry_sdk
