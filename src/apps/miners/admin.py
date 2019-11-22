@@ -13,6 +13,25 @@ from common.admin import DontLog
 from .models import Miner
 
 
+class LocalityFilter(admin.SimpleListFilter):
+    title = 'locality'
+    parameter_name = 'locality'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Internal', 'Internal'),
+            ('External', 'External'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Internal':
+            return queryset.filter(tags__contains={'locality': 'internal'})
+        elif value == 'External':
+            return queryset.exclude(tags__contains={'locality': 'internal'})
+        return queryset
+
+
 class MinerForm(forms.ModelForm):
   class Meta:
     model = Miner
@@ -29,15 +48,14 @@ class MinerForm(forms.ModelForm):
             self.fields['system_info'].widget.attrs['disabled'] = True
 
 @admin.register(Miner)
-class MinerAdmin(admin.ModelAdmin, DontLog):
+class MinerAdmin(DontLog, admin.ModelAdmin):
     form = MinerForm
 
-    list_filter = ('status', )
+    list_filter = ('status', LocalityFilter,)
 
     list_display = (
-        'name',
-        'is_internal',
         'id',
+        'name',
         'status',
         'version',
         'owned_by',
@@ -53,7 +71,6 @@ class MinerAdmin(admin.ModelAdmin, DontLog):
     readonly_fields = (
         'id',
         'owned_by',
-        'is_internal',
         'status',
         'address',
         'stream_assigned',
@@ -66,7 +83,6 @@ class MinerAdmin(admin.ModelAdmin, DontLog):
                 'id',
                 'name',
                 'owned_by',
-                'is_internal',
                 'last_ping_at',
                 'address',
                 'tags',
@@ -79,10 +95,6 @@ class MinerAdmin(admin.ModelAdmin, DontLog):
         css = {
             'all': ('admin.css',)
         }
-
-    def is_internal(self, obj):
-        return obj.system_info_dict.get('host', {}).get('hostname', '').startswith('transcoder-')
-    is_internal.boolean = True
 
     def owned_by(self, obj):
         if obj.by:

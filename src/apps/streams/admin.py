@@ -15,8 +15,8 @@ from .models import Stream
 @admin.register(Stream)
 class StreamAdmin(DontLog, admin.ModelAdmin):
     list_display = (
-        'name',
         'id',
+        'name',
         'owned_by',
         'profile_set',
         'status',
