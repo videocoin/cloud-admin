@@ -20,6 +20,8 @@ RUN apt-get update && \
     pip3 install \
         --no-cache-dir \
         -r requirements.txt && \
+    pip3 uninstall -y protobuf  && \
+    pip3 install --no-binary=protobuf  protobuf==3.10.0 && \
     rm -rf \
         $HOME/.ssh \
         $HOME/.nvm \
