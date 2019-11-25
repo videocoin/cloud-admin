@@ -18,7 +18,7 @@ from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 from protoc_gen_swagger.options import annotations_pb2 as protoc__gen__swagger_dot_options_dot_annotations__pb2
 from github.com.gogo.protobuf.gogoproto import gogo_pb2 as github_dot_com_dot_gogo_dot_protobuf_dot_gogoproto_dot_gogo__pb2
-from streams.v1 import stream_pb2 as streams_dot_v1_dot_stream__pb2
+from github.com.videocoin.cloud_api.streams.v1 import stream_pb2 as streams_dot_v1_dot_stream__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(

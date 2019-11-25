@@ -1,12 +1,14 @@
-import requests
-
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect, resolve_url
 from django.utils.html import format_html
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.http import HttpResponse
+from django.template import loader
 
 from common.admin import DontLog
+from videocoin.blockchain import Blockchain
 from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
 
 from .models import Stream
@@ -135,6 +137,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         my_urls = [
             path(r'<slug:id>/start/', self.start_stream, name='streams_stream_start'),
             path(r'<slug:id>/stop/', self.stop_stream, name='streams_stream_stop'),
+            path(r'<slug:id>/events/', self.events, name='streams_stream_events'),
         ]
         return my_urls + urls
 
@@ -157,6 +160,40 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         client = StreamsServiceClient()
         client.stop_stream(original.id)
         return redirect(reverse('admin:streams_stream_change', args=[original.id]))
+
+    def events(self, request, id):
+        if not request.user.is_superuser:
+            raise PermissionError('you can\'t')
+        stream = Stream.objects.get(id=id)
+
+        blockchain = Blockchain(
+            settings.RPC_NODE_HTTP_ADDR,
+            stream_address=stream.stream_contract_address,
+            stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
+        )
+        context = {
+            'original': stream,
+            'opts': Stream._meta,
+            'change': True,
+            'has_delete_permission': False,
+            'has_add_permission': False,
+            'has_change_permission': False,
+            'has_view_permission': True,
+            'add': False,
+        }
+
+        if not blockchain.is_connected():
+            context.update({
+                'error': 'Can not connect to blockchain...'
+            })
+
+        events = blockchain.get_stream_events()
+        context.update({
+            'events': events,
+        })
+        template = loader.get_template('admin/streams/events.html')
+
+        return HttpResponse(template.render(context, request))
 
     def has_add_permission(self, request):
         return False

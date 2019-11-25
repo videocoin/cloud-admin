@@ -60,3 +60,13 @@ spec:
               secretKeyRef:
                 name: {{ .Release.Name }}
                 key: databaseUrl
+          - name: VC_ADMIN_STREAM_MANAGER_CONTRACT_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}
+                key: streamManagerContractAddr
+          - name: VC_ADMIN_RPC_NODE_HTTP_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}
+                key: rpcNodeHttpAddr

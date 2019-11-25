@@ -30,6 +30,16 @@ env:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: sentryDsn
+  - name: VC_ADMIN_STREAM_MANAGER_CONTRACT_ADDR
+    valueFrom:
+      secretKeyRef:
+        name: {{ .Release.Name }}
+        key: streamManagerContractAddr
+  - name: VC_ADMIN_RPC_NODE_HTTP_ADDR
+    valueFrom:
+      secretKeyRef:
+        name: {{ .Release.Name }}
+        key: rpcNodeHttpAddr
   - name: VC_ADMIN_FAUCET_URL
     valueFrom:
       secretKeyRef:

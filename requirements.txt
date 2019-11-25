@@ -21,3 +21,4 @@ django-jsoneditor==0.1.4
 protobuf==3.10.0
 grpcio==1.25.0
 protoc-gen-swagger==0.1.0
+web3==4.8.1

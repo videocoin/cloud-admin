@@ -52,6 +52,8 @@ function get_vars() {
     readonly DATABASE_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/databaseUrl`
     readonly SECRET_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/secretKey`
     readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetUrl`
+    readonly STREAM_MANAGER_CONTRACT_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/streamManagerContractAddr`
+    readonly RPC_NODE_HTTP_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/rpcNodeHttpAddr`
     readonly DJANGO_SETTINGS_MODULE=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule`
     readonly STATIC_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/staticUrl`
     readonly PRIVATE_STREAMS_RPC_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/privateStreamsRpcAddr`
@@ -72,6 +74,8 @@ function deploy() {
         --set managerConfig.staticUrl="${STATIC_URL}" \
         --set managerConfig.privateStreamsRpcAddr="${PRIVATE_STREAMS_RPC_ADDR}" \
         --set managerConfig.sentryDsn="${SENTRY_DSN}" \
+        --set secrets.rpcNodeHttpAddr="${RPC_NODE_HTTP_ADDR}" \
+        --set secrets.streamManagerContractAddr="${STREAM_MANAGER_CONTRACT_ADDR}" \
         --set secrets.faucetUrl="${FAUCET_URL}" \
         --set secrets.databaseUrl="${DATABASE_URL}" \
         --set secrets.secretKey="${SECRET_KEY}" \
