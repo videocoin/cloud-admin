@@ -4,7 +4,7 @@ readonly CHART_NAME=admin
 readonly CHART_DIR=./deploy/helm
 
 CONSUL_ADDR=${CONSUL_ADDR:=127.0.0.1:8500}
-ENV=${ENV:=snb}
+ENV=${ENV:=dev}
 VERSION=$(git rev-parse --short HEAD)
 
 function log {
