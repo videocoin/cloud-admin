@@ -56,10 +56,10 @@ class AccountsInlineAdmin(admin.TabularInline):
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'email', 'name', 'role', 'balance', 'address')
-    list_filter = ('role', 'is_active', 'created_at',)
+    list_filter = ('role', 'is_active', 'created_at')
     search_fields = ('id', 'email', 'name')
-    exclude = ('password',)
-    readonly_fields = ['id', 'token',]
+    exclude = ('password', )
+    readonly_fields = ['id', 'token', 'balance']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
     inlines = [AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin]
@@ -94,6 +94,8 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         my_urls = [
             path(r'<slug:id>/activate/', self.activate, name='users_user_activate'),
             path(r'<slug:id>/faucet/', self.faucet, name='users_user_faucet'),
+            path(r'<slug:id>/block/', self.block, name='users_user_block'),
+            path(r'<slug:id>/unblock/', self.unblock, name='users_user_unblock'),
         ]
         return my_urls + urls
 
@@ -115,6 +117,22 @@ class UserAdmin(DontLog, admin.ModelAdmin):
             json={"account": original.address, "amount": 10},
         )
         assert r.status_code == 200
+        return redirect(reverse('admin:users_user_change', args=[original.id]))
+
+    def block(self, request, id):
+        if not request.user.is_superuser:
+            raise PermissionError('you can\'t')
+        original = User.objects.get(id=id)
+        original.is_active = False
+        original.save(update_fields=['is_active'])
+        return redirect(reverse('admin:users_user_change', args=[original.id]))
+
+    def unblock(self, request, id):
+        if not request.user.is_superuser:
+            raise PermissionError('you can\'t')
+        original = User.objects.get(id=id)
+        original.is_active = True
+        original.save(update_fields=['is_active'])
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
 

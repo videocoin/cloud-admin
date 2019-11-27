@@ -1,12 +1,16 @@
 import os
 import json
+import functools
 from datetime import datetime
 
 from web3 import Web3
 from web3.utils.contracts import find_matching_event_abi
 from web3.utils.events import get_event_data
 from web3.utils.filters import construct_event_filter_params
+from web3.utils.abi import filter_by_type
+
 from web3.middleware import geth_poa_middleware
+from eth_utils.toolz import pipe
 
 
 VERBOSE = False
@@ -23,30 +27,6 @@ def handle_streammanager_event(event):
 
 def handle_stream_event(event):
     log_print(event)
-
-
-streammanager_events = [
-    'StreamRequested',
-    'StreamApproved',
-    'StreamCreated',
-    'ValidatorAdded',
-    'RefundAllowed',
-    'RefundRevoked',
-    'InputChunkAdded',
-    'StreamEnded',
-    'OwnershipTransferred',
-]
-
-
-stream_events = [
-    'ChunkProofSubmited',
-    'ChunkProofValidated',
-    'ChunkProofScrapped',
-    'Deposited',
-    'Refunded',
-    'AccountFunded',
-    'OutOfFunds',
-]
 
 
 def to_dict(data):
@@ -123,7 +103,7 @@ class Blockchain:
 
     def get_stream_manager_events(self):
         result = []
-        for event in streammanager_events:
+        for event in self.get_stream_manager_event_names():
             log_print('Processing event=' + event)
             event_data = self.get_event(self.streammanager_abi, self.stream_manager_contract.address, event, argument_filters={'streamId':self.stream_id})
             for log in event_data:
@@ -133,7 +113,7 @@ class Blockchain:
 
     def get_stream_events(self):
         result = []
-        for event in stream_events:
+        for event in self.get_stream_event_names():
             log_print('Processing event=' + event)
             event_data = self.get_event(self.stream_abi, self.stream_contract.address, event)
 
@@ -145,6 +125,18 @@ class Blockchain:
     def get_all_events(self):
         events = self.get_stream_events()
         events.extend(self.get_stream_manager_events())
+        return events
+
+    def get_stream_event_names(self):
+        filters = [functools.partial(filter_by_type, 'event'), ]
+        stream_events = pipe(self.stream_abi, *filters)
+        events = [item['name'] for item in stream_events]
+        return events
+
+    def get_stream_manager_event_names(self):
+        filters = [functools.partial(filter_by_type, 'event'), ]
+        streammanager_events = pipe(self.streammanager_abi, *filters)
+        events = [item['name'] for item in streammanager_events]
         return events
 
     def to_log_entry(self, record):

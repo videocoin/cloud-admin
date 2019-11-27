@@ -131,9 +131,9 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('admin.css',)
+            'all': ('admin.css', 'tablesorter/css/theme.default.min.css')
         }
-        js = ['admin.js']
+        js = ['tablesorter/js/jquery.tablesorter.js', 'tablesorter/js/jquery.tablesorter.widgets.js', 'admin.js']
 
     def profile_set(self, obj):
         if obj.profile:
@@ -168,7 +168,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         my_urls = [
             path(r'<slug:id>/start/', self.start_stream, name='streams_stream_start'),
             path(r'<slug:id>/stop/', self.stop_stream, name='streams_stream_stop'),
-            path(r'<slug:id>/events/', self.events, name='streams_stream_events'),
+            path(r'<slug:id>/events/', self.admin_site.admin_view(self.events), name='streams_stream_events'),
             path(r'<slug:id>/validate/', self.validate, name='streams_stream_validate'),
         ]
         return my_urls + urls

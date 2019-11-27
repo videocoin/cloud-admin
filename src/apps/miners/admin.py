@@ -33,19 +33,20 @@ class LocalityFilter(admin.SimpleListFilter):
 
 
 class MinerForm(forms.ModelForm):
-  class Meta:
-    model = Miner
-    fields = '__all__'
-    widgets = {
-      'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
-      'tags': JSONEditor(),
-    }
+    class Meta:
+        model = Miner
+        fields = '__all__'
+        widgets = {
+          'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
+          'tags': JSONEditor(),
+        }
 
     def __init__(self, *args, **kwargs):
         super(MinerForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['system_info'].widget.attrs['disabled'] = True
+
 
 @admin.register(Miner)
 class MinerAdmin(DontLog, admin.ModelAdmin):
@@ -84,6 +85,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'name',
                 'owned_by',
                 'last_ping_at',
+                'stream_assigned',
                 'address',
                 'tags',
                 'system_info',

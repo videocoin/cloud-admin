@@ -1,5 +1,7 @@
 jQuery(document).ready(function($) {
-
+    $(function() {
+      $("#events-table").tablesorter();
+    });
     $('.validate').click(function(e) {
         var button = $(this);
         button.attr("disabled", true);

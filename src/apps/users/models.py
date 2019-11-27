@@ -63,6 +63,10 @@ class User(PermissionsMixin, AbstractBaseUser):
         return True
 
     @property
+    def is_regular(self):
+        return self.role in [self.REGULAR]
+
+    @property
     def is_staff(self):
         return self.role in [self.MANAGER, self.SUPER]
 
@@ -82,7 +86,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     @property
     def balance(self):
         if self.account:
-            return str(int(self.account.balance_wei) / 10**18)
+            return str(int(self.account.balance_wei or 0) / 10**18)
 
     @property
     def address(self):

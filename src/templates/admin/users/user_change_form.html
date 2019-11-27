@@ -14,7 +14,7 @@
                 text-align: left;
                 color: #fff;">Activate</a>
         {% endif %}
-        {% if original.address %}
+        {% if original.address and not user.is_regular %}
         <a href="{%url 'admin:users_user_faucet' original.id %}" class="btn btn-success" style="display: inline-block;
                 background: #609ab6;
                 border-radius: 4px;
@@ -24,6 +24,28 @@
                 line-height: 15px;
                 text-align: left;
                 color: #fff;">Faucet (10)</a>
+        {% endif %}
+        {% if original.is_active %}
+            <a href="{%url 'admin:users_user_block' original.id %}" class="btn btn-success" style="display: inline-block;
+                background: #609ab6;
+                border-radius: 4px;
+                padding: 10px 15px;
+                height: 15px;
+                width: 75px;
+                line-height: 15px;
+                text-align: left;
+                color: #fff;">Block</a>
+        {% endif %}
+        {% if not original.is_active %}
+            <a href="{%url 'admin:users_user_unblock' original.id %}" class="btn btn-success" style="display: inline-block;
+                background: #609ab6;
+                border-radius: 4px;
+                padding: 10px 15px;
+                height: 15px;
+                width: 75px;
+                line-height: 15px;
+                text-align: left;
+                color: #fff;">Unblock</a>
         {% endif %}
     </div>
 </div>
