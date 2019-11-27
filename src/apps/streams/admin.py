@@ -4,11 +4,12 @@ from django.urls import path, reverse
 from django.shortcuts import redirect, resolve_url
 from django.utils.html import format_html
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
 from common.admin import DontLog
 from videocoin.blockchain import Blockchain
+from videocoin.validators import ChunkEventsValidator, InOutValidator
 from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
 
 from .models import Stream
@@ -60,10 +61,29 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'updated_at',
         'completed_at',
         'owned_by',
+        'validation_field',
     )
 
     change_form_template = 'admin/streams/stream_change_form.html'
     search_fields = ('id', 'name')
+
+    def validation_field(self, obj):
+        url_validate = reverse('admin:streams_stream_validate', args=[obj.id])
+        url_events = reverse('admin:streams_stream_events', args=[obj.id])
+        html = '''<button type="button" class="validate btn btn-info" data-url={} style="display: inline-block;
+                background: #609ab6;
+                border-radius: 4px;
+                padding: 10px 15px;
+                line-height: 15px;
+                text-align: left;
+                color: #fff;">validate</button>'''.format(url_validate)
+        if obj.stream_contract_address:
+            html += '''<a href="{}" style="padding: 10px 15px;">Blockchain events</a>'''.format(url_events)
+        html += '<div class="validate_result"><img src="https://i.giphy.com/l3nWhI38IWDofyDrW.gif" class="validate_loading" style="display:none; width:200px;"/ ></div>'
+        return format_html(html)
+
+    validation_field.short_description = "Actions"
+    validation_field.allow_tags = True
 
     fieldsets = (
         ('Stream', {
@@ -102,7 +122,18 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'task_client_id',
             )
         }),
+        ('Blockchain', {
+            'fields': (
+                'validation_field',
+            )
+        }),
     )
+
+    class Media:
+        css = {
+            'all': ('admin.css',)
+        }
+        js = ['admin.js']
 
     def profile_set(self, obj):
         if obj.profile:
@@ -138,6 +169,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
             path(r'<slug:id>/start/', self.start_stream, name='streams_stream_start'),
             path(r'<slug:id>/stop/', self.stop_stream, name='streams_stream_stop'),
             path(r'<slug:id>/events/', self.events, name='streams_stream_events'),
+            path(r'<slug:id>/validate/', self.validate, name='streams_stream_validate'),
         ]
         return my_urls + urls
 
@@ -166,11 +198,6 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
             raise PermissionError('you can\'t')
         stream = Stream.objects.get(id=id)
 
-        blockchain = Blockchain(
-            settings.RPC_NODE_HTTP_ADDR,
-            stream_address=stream.stream_contract_address,
-            stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
-        )
         context = {
             'original': stream,
             'opts': Stream._meta,
@@ -182,18 +209,60 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
             'add': False,
         }
 
+        blockchain = Blockchain(
+            settings.RPC_NODE_HTTP_ADDR,
+            stream_id=stream.stream_contract_id,
+            stream_address=stream.stream_contract_address,
+            stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
+        )
+
         if not blockchain.is_connected():
             context.update({
                 'error': 'Can not connect to blockchain...'
             })
 
-        events = blockchain.get_stream_events()
+        events = blockchain.get_all_events()
+        events = sorted(events, key=lambda e: e['blockInfo']['timestamp'])
+
         context.update({
             'events': events,
         })
         template = loader.get_template('admin/streams/events.html')
 
         return HttpResponse(template.render(context, request))
+
+    def validate(self, request, id):
+        if not request.user.is_superuser:
+            raise PermissionError('you can\'t')
+        stream = Stream.objects.get(id=id)
+
+        blockchain = Blockchain(
+            settings.RPC_NODE_HTTP_ADDR,
+            stream_id=stream.stream_contract_id,
+            stream_address=stream.stream_contract_address,
+            stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
+        )
+
+        if not blockchain.is_connected():
+            return JsonResponse({'error': 'Can not connect to blockchain...'}, status=400)
+
+        events = blockchain.get_all_events()
+        results = {}
+        validator_1 = ChunkEventsValidator(
+            events=events,
+            input_url=stream.input_url,
+            output_url=stream.output_url,
+        )
+        validator_1.validate()
+        results.update(validator_1.to_json())
+
+        validator_2 = InOutValidator(
+            input_url=stream.input_url,
+            output_url=stream.output_url,
+        )
+        validator_2.validate()
+        results.update(validator_2.to_json())
+        return JsonResponse(results, status=200)
 
     def has_add_permission(self, request):
         return False

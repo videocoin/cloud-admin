@@ -1,17 +1,26 @@
 {% extends "admin/change_form.html" %}
 {% block content %}
-<div id="content-main">
-    {% if errors %}{{ error }}{% endif %}
-{% for event, logs in events.items %}
-  <h3>{{event}}</h3>
-  <ul>
-      {% for log in logs %}
-        <li>{{log}}</li>
-      {% endfor %}
-  </ul>
-{% endfor %}
-
-</div>
+    <div id="content-main">
+        {% if errors %}{{ error }}{% endif %}
+        <table>
+            <tr>
+              <th>Ts</th>
+              <th>Event</th>
+              <th>Status</th>
+              <th>Chunk Id</th>
+              <th>Hash</th>
+            </tr>
+        {% for event in events %}
+            <tr>
+              <td>{{ event.datetime|date:'Y-m-d H:i:s.sss' }}</td>
+              <td>{{ event.event }}</td>
+              <td>{% if event.transactionInfo.status %} Success {% else %} Failed {% endif %}</td>
+              <td>{{ event.args.chunkId }}</td>
+              <td>{{ event.hash }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
 {% endblock %}
 {% block submit_buttons_bottom %}
     <div class="submit-row">
@@ -27,9 +36,6 @@
                 text-align: left;
                 color: #fff;">Blockchain</a>
         </div>
-
     </div>
-
     {{ block.super }}
-
 {% endblock %}
