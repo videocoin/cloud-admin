@@ -9,7 +9,7 @@ from django.template import loader
 
 from common.admin import DontLog
 from videocoin.blockchain import Blockchain
-from videocoin.validators import ChunkEventsValidator, InOutValidator
+from videocoin.validators import ValidatorCollection
 from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
 
 from .models import Stream
@@ -131,9 +131,9 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('admin.css', 'tablesorter/css/theme.default.min.css')
+            'all': ('admin.css', )
         }
-        js = ['tablesorter/js/jquery.tablesorter.js', 'tablesorter/js/jquery.tablesorter.widgets.js', 'admin.js']
+        js = ['admin.js']
 
     def profile_set(self, obj):
         if obj.profile:
@@ -247,22 +247,12 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
             return JsonResponse({'error': 'Can not connect to blockchain...'}, status=400)
 
         events = blockchain.get_all_events()
-        results = {}
-        validator_1 = ChunkEventsValidator(
+        validator = ValidatorCollection(
             events=events,
             input_url=stream.input_url,
-            output_url=stream.output_url,
+            output_url=stream.output_url
         )
-        validator_1.validate()
-        results.update(validator_1.to_json())
-
-        validator_2 = InOutValidator(
-            input_url=stream.input_url,
-            output_url=stream.output_url,
-        )
-        validator_2.validate()
-        results.update(validator_2.to_json())
-        return JsonResponse(results, status=200)
+        return JsonResponse(validator.validate(), status=200)
 
     def has_add_permission(self, request):
         return False

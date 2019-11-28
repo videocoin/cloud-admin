@@ -10,7 +10,7 @@ from web3.utils.filters import construct_event_filter_params
 from web3.utils.abi import filter_by_type
 
 from web3.middleware import geth_poa_middleware
-from eth_utils.toolz import pipe
+import eth_utils
 
 
 VERBOSE = False
@@ -55,7 +55,11 @@ class Blockchain:
         if stream_address:
             self.add_stream(stream_address)
         if stream_manager_address:
-            self.add_stream_manager(stream_manager_address)
+            self.add_stream_manager(self.normalize_address(stream_manager_address))
+
+    def normalize_address(self, address):
+            as_bytes = eth_utils.to_bytes(hexstr=address)
+            return eth_utils.to_normalized_address(as_bytes[-20:])
 
     def add_stream_manager(self, stream_manager_address):
         module_dir = os.path.dirname(__file__)
@@ -129,13 +133,13 @@ class Blockchain:
 
     def get_stream_event_names(self):
         filters = [functools.partial(filter_by_type, 'event'), ]
-        stream_events = pipe(self.stream_abi, *filters)
+        stream_events = eth_utils.toolz.pipe(self.stream_abi, *filters)
         events = [item['name'] for item in stream_events]
         return events
 
     def get_stream_manager_event_names(self):
         filters = [functools.partial(filter_by_type, 'event'), ]
-        streammanager_events = pipe(self.streammanager_abi, *filters)
+        streammanager_events = eth_utils.toolz.pipe(self.streammanager_abi, *filters)
         events = [item['name'] for item in streammanager_events]
         return events
 

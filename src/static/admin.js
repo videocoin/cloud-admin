@@ -1,6 +1,9 @@
 jQuery(document).ready(function($) {
     $(function() {
-      $("#events-table").tablesorter();
+        if ($("#events-table").length) {
+             $("#events-table").tablesorter();
+        }
+
     });
     $('.validate').click(function(e) {
         var button = $(this);
