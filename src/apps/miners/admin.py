@@ -72,7 +72,6 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
     readonly_fields = (
         'id',
         'owned_by',
-        'status',
         'address',
         'stream_assigned',
         'last_ping_at',
@@ -84,6 +83,8 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'id',
                 'name',
                 'owned_by',
+                'status',
+                'current_task_id',
                 'last_ping_at',
                 'stream_assigned',
                 'address',

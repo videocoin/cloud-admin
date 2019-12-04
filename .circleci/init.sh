@@ -8,7 +8,7 @@ export GCLOUD_PROJECT=videocoin-network
 export ENV=snb
 export CLUSTER=snb
 
-if [ "$CIRCLE_BRANCH" == "sandbox" ]; then
+if [ "$CIRCLE_BRANCH" == "master" ]; then
     export GCLOUD_PROJECT=videocoin-network
     export ENV=snb
     export CLUSTER=snb
