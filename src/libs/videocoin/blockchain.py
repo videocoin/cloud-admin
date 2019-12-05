@@ -113,7 +113,7 @@ class Blockchain:
             for log in event_data:
                 log = self.to_log_entry(log)
                 result.append(log)
-            return result
+        return result
 
     def get_stream_events(self):
         result = []
