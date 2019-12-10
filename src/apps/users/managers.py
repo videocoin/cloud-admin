@@ -51,3 +51,8 @@ class UserManager(BaseUserManager):
     def delete_expired_testing_users(self):
         current_time = now()
         return self.model.objects.filter(testing_user__delete_date__lte=current_time).filter(testing_user__isnull=False).delete()
+
+    def update_lifetime(self, user_id, lifetime):
+        from users.models import TestingUser
+        delete_date = now() + timedelta(seconds=int(lifetime))
+        TestingUser.objects.filter(user_id=user_id).update(delete_date=delete_date)
