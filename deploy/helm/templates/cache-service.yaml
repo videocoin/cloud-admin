@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-cache
+  labels:
+    app: {{ .Release.Name }}
+    component: {{ .Release.Name }}-cache
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.cacheService.type }}
+  ports:
+    - port: {{ .Values.cacheService.externalPort }}
+      targetPort: {{ .Values.cacheService.internalPort }}
+      protocol: TCP
+      name: {{ .Values.cacheService.name }}
+  selector:
+    app: {{ .Release.Name }}
+    component: {{ .Release.Name }}-cache

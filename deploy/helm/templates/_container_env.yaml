@@ -25,6 +25,16 @@ env:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: privateStreamsRpcAddr
+  - name: VC_ADMIN_BROKER_URL
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: brokerUrl
+  - name: VC_ADMIN_CELERY_RESULT_BACKEND
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: celeryResultBackend
   - name: VC_ADMIN_SENTRY_DSN
     valueFrom:
       configMapKeyRef:

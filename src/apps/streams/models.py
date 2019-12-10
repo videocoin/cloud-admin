@@ -68,6 +68,7 @@ class Task(models.Model):
         return self.output
 
     class Meta:
+        managed = False
         db_table = 'tasks'
 
 
@@ -110,7 +111,7 @@ class Stream(models.Model):
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
     name = models.CharField(max_length=255, null=True, blank=True)
-    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, db_column='user_id')
+    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id')
     profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.SET_NULL)
 
     status = models.IntegerField(choices=STREAM_STATUS_CHOICES, null=True, blank=True)
@@ -176,6 +177,7 @@ class Stream(models.Model):
         ]
 
     class Meta:
+        managed = False
         verbose_name = "Stream"
         verbose_name_plural = "Streams"
         ordering = ('-created_at',)

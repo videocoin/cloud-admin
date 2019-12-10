@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-worker-beat
+  labels:
+    app: {{ .Release.Name }}
+    component: {{ .Release.Name }}-worker-beat
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.maxUnavailableCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: {{ .Release.Name }}-worker-beat
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      automountServiceAccountToken: false
+      containers:
+        - name: {{ .Release.Name }}-worker-beat
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | replace "#" ""}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: 
+            - celery
+            - beat
+            - -A
+            - project.celery
+            - -l
+            - INFO
+{{ include (print $.Template.BasePath "/_container_env.yaml") . | indent 10 }}
+{{ include (print $.Template.BasePath "/_container_volume_mounts.yaml") . | indent 10 }}
+{{ include (print $.Template.BasePath "/_pod_volumes.yaml") . | indent 6 }}
+      nodeSelector:
+        cloud.google.com/gke-nodepool: api

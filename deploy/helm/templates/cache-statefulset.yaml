@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-cache
+  labels:
+    app: {{ .Release.Name }}
+    component: {{ .Release.Name }}-cache
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ .Release.Name }}-cache
+  replicas: 1
+  template:
+    metadata:
+      name: {{ .Release.Name }}-cache
+      labels:
+        app: {{ .Release.Name }}
+        component: {{ .Release.Name }}-cache
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: {{ .Release.Name }}-api
+          image: "{{ .Values.cacheImage.repository }}:{{ .Values.cacheImage.tag }}"
+          imagePullPolicy: {{ .Values.cacheImage.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.cacheService.internalPort }}
+            name: redis
+          volumeMounts:
+          - name: {{ .Release.Name }}-cache
+            mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Release.Name }}-cache
+      labels:
+        app: {{ .Release.Name }}
+        component: {{ .Release.Name }}-cache
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi

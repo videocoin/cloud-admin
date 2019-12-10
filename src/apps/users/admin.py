@@ -5,12 +5,28 @@ from django.urls import path, reverse
 from django.shortcuts import redirect
 from django.conf import settings
 
-from .models import User, ApiToken
+from .models import User, ApiToken, TestingUser
 from transfers.models import Transfer
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
 from common.admin import DontLog
+
+
+class TestingFilter(admin.SimpleListFilter):
+    title = 'testing'
+    parameter_name = 'testing'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('testing', 'testing'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'testing':
+            return queryset.filter(testing_user__isnull=False)
+        return queryset
 
 
 class ApiTokensInlineAdmin(admin.TabularInline):
@@ -53,16 +69,23 @@ class AccountsInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
+class TestingUserInlineAdmin(admin.TabularInline):
+    model = TestingUser
+    extra = 0
+    fields = ('delete_date',)
+    can_delete = False
+
+
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role', 'balance', 'address')
-    list_filter = ('role', 'is_active', 'created_at')
-    search_fields = ('id', 'email', 'name')
+    list_display = ('id', 'email', 'name', 'role', 'balance', 'address', 'is_active', 'is_testing', 'created_at')
+    list_filter = ('role', 'is_active', TestingFilter, 'created_at')
+    search_fields = ('id', 'email', 'name', 'apitoken__token__icontains', 'transfer__id__icontains')
     exclude = ('password', )
-    readonly_fields = ['id', 'token', 'balance']
+    readonly_fields = ['id', 'token', 'balance', 'is_testing']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
-    inlines = [AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin]
+    inlines = [TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin]
 
     fieldsets = (
         ('USER', {
@@ -79,12 +102,13 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         }),
     )
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
-        user_ids = list(ApiToken.objects.filter(token__icontains=search_term).values_list('user_id', flat=True))
-        user_ids.extend(Transfer.objects.filter(id__icontains=search_term).values_list('user_id', flat=True))
-        queryset = queryset.union(User.objects.filter(id__in=set(user_ids)))
-        return queryset, use_distinct
+    def is_testing(self, instance):
+        return instance.is_testing
+    is_testing.boolean = True
+
+    def is_active(self, instance):
+        return instance.is_active
+    is_active.boolean = True
 
     def has_add_permission(self, request):
         return False

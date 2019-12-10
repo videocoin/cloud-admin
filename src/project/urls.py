@@ -5,6 +5,8 @@ from django.http import HttpResponse
 from django.contrib import admin
 from django.urls import path
 
+from users.api import UserAPIView, UsersAPIView
+
 admin.autodiscover()
 admin.site.site_header = 'VideoCoin God Mode'
 admin.site.index_title = 'Models'
@@ -18,6 +20,8 @@ def health(request):
 urlpatterns = [
     url(r'^healthz', health, name='health'),
     path('imsgx72bs1pxd72mxs/', admin.site.urls),
+    path('imsgx72bs1pxd72mxs/api/testusers/', UserAPIView.as_view()),
+    path('imsgx72bs1pxd72mxs/api/testusers/bulk/', UsersAPIView.as_view()),
 ]
 
 

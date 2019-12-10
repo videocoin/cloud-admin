@@ -1,4 +1,5 @@
 Django==2.2
+django-redis-cache==2.1.0
 celery==4.3.0
 httplib2==0.9.2
 requests==2.18.0
@@ -23,3 +24,4 @@ grpcio==1.25.0
 protoc-gen-swagger==0.1.0
 web3==4.8.1
 m3u8==0.5.2
+shortuuid==0.5.0

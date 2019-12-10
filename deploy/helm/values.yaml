@@ -15,6 +15,10 @@ staticImage:
   repository: gcr.io/videocoin-network/admin-static
   tag: latest
   pullPolicy: Always
+cacheImage:
+  repository: redis
+  tag: "3.2"
+  pullPolicy: IfNotPresent
 
 service:
   name: http

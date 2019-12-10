@@ -43,6 +43,7 @@ class Profile(models.Model):
         return ' '.join(built)
 
     class Meta:
+        managed = False
         verbose_name = "Profile"
         verbose_name_plural = "Profiles"
         db_table = 'profiles'

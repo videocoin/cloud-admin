@@ -57,7 +57,8 @@ function get_vars() {
     readonly DJANGO_SETTINGS_MODULE=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule`
     readonly STATIC_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/staticUrl`
     readonly PRIVATE_STREAMS_RPC_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/privateStreamsRpcAddr`
-
+    readonly BROKER_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/brokerUrl`
+    readonly CELERY_RESULT_BACKEND=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/celeryResultBackend`
     readonly SENTRY_DSN=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/sentryDsn`
 }
 
@@ -73,6 +74,8 @@ function deploy() {
         --set managerConfig.djangoSettingsModule="${DJANGO_SETTINGS_MODULE}" \
         --set managerConfig.staticUrl="${STATIC_URL}" \
         --set managerConfig.privateStreamsRpcAddr="${PRIVATE_STREAMS_RPC_ADDR}" \
+        --set managerConfig.brokerUrl="${BROKER_URL}" \
+        --set managerConfig.celeryResultBackend="${CELERY_RESULT_BACKEND}" \
         --set managerConfig.sentryDsn="${SENTRY_DSN}" \
         --set secrets.rpcNodeHttpAddr="${RPC_NODE_HTTP_ADDR}" \
         --set secrets.streamManagerContractAddr="${STREAM_MANAGER_CONTRACT_ADDR}" \

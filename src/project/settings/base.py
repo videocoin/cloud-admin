@@ -1,6 +1,6 @@
 import os
 import environ
-
+from datetime import timedelta
 
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)
@@ -103,6 +103,18 @@ APPEND_SLASH = False
 
 DJANGO_LOG_LEVEL = env.str('VC_ADMIN_LOGLEVEL', 'INFO')
 
+BROKER_URL = env.str('VC_ADMIN_BROKER_URL', 'redis://localhost:6379/1')
+CELERY_RESULT_BACKEND = \
+    env.str('VC_ADMIN_CELERY_RESULT_BACKEND', 'redis://localhost:6379/2')
+
+
+CELERYBEAT_SCHEDULE = {
+    'cleanup-testing-users': {
+        'task': 'users.tasks.CleanupTestingUsersTask',
+        'schedule': timedelta(seconds=3600)
+    },
+}
+
 DEFAULT_LOGGER = {
     'handlers': ['console'],
     'level': DJANGO_LOG_LEVEL,
@@ -185,7 +197,7 @@ AUTHENTICATION_BACKENDS = [
     'users.backends.ModelBackend',
 ]
 
-USE_HTTPS = False
+USE_HTTPS = True
 
 JSON_EDITOR_INIT_JS = "jsoneditor-init.js"
 

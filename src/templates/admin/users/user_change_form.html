@@ -14,7 +14,7 @@
                 text-align: left;
                 color: #fff;">Activate</a>
         {% endif %}
-        {% if original.address and not original.is_regular %}
+        {% if original.address and original.can_faucet %}
         <a href="{%url 'admin:users_user_faucet' original.id %}" class="btn btn-success" style="display: inline-block;
                 background: #609ab6;
                 border-radius: 4px;

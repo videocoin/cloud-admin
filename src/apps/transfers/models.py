@@ -36,7 +36,7 @@ class Transfer(models.Model):
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=36)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     pin = models.CharField(max_length=6, null=True, blank=True)
     kind = models.IntegerField(choices=TRANSFER_KIND_CHOICES, null=True, blank=True)
     status = models.IntegerField(choices=TRANSFER_STATUS_CHOICES, null=True, blank=True)
@@ -48,5 +48,6 @@ class Transfer(models.Model):
     expires_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        managed = False
         ordering = ('-created_at',)
         db_table = 'transfers'

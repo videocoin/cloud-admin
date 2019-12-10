@@ -23,7 +23,7 @@ class Miner(models.Model):
     )
 
     id = models.CharField(primary_key=True, max_length=255, editable=False)
-    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, db_column='user_id')
+    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id')
     name = models.CharField(max_length=255, null=True, blank=True)
     last_ping_at = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, null=True, blank=True)
@@ -33,6 +33,7 @@ class Miner(models.Model):
     system_info = JSONField(null=True, blank=True)
 
     class Meta:
+        managed = False
         verbose_name = "Miner"
         verbose_name_plural = "Miners"
         db_table = 'miners'
