@@ -55,6 +55,26 @@ spec:
               configMapKeyRef:
                 name: {{ .Release.Name }}
                 key: sentryDsn
+          - name: VC_ADMIN_EMAIL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}
+                key: emailHost
+          - name: VC_ADMIN_EMAIL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}
+                key: emailHost
+          - name: VC_ADMIN_DEFAULT_FROM_EMAIL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}
+                key: defaultFromEmail
+          - name: VC_ADMIN_VALIDATION_EMAILS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}
+                key: validationEmails
           - name: VC_ADMIN_FAUCET_URL
             valueFrom:
               secretKeyRef:
@@ -65,6 +85,11 @@ spec:
               secretKeyRef:
                 name: {{ .Release.Name }}
                 key: secretKey
+          - name: VC_ADMIN_EMAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}
+                key: emailPassword
           - name: VC_ADMIN_DATABASE_URL
             valueFrom:
               secretKeyRef:

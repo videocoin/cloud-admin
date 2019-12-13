@@ -168,6 +168,10 @@ class Stream(models.Model):
         return self.status in [self.STREAM_STATUS_NONE]
 
     @property
+    def is_failed(self):
+        return self.status == self.STREAM_STATUS_FAILED
+
+    @property
     def can_be_stopped(self):
         return self.status in [
             self.STREAM_STATUS_PREPARED,

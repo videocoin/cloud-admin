@@ -54,6 +54,11 @@ function get_vars() {
     readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetUrl`
     readonly STREAM_MANAGER_CONTRACT_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/streamManagerContractAddr`
     readonly RPC_NODE_HTTP_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/rpcNodeHttpAddr`
+    readonly EMAIL_PASSWORD=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/emailPassword`
+    readonly DEFAULT_FROM_EMAIL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/defaultFromEmail`
+    readonly EMAIL_USER=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/emailUser`
+    readonly EMAIL_HOST=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/emailHost`
+    readonly VALIDATION_EMAILS=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/validationEmails`
     readonly DJANGO_SETTINGS_MODULE=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/djangoSettingsModule`
     readonly STATIC_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/staticUrl`
     readonly PRIVATE_STREAMS_RPC_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/privateStreamsRpcAddr`
@@ -77,6 +82,11 @@ function deploy() {
         --set managerConfig.brokerUrl="${BROKER_URL}" \
         --set managerConfig.celeryResultBackend="${CELERY_RESULT_BACKEND}" \
         --set managerConfig.sentryDsn="${SENTRY_DSN}" \
+        --set managerConfig.emailUser="${EMAIL_USER}" \
+        --set managerConfig.emailHost="${EMAIL_HOST}" \
+        --set managerConfig.defaultFromEmail="${DEFAULT_FROM_EMAIL}" \
+        --set managerConfig.validationEmails="${VALIDATION_EMAILS}" \
+        --set secrets.emailPassword="${EMAIL_PASSWORD}" \
         --set secrets.rpcNodeHttpAddr="${RPC_NODE_HTTP_ADDR}" \
         --set secrets.streamManagerContractAddr="${STREAM_MANAGER_CONTRACT_ADDR}" \
         --set secrets.faucetUrl="${FAUCET_URL}" \

@@ -174,6 +174,8 @@ class AccountFundedValidator(BaseValidator):
 
 
 class ValidatorCollection:
+    is_valid = True
+
     def __init__(self, events, input_url, output_url):
         self.events = events
         self.input_url = input_url
@@ -187,6 +189,8 @@ class ValidatorCollection:
             output_url=self.output_url,
         )
         validator_1.validate()
+        if not validator_1.is_valid:
+            self.is_valid = False
         results.update(validator_1.to_json())
 
         validator_2 = InOutValidator(
@@ -194,18 +198,24 @@ class ValidatorCollection:
             output_url=self.output_url,
         )
         validator_2.validate()
+        if not validator_2.is_valid:
+            self.is_valid = False
         results.update(validator_2.to_json())
 
         validator_3 = StreamStateInStreamManagerValidator(
             events=self.events,
         )
         validator_3.validate()
+        if not validator_3.is_valid:
+            self.is_valid = False
         results.update(validator_3.to_json())
 
         validator_4 = AccountFundedValidator(
             events=self.events,
         )
         validator_4.validate()
+        if not validator_4.is_valid:
+            self.is_valid = False
         results.update(validator_4.to_json())
 
         return results

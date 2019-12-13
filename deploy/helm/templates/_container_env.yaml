@@ -35,6 +35,26 @@ env:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: celeryResultBackend
+  - name: VC_ADMIN_EMAIL_HOST
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: emailHost
+  - name: VC_ADMIN_EMAIL_USER
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: emailHost
+  - name: VC_ADMIN_DEFAULT_FROM_EMAIL
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: defaultFromEmail
+  - name: VC_ADMIN_VALIDATION_EMAILS
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: validationEmails
   - name: VC_ADMIN_SENTRY_DSN
     valueFrom:
       configMapKeyRef:
@@ -45,6 +65,11 @@ env:
       secretKeyRef:
         name: {{ .Release.Name }}
         key: streamManagerContractAddr
+  - name: VC_ADMIN_EMAIL_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ .Release.Name }}
+        key: emailPassword
   - name: VC_ADMIN_RPC_NODE_HTTP_ADDR
     valueFrom:
       secretKeyRef:

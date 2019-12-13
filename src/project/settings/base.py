@@ -107,13 +107,19 @@ BROKER_URL = env.str('VC_ADMIN_BROKER_URL', 'redis://localhost:6379/1')
 CELERY_RESULT_BACKEND = \
     env.str('VC_ADMIN_CELERY_RESULT_BACKEND', 'redis://localhost:6379/2')
 
+STREAM_VALIDATION_FREQUENCY = 5  # minutes
 
 CELERYBEAT_SCHEDULE = {
     'cleanup-testing-users': {
         'task': 'users.tasks.CleanupTestingUsersTask',
         'schedule': timedelta(seconds=3600)
     },
+    'validate-streams': {
+        'task': 'streams.tasks.ValidateStreamsTask',
+        'schedule': timedelta(seconds=STREAM_VALIDATION_FREQUENCY * 60)
+    },
 }
+VALIDATION_EMAILS = env.str('VC_ADMIN_VALIDATION_EMAILS', '').split(';')
 
 DEFAULT_LOGGER = {
     'handlers': ['console'],
@@ -170,7 +176,6 @@ LOGGING = {
     }
 }
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -191,6 +196,7 @@ TEMPLATES = [
         },
     },
 ]
+
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = [
@@ -200,6 +206,13 @@ AUTHENTICATION_BACKENDS = [
 USE_HTTPS = True
 
 JSON_EDITOR_INIT_JS = "jsoneditor-init.js"
+
+EMAIL_HOST = env.str('VC_ADMIN_EMAIL_HOST', None)
+EMAIL_USER = env.str('VC_ADMIN_EMAIL_USER', None)
+EMAIL_PASSWORD = env.str('VC_ADMIN_EMAIL_PASSWORD', None)
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = env.str('VC_ADMIN_DEFAULT_FROM_EMAIL', None)
 
 SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
 
