@@ -24,7 +24,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         (SUPER, "Super"),
     )
 
-    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
+    id = models.CharField(primary_key=True, max_length=36)
     email = models.EmailField(unique=True, max_length=255, null=True, blank=True)
     password = models.CharField(max_length=100, null=True, blank=True)
     name = models.CharField(max_length=100, null=True, blank=True)

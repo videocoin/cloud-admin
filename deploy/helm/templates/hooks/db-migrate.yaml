@@ -24,10 +24,13 @@ spec:
       containers:
       - name: {{ .Release.Name }}-db-migrate
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | replace "#" ""}}"
-        command: ["/bin/sh", "-c", "python manage.py migrate contenttypes && python manage.py migrate auth && python manage.py migrate admin && python manage.py migrate sites && python manage.py migrate sessions && python manage.py migrate users"]
+        command: ["/bin/sh", "-c", "python manage.py migrate users && python manage.py migrate contenttypes && python manage.py migrate auth && python manage.py migrate admin && python manage.py migrate sites && python manage.py migrate sessions"]
         env:
           - name: DJANGO_SETTINGS_MODULE
-            value: "project.settings.migrate"
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}
+                key: djangoSettingsModule
           - name: VC_ADMIN_DEBUG
             value: "off"
           - name: VC_ADMIN_STATIC_URL

@@ -7,7 +7,7 @@ from django.conf import settings
 from celery import Task
 from celery import current_app as celery_app
 
-from .models import User
+from users.models import User
 
 
 logger = logging.getLogger(__name__)
