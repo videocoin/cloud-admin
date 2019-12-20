@@ -31,6 +31,8 @@ spec:
           - mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
             name: {{ .Chart.Name }}-static
+      nodeSelector:
+        cloud.google.com/gke-nodepool: api
       volumes:
         - name: {{ .Chart.Name }}-static
           configMap:

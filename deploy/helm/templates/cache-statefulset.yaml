@@ -30,6 +30,8 @@ spec:
           volumeMounts:
           - name: {{ .Release.Name }}-cache
             mountPath: /data
+      nodeSelector:
+        cloud.google.com/gke-nodepool: api
   volumeClaimTemplates:
   - metadata:
       name: {{ .Release.Name }}-cache
