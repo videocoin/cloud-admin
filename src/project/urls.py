@@ -21,8 +21,8 @@ urlpatterns = [
     url(r'^healthz', health, name='health'),
     path('imsgx72bs1pxd72mxs/', admin.site.urls),
     path('imsgx72bs1pxd72mxs/api/testusers/', UserAPIView.as_view()),
-    path('imsgx72bs1pxd72mxs/api/testusers/<slug:id>/', ManageUserAPIView.as_view()),
     path('imsgx72bs1pxd72mxs/api/testusers/bulk/', UsersAPIView.as_view()),
+    path('imsgx72bs1pxd72mxs/api/testusers/<slug:id>/', ManageUserAPIView.as_view()),
 ]
 
 
