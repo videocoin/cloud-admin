@@ -37,7 +37,7 @@ class Profile(models.Model):
             if not c.get('params'):
                 continue
             for i in c.get('params', []):
-                built.extend([i.get('key'), i.get('value')])
+                built.extend([i.get('key', ''), i.get('value', '')])
 
         built.extend(["$OUTPUT/index.m3u8"])
         return ' '.join(built)
