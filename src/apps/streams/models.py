@@ -42,6 +42,7 @@ class Task(models.Model):
     client_id = models.CharField(max_length=255, editable=False, null=True, blank=True)
     stream_contract_id = models.BigIntegerField(null=True, blank=True)
     stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
+    machine_type = models.CharField(max_length=255, null=True, blank=True)
 
     @property
     def can_be_stopped(self):
@@ -162,6 +163,10 @@ class Stream(models.Model):
     @property
     def task_client_id(self):
         return self.task.client_id
+
+    @property
+    def task_machine_type(self):
+        return self.task.machine_type
 
     @property
     def can_be_started(self):

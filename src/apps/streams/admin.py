@@ -56,6 +56,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'task_input',
         'task_output',
         'task_client_id',
+        'task_machine_type',
         'created_at',
         'ready_at',
         'updated_at',
@@ -120,6 +121,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'task_input',
                 'task_output',
                 'task_client_id',
+                'task_machine_type',
             )
         }),
         ('Blockchain', {
