@@ -13,12 +13,14 @@ logger = logging.getLogger(__name__)
 
 class User(PermissionsMixin, AbstractBaseUser):
     REGULAR = 0
+    MINER = 1
     QA = 3
     MANAGER = 6
     SUPER = 9
 
     ROLES_CHOICES = (
         (REGULAR, "Regular"),
+        (MINER, "Miner"),
         (QA, "QA"),
         (MANAGER, "Manager"),
         (SUPER, "Super"),
