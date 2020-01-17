@@ -25,6 +25,8 @@ class ProfileAdmin(DontLog, admin.ModelAdmin):
       'name',
       'id',
       'is_enabled',
+      'reward',
+      'deposit',
     )
 
     list_filter = ('is_enabled', )
@@ -43,6 +45,8 @@ class ProfileAdmin(DontLog, admin.ModelAdmin):
                 'is_enabled',
                 'spec',
                 'render',
+                'reward',
+                'deposit',
             )
         }),
     )
