@@ -91,7 +91,10 @@ class Blockchain:
     def is_connected(self):
         return self.w3.isConnected()
 
-    def get_event(self, contract_abi, contract_address, event_name, argument_filters={}):
+    def get_event(self, contract_abi, contract_address, event_name, argument_filters=None):
+        if not argument_filters:
+            argument_filters = {}
+
         event_abi = find_matching_event_abi(contract_abi, event_name=event_name)
         _, event_filter_params = construct_event_filter_params(event_abi,
                                                                contract_address,

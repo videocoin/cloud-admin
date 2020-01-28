@@ -62,7 +62,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'status',
         'version',
         'owned_by',
-        'stream_assigned',
+        'task_assigned',
         'address',
         'cpu_freq',
         'cpu_cores', 
@@ -75,7 +75,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'id',
         'owned_by',
         'address',
-        'stream_assigned',
+        'task_assigned',
         'last_ping_at',
     )
 
@@ -88,7 +88,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'status',
                 'current_task_id',
                 'last_ping_at',
-                'stream_assigned',
+                'task_assigned',
                 'address',
                 'tags',
                 'system_info',
@@ -110,13 +110,13 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
     owned_by.short_description = 'Owner'
     owned_by.allow_tags = True
 
-    def stream_assigned(self, obj):
+    def task_assigned(self, obj):
         if obj.current_task_id:
-            url = reverse('admin:streams_stream_change', args=[obj.current_task_id])
+            url = reverse('admin:streams_task_change', args=[obj.current_task_id])
             return format_html('<a href="{}">{}</a>', url, obj.current_task_id)
         return ''
-    stream_assigned.short_description = 'Stream'
-    stream_assigned.allow_tags = True
+    task_assigned.short_description = 'Task'
+    task_assigned.allow_tags = True
 
     def internal(self, instance):
         return instance.internal

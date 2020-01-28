@@ -11,68 +11,6 @@ from profiles.models import Profile
 logger = logging.getLogger(__name__)
 
 
-class Task(models.Model):
-
-    CREATED = 'CREATED'
-    PENDING = 'PENDING'
-    ASSIGNED = 'ASSIGNED'
-    ENCODING = 'ENCODING'
-    COMPLETED = 'COMPLETED'
-    FAILED = 'FAILED'
-    CANCELED = 'CANCELED'
-
-    STATUS_CHOICES = (
-        (CREATED, "CREATED"),
-        (PENDING, "PENDING"),
-        (ASSIGNED, "ASSIGNED"),
-        (ENCODING, "ENCODING"),
-        (COMPLETED, "COMPLETED"),
-        (FAILED, "FAILED"),
-        (CANCELED, "CANCELED"),
-    )
-
-    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    owner_id = models.IntegerField()
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default=CREATED)
-    profile_id = models.CharField(max_length=36)
-    cmdline = models.TextField(null=True, blank=True)
-    input = JSONField(null=True, blank=True)
-    output = JSONField(null=True, blank=True)
-    client_id = models.CharField(max_length=255, editable=False, null=True, blank=True)
-    stream_contract_id = models.BigIntegerField(null=True, blank=True)
-    stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
-    machine_type = models.CharField(max_length=255, null=True, blank=True)
-
-    @property
-    def can_be_stopped(self):
-        return self.status in [self.PENDING, self.ASSIGNED, self.ENCODING]
-
-    @property
-    def input_dict(self):
-        if self.input is None:
-            return {}
-
-        if isinstance(self.input, str):
-            self.input = json.loads(self.input)
-
-        return self.input
-
-    @property
-    def output_dict(self):
-        if self.output is None:
-            return {}
-
-        if isinstance(self.output, str):
-            self.output = json.loads(self.output)
-
-        return self.output
-
-    class Meta:
-        managed = False
-        db_table = 'tasks'
-
-
 class Stream(models.Model):
     STREAM_STATUS_NONE = 0
     STREAM_STATUS_NEW = 1
@@ -110,6 +48,22 @@ class Stream(models.Model):
         (INPUT_STATUS_ERROR, "Error"),
     )
 
+    INPUT_TYPE_RTMP = 'INPUT_TYPE_RTMP'
+    INPUT_TYPE_WEBRTC = 'INPUT_TYPE_WEBRTC'
+    INPUT_TYPE_FILE = 'INPUT_TYPE_FILE'
+
+    INPUT_TYPE_CHOICES = (
+        (INPUT_TYPE_RTMP, "INPUT_TYPE_RTMP"),
+        (INPUT_TYPE_WEBRTC, "INPUT_TYPE_WEBRTC"),
+        (INPUT_TYPE_FILE, "INPUT_TYPE_FILE"),
+    )
+
+    OUTPUT_TYPE_HLS = 'OUTPUT_TYPE_HLS'
+
+    OUTPUT_TYPE_CHOICES = (
+        (OUTPUT_TYPE_HLS, "OUTPUT_TYPE_HLS"),
+    )
+
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
     name = models.CharField(max_length=255, null=True, blank=True)
     by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id')
@@ -132,41 +86,12 @@ class Stream(models.Model):
     ready_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 
+    input_type = models.CharField(max_length=255, choices=INPUT_TYPE_CHOICES, null=True, blank=True)
+    output_type = models.CharField(max_length=255, choices=OUTPUT_TYPE_CHOICES, null=True, blank=True)
+    
     @property
-    def task(self):
-        return Task.objects.get(id=str(self.id))
-
-    @property
-    def task_id(self):
-        return self.task.id
-
-    @property
-    def task_status(self):
-        return self.task.status
-
-    @property
-    def task_cmdline(self):
-        return self.task.cmdline
-
-    @property
-    def task_input(self):
-        return self.task.input.get('uri', None)
-
-    @property
-    def task_output(self):
-        return self.task.output.get('path', None)
-
-    @property
-    def task_can_be_stopped(self):
-        return self.task.can_be_stopped
-
-    @property
-    def task_client_id(self):
-        return self.task.client_id
-
-    @property
-    def task_machine_type(self):
-        return self.task.machine_type
+    def tasks(self):
+        return Task.objects.filter(stream_id=str(self.id))
 
     @property
     def can_be_started(self):
@@ -191,3 +116,74 @@ class Stream(models.Model):
         verbose_name_plural = "Streams"
         ordering = ('-created_at',)
         db_table = 'streams'
+
+
+class Task(models.Model):
+
+    CREATED = 'CREATED'
+    PENDING = 'PENDING'
+    ASSIGNED = 'ASSIGNED'
+    ENCODING = 'ENCODING'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    CANCELED = 'CANCELED'
+
+    STATUS_CHOICES = (
+        (CREATED, "CREATED"),
+        (PENDING, "PENDING"),
+        (ASSIGNED, "ASSIGNED"),
+        (ENCODING, "ENCODING"),
+        (COMPLETED, "COMPLETED"),
+        (FAILED, "FAILED"),
+        (CANCELED, "CANCELED"),
+    )
+
+    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    owner_id = models.IntegerField()
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default=CREATED)
+    profile_id = models.CharField(max_length=36)
+    cmdline = models.TextField(null=True, blank=True)
+    input = JSONField(null=True, blank=True)
+    output = JSONField(null=True, blank=True)
+    client_id = models.CharField(max_length=255, editable=False, null=True, blank=True)
+    stream_contract_id = models.BigIntegerField(null=True, blank=True)
+    stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
+    machine_type = models.CharField(max_length=255, null=True, blank=True)
+    stream = models.ForeignKey(Stream, blank=True, null=True, on_delete = models.CASCADE, db_column = 'stream_id')
+
+    @property
+    def can_be_stopped(self):
+        return self.status in [self.PENDING, self.ASSIGNED, self.ENCODING]
+
+    @property
+    def input_dict(self):
+        if self.input is None:
+            return {}
+
+        if isinstance(self.input, str):
+            self.input = json.loads(self.input)
+
+        return self.input
+
+    @property
+    def output_dict(self):
+        if self.output is None:
+            return {}
+
+        if isinstance(self.output, str):
+            self.output = json.loads(self.output)
+
+        return self.output
+
+    @property
+    def uri(self):
+        return self.input.get('uri', None)
+
+    @property
+    def path(self):
+        return self.output.get('path', None)
+
+    class Meta:
+        managed = False
+        db_table = 'tasks'
