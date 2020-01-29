@@ -7,7 +7,7 @@ from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
-from common.admin import DontLog
+from common.admin import DontLog, DeletedFilter
 from videocoin.blockchain import Blockchain
 from videocoin.validators import ValidatorCollection
 from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
@@ -44,6 +44,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
     )
 
     list_filter = (
+        DeletedFilter,
         'status',
         'input_status',
         'input_type',
@@ -68,6 +69,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'ready_at',
         'updated_at',
         'completed_at',
+        'deleted_at',
         'owned_by',
         'validation_field',
         'input_type',
@@ -123,6 +125,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'updated_at',
                 'ready_at',
                 'completed_at',
+                'deleted_at',
             )
         }),
         ('Blockchain', {

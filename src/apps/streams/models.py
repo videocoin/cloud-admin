@@ -85,6 +85,7 @@ class Stream(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     ready_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     input_type = models.CharField(max_length=255, choices=INPUT_TYPE_CHOICES, null=True, blank=True)
     output_type = models.CharField(max_length=255, choices=OUTPUT_TYPE_CHOICES, null=True, blank=True)

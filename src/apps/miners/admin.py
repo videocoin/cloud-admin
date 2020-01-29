@@ -9,7 +9,7 @@ from django_mysql.models import JSONField
 from jsoneditor.forms import JSONEditor
 from prettyjson import PrettyJSONWidget
 
-from common.admin import DontLog
+from common.admin import DontLog, DeletedFilter
 from .models import Miner
 
 
@@ -54,7 +54,7 @@ class MinerForm(forms.ModelForm):
 class MinerAdmin(DontLog, admin.ModelAdmin):
     form = MinerForm
 
-    list_filter = ('status', LocalityFilter,)
+    list_filter = (DeletedFilter, 'status', LocalityFilter)
 
     list_display = (
         'id',
@@ -77,6 +77,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'address',
         'task_assigned',
         'last_ping_at',
+        'deleted_at',
     )
 
     fieldsets = (
@@ -93,6 +94,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'tags',
                 'system_info',
                 'crypto_info',
+                'deleted_at',
             )
         }),
     )

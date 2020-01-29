@@ -33,6 +33,8 @@ class Miner(models.Model):
     system_info = JSONField(null=True, blank=True)
     crypto_info = JSONField(null=True, blank=True)
 
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         managed = False
         verbose_name = "Miner"
