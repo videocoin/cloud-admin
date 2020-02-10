@@ -44,7 +44,7 @@ env:
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
-        key: emailHost
+        key: emailUser
   - name: VC_ADMIN_DEFAULT_FROM_EMAIL
     valueFrom:
       configMapKeyRef:
