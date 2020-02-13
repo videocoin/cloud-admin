@@ -101,6 +101,11 @@ class InOutValidator(BaseValidator):
             self.errors.append(VCValidationError('Can\'t access input url'))
             self.is_valid = False
             return
+        r = requests.get(self.output_url)
+        if r.status_code != 200:
+            self.errors.append(VCValidationError('Can\'t access output url'))
+            self.is_valid = False
+            return
         input_chunks = self.get_chunks(self.input_url)
         output_chunks = self.get_chunks(self.output_url)
         if len(input_chunks) != len(output_chunks):
@@ -108,7 +113,8 @@ class InOutValidator(BaseValidator):
             self.is_valid = False
             return
         for i in range(len(input_chunks)):
-            if output_chunks[i] != input_chunks[i]:
+            if (output_chunks[i].number != input_chunks[i].number) or \
+                    (int(output_chunks[i].duration) != int(input_chunks[i].duration)):
                 self.errors.append(VCValidationError('Different chunk #{} in input and output'.
                                                      format(input_chunks[i].number)))
                 self.is_valid = False
@@ -123,6 +129,7 @@ class StreamStateInStreamManagerValidator(BaseValidator):
         "StreamApproved",
         "StreamCreated",
         "ValidatorAdded",
+        "StreamEnded",
     ]
 
     def __init__(self, events):
@@ -164,7 +171,9 @@ class AccountFundedValidator(BaseValidator):
             deposited += e['args'].weiAmount
         for e in refunded_events:
             refunded += e['args'].weiAmount
-
+        if not refunded_events:
+            self.errors.append(VCValidationError("Error: missing refunded events"))
+            self.is_valid = False
         if bool(outofFundsEvents) and refunded > 0:
             self.errors.append(VCValidationError("Error: Inconsistant escrow events outOfFunds and refunded > 0"))
             self.is_valid = False

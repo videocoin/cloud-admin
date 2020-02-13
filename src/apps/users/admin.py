@@ -167,11 +167,3 @@ class ApiTokenAdmin(DontLog, admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
-
-
-from django.contrib.auth.models import Group
-from django.contrib.sites.models import Site
-
-admin.site.unregister(Site)
-admin.site.unregister(Group)
-

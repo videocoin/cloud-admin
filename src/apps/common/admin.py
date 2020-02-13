@@ -6,10 +6,10 @@ class DontLog:
     def log_addition(self, *args):
         return
 
-    def log_change (self, *args):
+    def log_change(self, *args):
         return
 
-    def log_deletion (self, *args):
+    def log_deletion(self, *args):
         return
 
 
@@ -29,3 +29,8 @@ class DeletedFilter(admin.SimpleListFilter):
         if value == 'deleted':
             return queryset.filter(deleted_at__isnull=False)
         return queryset
+
+
+from django.contrib.auth.models import Group
+
+admin.site.unregister(Group)
