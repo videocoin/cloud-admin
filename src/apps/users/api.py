@@ -4,20 +4,19 @@ import shortuuid
 
 from django.http import JsonResponse
 from django.views.generic import View
-from django.utils.timezone import now
 from celery import current_app as celery_app
 
-from .models import User, TestingUser
+from .models import User
 
 
 class UserAPIView(View):
 
     def get_default_user_data(self):
-        id = shortuuid.ShortUUID().random(length=22)
+        uuid = shortuuid.ShortUUID().random(length=22)
         password = shortuuid.ShortUUID().random(length=12)
         return {
-            'email': 'testing{}@liveplanet.net'.format(id),
-            'name': 'Test User #{}'.format(id),
+            'email': 'testing{}@liveplanet.net'.format(uuid),
+            'name': 'Test User #{}'.format(uuid),
             'password': password,
             'lifetime': 86400,
             'balance': 10,
@@ -49,11 +48,11 @@ class UserAPIView(View):
 class UsersAPIView(View):
 
     def get_default_user_data(self):
-        id = shortuuid.ShortUUID().random(length=22)
+        uuid = shortuuid.ShortUUID().random(length=22)
         password = shortuuid.ShortUUID().random(length=12)
         return {
-            'email': 'testing{}@liveplanet.net'.format(id),
-            'name': 'Test User #{}'.format(id),
+            'email': 'testing{}@liveplanet.net'.format(uuid),
+            'name': 'Test User #{}'.format(uuid),
             'password': password,
             'lifetime': 86400,
             'balance': 10,
@@ -87,10 +86,10 @@ class UsersAPIView(View):
 
 class ManageUserAPIView(View):
 
-    def put(self, request, id):
+    def put(self, request, pk):
         if request.body:
             request_data = json.loads(request.body)
-        user = User.objects.filter(id=id).first()
+        user = User.objects.filter(id=pk).first()
         if not user or not user.is_testing:
             return JsonResponse({'error': 'Not found'}, status=404)
         balance, lifetime = None, None
@@ -99,24 +98,28 @@ class ManageUserAPIView(View):
         if request_data.get('lifetime'):
             lifetime = request_data.pop('lifetime')
 
-        User.objects.filter(id=id).update(**request_data)
+        User.objects.filter(id=pk).update(**request_data)
 
         if balance:
-            celery_app.send_task('users.tasks.FaucetTestingUsersTask', args=[user.id, balance], countdown=3)
+            celery_app.send_task(
+                'users.tasks.FaucetTestingUsersTask',
+                args=[user.id, balance],
+                countdown=3
+            )
         if lifetime:
             User.objects.update_lifetime(id, lifetime)
         return JsonResponse({}, status=200)
 
-    def delete(self, request, id):
-        user = User.objects.filter(id=id).first()
+    def delete(self, request, pk):
+        user = User.objects.filter(pk=pk).first()
         if not user or not user.is_testing:
             return JsonResponse({'error': 'Not found'}, status=404)
-        User.objects.filter(id=id).delete()
+        User.objects.filter(pk=pk).delete()
 
         return JsonResponse({}, status=204)
 
-    def get(self, request, id):
-        user = User.objects.filter(id=id).first()
+    def get(self, request, pk):
+        user = User.objects.filter(pk=pk).first()
         if not user or not user.is_testing:
             return JsonResponse({'error': 'Not found'}, status=404)
 

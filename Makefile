@@ -37,3 +37,6 @@ release: docker-build docker-push docker-build-static docker-push-static
 
 deploy:
 	ENV=${ENV} GCP_PROJECT=${GCP_PROJECT} deploy/deploy.sh
+
+lint:
+	pylint --rcfile=.pylintrc src/apps/

@@ -5,7 +5,6 @@ from django import forms
 from django.shortcuts import resolve_url
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
-from django_mysql.models import JSONField
 from jsoneditor.forms import JSONEditor
 from prettyjson import PrettyJSONWidget
 
@@ -27,7 +26,7 @@ class LocalityFilter(admin.SimpleListFilter):
         value = self.value()
         if value == 'Internal':
             return queryset.filter(tags__contains={'locality': 'internal'})
-        elif value == 'External':
+        if value == 'External':
             return queryset.exclude(tags__contains={'locality': 'internal'})
         return queryset
 
@@ -37,9 +36,9 @@ class MinerForm(forms.ModelForm):
         model = Miner
         fields = '__all__'
         widgets = {
-          'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
-          'crypto_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
-          'tags': JSONEditor(),
+            'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
+            'crypto_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
+            'tags': JSONEditor(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -65,7 +64,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'task_assigned',
         'address',
         'cpu_freq',
-        'cpu_cores', 
+        'cpu_cores',
         'cpu_usage',
         'memory_total',
         'memory_used',

@@ -28,7 +28,7 @@ class FaucetTestingUsersTask(Task):
     max_retries = 3
     name = 'users.tasks.FaucetTestingUsersTask'
 
-    def run(self, user_id, balance, *args, **kwargs):
+    def run(self, user_id, balance, *args, **kwargs):  # pylint: disable=arguments-differ
         user = User.objects.get(id=user_id)
         r = requests.post(
             settings.FAUCET_URL,

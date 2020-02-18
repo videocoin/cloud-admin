@@ -20,12 +20,13 @@ class ModelBackend(DjangoModelBackend):
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a non-existing user (#20760).
             UserModel().set_password(password)
+            return None
         else:
             if not bcrypt.using(rounds=12, ident='2a', salt=None).verify(password, user.password):
-                return
+                return None
             if not user.is_staff:
-                return
-            request._cached_user = user
+                return None
+            request._cached_user = user  # pylint: disable=protected-access
             return user
 
     def get_user(self, user_id):

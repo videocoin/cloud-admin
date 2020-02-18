@@ -40,7 +40,6 @@ class User(PermissionsMixin, AbstractBaseUser):
     role = models.IntegerField(choices=ROLES_CHOICES)
 
     last_login = None
-    is_superuser = True
     groups = []
     user_permissions = []
     USERNAME_FIELD = 'email'
@@ -85,18 +84,20 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def account(self):
-        from accounts.models import Account
+        from accounts.models import Account  # pylint: disable=import-outside-toplevel
         return Account.objects.filter(user_id=str(self.id)).first()
 
     @property
     def balance(self):
         if self.account:
             return str(int(self.account.balance_wei or 0) / 10**18)
+        return None
 
     @property
     def address(self):
         if self.account:
             return self.account.address
+        return None
 
     @property
     def is_testing(self):

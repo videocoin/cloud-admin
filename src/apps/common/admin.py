@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
+
+
+admin.site.unregister(Group)
 
 
 class DontLog:
@@ -29,8 +33,3 @@ class DeletedFilter(admin.SimpleListFilter):
         if value == 'deleted':
             return queryset.filter(deleted_at__isnull=False)
         return queryset
-
-
-from django.contrib.auth.models import Group
-
-admin.site.unregister(Group)

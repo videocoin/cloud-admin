@@ -66,14 +66,18 @@ class Stream(models.Model):
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
     name = models.CharField(max_length=255, null=True, blank=True)
-    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id')
+    by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id'
+    )
     profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.SET_NULL)
 
     status = models.IntegerField(choices=STREAM_STATUS_CHOICES, null=True, blank=True)
     input_status = models.IntegerField(choices=INPUT_STATUS_CHOICES, null=True, blank=True)
-    
+
     stream_contract_id = models.BigIntegerField(null=True, blank=True)
-    stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
+    stream_contract_address = models.CharField(
+        max_length=255, editable=False, null=True, blank=True
+    )
 
     input_url = models.CharField(max_length=255, null=True, blank=True)
     output_url = models.CharField(max_length=255, null=True, blank=True)
@@ -87,9 +91,13 @@ class Stream(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
-    input_type = models.CharField(max_length=255, choices=INPUT_TYPE_CHOICES, null=True, blank=True)
-    output_type = models.CharField(max_length=255, choices=OUTPUT_TYPE_CHOICES, null=True, blank=True)
-    
+    input_type = models.CharField(
+        max_length=255, choices=INPUT_TYPE_CHOICES, null=True, blank=True
+    )
+    output_type = models.CharField(
+        ax_length=255, choices=OUTPUT_TYPE_CHOICES, null=True, blank=True
+    )
+
     @property
     def tasks(self):
         return Task.objects.filter(stream_id=str(self.id))
@@ -149,9 +157,13 @@ class Task(models.Model):
     output = JSONField(null=True, blank=True)
     client_id = models.CharField(max_length=255, editable=False, null=True, blank=True)
     stream_contract_id = models.BigIntegerField(null=True, blank=True)
-    stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
+    stream_contract_address = models.CharField(
+        max_length=255, editable=False, null=True, blank=True
+    )
     machine_type = models.CharField(max_length=255, null=True, blank=True)
-    stream = models.ForeignKey(Stream, blank=True, null=True, on_delete = models.CASCADE, db_column = 'stream_id')
+    stream = models.ForeignKey(
+        Stream, blank=True, null=True, on_delete=models.CASCADE, db_column='stream_id'
+    )
 
     @property
     def can_be_stopped(self):

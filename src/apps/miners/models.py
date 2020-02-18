@@ -23,7 +23,9 @@ class Miner(models.Model):
     )
 
     id = models.CharField(primary_key=True, max_length=255, editable=False)
-    by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id')
+    by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.CASCADE, db_column='user_id'
+    )
     name = models.CharField(max_length=255, null=True, blank=True)
     last_ping_at = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, null=True, blank=True)
@@ -74,6 +76,7 @@ class Miner(models.Model):
         c = self.system_info_dict.get('cpu_usage', None)
         if c:
             return round(c, 2)
+        return None
 
     @property
     def load1(self):
@@ -92,18 +95,21 @@ class Miner(models.Model):
         m = self.system_info_dict.get('memory', {}).get('free')
         if m:
             return round(m / 1024 / 1024 / 1024, 2)
+        return None
 
     @property
     def memory_used(self):
         m = self.system_info_dict.get('memory', {}).get('used')
         if m:
             return round(m / 1024 / 1024 / 1024, 2)
+        return None
 
     @property
     def memory_total(self):
         m = self.system_info_dict.get('memory', {}).get('total')
         if m:
             return round(m / 1024 / 1024 / 1024, 2)
+        return None
 
     @property
     def version(self):

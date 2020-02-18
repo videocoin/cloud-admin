@@ -1,5 +1,5 @@
-import requests
 from datetime import timedelta
+import requests
 
 from django.contrib.auth.models import BaseUserManager
 from django.db import transaction
@@ -18,7 +18,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_testing_user(self, user_data):
-        from users.models import TestingUser
+        from users.models import TestingUser   # pylint: disable=import-outside-toplevel
         with transaction.atomic():
             lifetime = user_data.pop('lifetime')
             balance = user_data.pop('balance')
@@ -38,7 +38,11 @@ class UserManager(BaseUserManager):
             user.activated_at = now()
             user.save()
 
-            celery_app.send_task('users.tasks.FaucetTestingUsersTask', args=[user.id, balance], countdown=3)
+            celery_app.send_task(
+                'users.tasks.FaucetTestingUsersTask',
+                args=[user.id, balance],
+                countdown=3
+            )
 
             delete_date = now() + timedelta(seconds=int(lifetime))
             TestingUser.objects.create(user_id=user.id, delete_date=delete_date)
@@ -50,9 +54,10 @@ class UserManager(BaseUserManager):
 
     def delete_expired_testing_users(self):
         current_time = now()
-        return self.model.objects.filter(testing_user__delete_date__lte=current_time).filter(testing_user__isnull=False).delete()
+        return self.model.objects.filter(testing_user__delete_date__lte=current_time).\
+            filter(testing_user__isnull=False).delete()
 
     def update_lifetime(self, user_id, lifetime):
-        from users.models import TestingUser
+        from users.models import TestingUser  # pylint: disable=import-outside-toplevel
         delete_date = now() + timedelta(seconds=int(lifetime))
         TestingUser.objects.filter(user_id=user_id).update(delete_date=delete_date)

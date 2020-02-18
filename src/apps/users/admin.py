@@ -5,12 +5,12 @@ from django.urls import path, reverse
 from django.shortcuts import redirect
 from django.conf import settings
 
-from .models import User, ApiToken, TestingUser
 from transfers.models import Transfer
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
 from common.admin import DontLog
+from .models import User, ApiToken, TestingUser
 
 
 class TestingFilter(admin.SimpleListFilter):
@@ -40,24 +40,42 @@ class ApiTokensInlineAdmin(admin.TabularInline):
 class TransfersInlineAdmin(admin.TabularInline):
     model = Transfer
     extra = 0
-    readonly_fields = ('id', 'pin', 'kind', 'status', 'to_address', 'amount', 'created_at', 'expires_at')
-    fields = ('id', 'pin', 'kind', 'status', 'to_address', 'amount', 'created_at', 'expires_at')
+    readonly_fields = (
+        'id', 'pin', 'kind', 'status', 'to_address',
+        'amount', 'created_at', 'expires_at'
+    )
+    fields = (
+        'id', 'pin', 'kind', 'status', 'to_address',
+        'amount', 'created_at', 'expires_at'
+    )
     show_change_link = True
 
 
 class StreamsInlineAdmin(admin.TabularInline):
     model = Stream
     extra = 0
-    fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
-    readonly_fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
+    fields = (
+        'id', 'name', 'profile_id', 'status', 'input_status',
+        'stream_contract_id', 'created_at', 'updated_at'
+    )
+    readonly_fields = (
+        'id', 'name', 'profile_id', 'status', 'input_status',
+        'stream_contract_id', 'created_at', 'updated_at'
+    )
     show_change_link = True
 
 
 class MinersInlineAdmin(admin.TabularInline):
     model = Miner
     extra = 0
-    readonly_fields = ('id', 'last_ping_at', 'status', 'current_task_id', 'address', 'tags',  'system_info')
-    fields = ('id', 'last_ping_at', 'status', 'current_task_id', 'address', 'tags',  'system_info')
+    readonly_fields = (
+        'id', 'last_ping_at', 'status', 'current_task_id',
+        'address', 'tags', 'system_info'
+    )
+    fields = (
+        'id', 'last_ping_at', 'status', 'current_task_id',
+        'address', 'tags', 'system_info'
+    )
     show_change_link = True
 
 
@@ -78,14 +96,23 @@ class TestingUserInlineAdmin(admin.TabularInline):
 
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role', 'balance', 'address', 'is_active', 'is_testing', 'created_at')
+    list_display = (
+        'id', 'email', 'name', 'role', 'balance',
+        'address', 'is_active', 'is_testing', 'created_at'
+    )
     list_filter = ('role', 'is_active', TestingFilter, 'created_at')
-    search_fields = ('id', 'email', 'name', 'apitoken__token__icontains', 'transfer__id__icontains')
+    search_fields = (
+        'id', 'email', 'name',
+        'apitoken__token__icontains', 'transfer__id__icontains'
+    )
     exclude = ('password', )
     readonly_fields = ['id', 'token', 'balance', 'is_testing']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
-    inlines = [TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin]
+    inlines = [
+        TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin,
+        ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin
+    ]
 
     fieldsets = (
         ('USER', {
@@ -123,19 +150,22 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         ]
         return my_urls + urls
 
-    def activate(self, request, id):
+    def activate(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
 
-        original = User.objects.get(id=id)
+        original = User.objects.get(pk=pk)
         domain = '{}://{}'.format(request.scheme, request.get_host())
-        requests.post('{}/api/v1/user/{}/activate'.format(domain, original.id), headers={'Authorization': 'Bearer {}'.format(request.user.token)})
+        requests.post(
+            '{}/api/v1/user/{}/activate'.format(domain, original.id),
+            headers={'Authorization': 'Bearer {}'.format(request.user.token)}
+        )
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
-    def faucet(self, request, id):
+    def faucet(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        original = User.objects.get(id=id)
+        original = User.objects.get(pk=pk)
         r = requests.post(
             settings.FAUCET_URL,
             json={"account": original.address, "amount": 10},
@@ -143,18 +173,18 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         assert r.status_code == 200
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
-    def block(self, request, id):
+    def block(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        original = User.objects.get(id=id)
+        original = User.objects.get(pk=pk)
         original.is_active = False
         original.save(update_fields=['is_active'])
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
-    def unblock(self, request, id):
+    def unblock(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        original = User.objects.get(id=id)
+        original = User.objects.get(pk=pk)
         original.is_active = True
         original.save(update_fields=['is_active'])
         return redirect(reverse('admin:users_user_change', args=[original.id]))

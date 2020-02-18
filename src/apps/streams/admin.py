@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect, resolve_url
@@ -8,10 +7,9 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
 from common.admin import DontLog, DeletedFilter
-from videocoin.blockchain import Blockchain
-from videocoin.validators import ValidatorCollection
 from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
 from .models import Stream, Task
+from .blockchain import validate_stream, get_blockchain_events, BlockchainConnectionError
 
 
 class TasksInlineAdmin(admin.TabularInline):
@@ -82,7 +80,8 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
     def validation_field(self, obj):
         url_validate = reverse('admin:streams_stream_validate', args=[obj.id])
         url_events = reverse('admin:streams_stream_events', args=[obj.id])
-        html = '''<button type="button" class="validate btn btn-info" data-url={} style="display: inline-block;
+        html = '''<button type="button" class="validate btn btn-info" data-url={} style="
+                display: inline-block;
                 background: #609ab6;
                 border-radius: 4px;
                 padding: 10px 15px;
@@ -90,8 +89,13 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 text-align: left;
                 color: #fff;">validate</button>'''.format(url_validate)
         if obj.stream_contract_address:
-            html += '''<a href="{}" style="padding: 10px 15px;">Blockchain events</a>'''.format(url_events)
-        html += '<div class="validate_result"><img src="https://i.giphy.com/l3nWhI38IWDofyDrW.gif" class="validate_loading" style="display:none; width:200px;"/ ></div>'
+            html += '''<a href="{}" style="padding: 10px 15px;">
+            Blockchain events
+            </a>'''.format(url_events)
+        html += '<div class="validate_result">' \
+                '<img src="https://i.giphy.com/l3nWhI38IWDofyDrW.gif" ' \
+                ' class="validate_loading" style="display:none; width:200px;"/ >' \
+                '</div>'
         return format_html(html)
 
     validation_field.short_description = "Actions"
@@ -158,15 +162,15 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
     owned_by.allow_tags = True
 
     def get_rtmp_url(self, obj):
-         return format_html('<a target="_blank" href="{}" />Link</a>', obj.rtmp_url)
+        return format_html('<a target="_blank" href="{}" />Link</a>', obj.rtmp_url)
     get_rtmp_url.short_description = "RTMP"
 
     def get_input_url(self, obj):
-         return format_html('<a target="_blank" href="{}" />Link</a>', obj.input_url)
+        return format_html('<a target="_blank" href="{}" />Link</a>', obj.input_url)
     get_input_url.short_description = "Input"
 
     def get_output_url(self, obj):
-         return format_html('<a target="_blank" href="{}" />Link</a>', obj.output_url)
+        return format_html('<a target="_blank" href="{}" />Link</a>', obj.output_url)
     get_output_url.short_description = "Output"
 
     def get_urls(self):
@@ -174,35 +178,39 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         my_urls = [
             path(r'<slug:id>/start/', self.start_stream, name='streams_stream_start'),
             path(r'<slug:id>/stop/', self.stop_stream, name='streams_stream_stop'),
-            path(r'<slug:id>/events/', self.admin_site.admin_view(self.events), name='streams_stream_events'),
             path(r'<slug:id>/validate/', self.validate, name='streams_stream_validate'),
+            path(
+                r'<slug:id>/events/',
+                self.admin_site.admin_view(self.events),
+                name='streams_stream_events'
+            ),
         ]
         return my_urls + urls
 
-    def start_stream(self, request, id):
+    def start_stream(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        original = Stream.objects.get(id=id)
+        original = Stream.objects.get(id=pk)
         if not original.can_be_started:
             return redirect(reverse('admin:streams_stream_change', args=[original.id]))
         client = StreamsServiceClient()
         client.start_stream(original.id)
         return redirect(reverse('admin:streams_stream_change', args=[original.id]))
 
-    def stop_stream(self, request, id):
+    def stop_stream(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        original = Stream.objects.get(id=id)
+        original = Stream.objects.get(id=pk)
         if not original.can_be_stopped:
             return redirect(reverse('admin:streams_stream_change', args=[original.id]))
         client = StreamsServiceClient()
         client.stop_stream(original.id)
         return redirect(reverse('admin:streams_stream_change', args=[original.id]))
 
-    def events(self, request, id):
+    def events(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        stream = Stream.objects.get(id=id)
+        stream = Stream.objects.get(id=pk)
 
         context = {
             'original': stream,
@@ -214,50 +222,33 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
             'has_view_permission': True,
             'add': False,
         }
+        template = loader.get_template('admin/streams/events.html')
 
-        blockchain = Blockchain(
-            settings.RPC_NODE_HTTP_ADDR,
-            stream_id=stream.stream_contract_id,
-            stream_address=stream.stream_contract_address,
-            stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
-        )
-
-        if not blockchain.is_connected():
+        try:
+            events = get_blockchain_events(stream)
+        except BlockchainConnectionError:
             context.update({
                 'error': 'Can not connect to blockchain...'
             })
+            return HttpResponse(template.render(context, request))
 
-        events = blockchain.get_all_events()
         events = sorted(events, key=lambda e: e['blockInfo']['timestamp'])
 
         context.update({
             'events': events,
         })
-        template = loader.get_template('admin/streams/events.html')
 
         return HttpResponse(template.render(context, request))
 
-    def validate(self, request, id):
+    def validate(self, request, pk):
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
-        stream = Stream.objects.get(id=id)
-
-        blockchain = Blockchain(
-            settings.RPC_NODE_HTTP_ADDR,
-            stream_id=stream.stream_contract_id,
-            stream_address=stream.stream_contract_address,
-            stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
-        )
-
-        if not blockchain.is_connected():
+        stream = Stream.objects.get(id=pk)
+        try:
+            validator = validate_stream(stream)
+        except BlockchainConnectionError:
             return JsonResponse({'error': 'Can not connect to blockchain...'}, status=400)
 
-        events = blockchain.get_all_events()
-        validator = ValidatorCollection(
-            events=events,
-            input_url=stream.input_url,
-            output_url=stream.output_url
-        )
         return JsonResponse(validator.validate(), status=200)
 
     def has_add_permission(self, request):

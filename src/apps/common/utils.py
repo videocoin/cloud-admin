@@ -1,7 +1,6 @@
 import functools
 import warnings
 import decimal
-import shortuuid
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -10,12 +9,14 @@ from django.template.loader import render_to_string
 from .tasks import send_email_task
 
 
-def send_email(subject, recipients_email, template, context={}, bcc=None):
+def send_email(subject, recipients_email, template, context=None, bcc=None):
     """
     simple async sending email
     """
+    if not context:
+        context = {}
     html_content = render_to_string('emails/{}.html'.format(template), context)
-    if type(recipients_email) is list or type(recipients_email) is tuple:
+    if isinstance(recipients_email, (list, tuple)):
         task = send_email_task.apply_async(args=[subject, recipients_email, html_content, bcc])
     else:
         task = send_email_task.apply_async(args=[subject, [recipients_email], html_content, bcc])
@@ -60,11 +61,3 @@ def to_two_prec_decimal(d_value):
 
 def to_two_prec_decimal_string(d_value):
     return str(to_two_prec_decimal(d_value))
-
-
-def generate_code(prefix, model):
-    while True:
-        su = shortuuid.ShortUUID(alphabet="0123456789")
-        code = su.random(length=5)
-        if not model.objects.filter(secret_code=code).exists():
-            return code

@@ -58,8 +58,8 @@ class Blockchain:
             self.add_stream_manager(self.normalize_address(stream_manager_address))
 
     def normalize_address(self, address):
-            as_bytes = eth_utils.to_bytes(hexstr=address)
-            return eth_utils.to_normalized_address(as_bytes[-20:])
+        as_bytes = eth_utils.to_bytes(hexstr=address)
+        return eth_utils.to_normalized_address(as_bytes[-20:])
 
     def add_stream_manager(self, stream_manager_address):
         module_dir = os.path.dirname(__file__)
@@ -67,7 +67,10 @@ class Blockchain:
         with open(file_path) as f:
             info_streammanger_json = json.load(f)
             self.streammanager_abi = info_streammanger_json['abi']
-            self.stream_manager_contract = self.w3.eth.contract(address=self.w3.toChecksumAddress(stream_manager_address), abi=self.streammanager_abi)
+            self.stream_manager_contract = self.w3.eth.contract(
+                address=self.w3.toChecksumAddress(stream_manager_address),
+                abi=self.streammanager_abi
+            )
 
     def add_stream(self, stream_address):
         module_dir = os.path.dirname(__file__)
@@ -75,7 +78,10 @@ class Blockchain:
         with open(file_path) as f:
             info_stream_json = json.load(f)
             self.stream_abi = info_stream_json['abi']
-            self.stream_contract = self.w3.eth.contract(address=self.w3.toChecksumAddress(stream_address), abi=self.stream_abi)
+            self.stream_contract = self.w3.eth.contract(
+                address=self.w3.toChecksumAddress(stream_address),
+                abi=self.stream_abi
+            )
 
     def get_block(self):
         return self.w3.eth.blockNumber
@@ -96,12 +102,13 @@ class Blockchain:
             argument_filters = {}
 
         event_abi = find_matching_event_abi(contract_abi, event_name=event_name)
-        _, event_filter_params = construct_event_filter_params(event_abi,
-                                                               contract_address,
-                                                               fromBlock=self.fromBlock,
-                                                               toBlock=self.toBlock,
-                                                               argument_filters=argument_filters
-                                                               )
+        _, event_filter_params = construct_event_filter_params(
+            event_abi,
+            contract_address,
+            fromBlock=self.fromBlock,
+            toBlock=self.toBlock,
+            argument_filters=argument_filters
+            )
         found_logs = self.w3.eth.getLogs(event_filter_params)
         event_data = []
         for log in found_logs:
@@ -112,7 +119,12 @@ class Blockchain:
         result = []
         for event in self.get_stream_manager_event_names():
             log_print('Processing event=' + event)
-            event_data = self.get_event(self.streammanager_abi, self.stream_manager_contract.address, event, argument_filters={'streamId':self.stream_id})
+            event_data = self.get_event(
+                self.streammanager_abi,
+                self.stream_manager_contract.address,
+                event,
+                argument_filters={'streamId': self.stream_id}
+            )
             for log in event_data:
                 log = self.to_log_entry(log)
                 result.append(log)

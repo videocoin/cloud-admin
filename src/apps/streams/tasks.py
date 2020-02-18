@@ -1,18 +1,15 @@
 from __future__ import absolute_import
 
-import logging
 from datetime import timedelta
 
 from django.utils.timezone import now
+from django.conf import settings
 from celery import Task
 from celery import current_app as celery_app
-from django.conf import settings
 
-from videocoin.blockchain import Blockchain
-from videocoin.validators import ValidatorCollection
+from streams.blockchain import validate_stream
 from streams.models import Stream
 from common.utils import send_email, get_site_url
-logger = logging.getLogger(__name__)
 
 
 class ValidateStreamsTask(Task):
@@ -20,36 +17,29 @@ class ValidateStreamsTask(Task):
     name = 'streams.tasks.ValidateStreamsTask'
 
     def run(self, *args, **kwargs):
-        streams = Stream.objects.filter(completed_at__gte=now()-timedelta(minutes=settings.STREAM_VALIDATION_FREQUENCY))
+        streams = Stream.objects.filter(
+            completed_at__gte=now()-timedelta(minutes=settings.STREAM_VALIDATION_FREQUENCY)
+        )
 
         if not streams:
             return
         results = []
         for stream in streams:
-            blockchain = Blockchain(
-                settings.RPC_NODE_HTTP_ADDR,
-                stream_id=stream.stream_contract_id,
-                stream_address=stream.stream_contract_address,
-                stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
-            )
-
-            events = blockchain.get_all_events()
-            validator = ValidatorCollection(
-                events=events,
-                input_url=stream.input_url,
-                output_url=stream.output_url
-            )
+            validator = validate_stream(stream)
             validation_results = validator.validate()
             validators = []
             for k, v in validation_results.items():
                 if not v.get('is_valid'):
                     validators.append('{}: {}'.format(k, ', '.join(v.get('errors'))))
             if not validator.is_valid or stream.is_failed:
+                link = '{}/imsgx72bs1pxd72mxs/streams/stream/{}/change/'.format(
+                    get_site_url(), stream.id
+                )
                 results.append({
                     'id': stream.id,
                     'name': stream.name,
                     'status': stream.get_status_display,
-                    'link': '{}/imsgx72bs1pxd72mxs/streams/stream/{}/change/'.format(get_site_url(), stream.id),
+                    'link': link,
                     'validators': validators,
                 })
         if results:

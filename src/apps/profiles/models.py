@@ -1,13 +1,9 @@
-import logging
 import json
 import uuid
 
 from django.db import models
 
 from django_mysql.models import JSONField
-
-
-logger = logging.getLogger(__name__)
 
 
 class Profile(models.Model):
@@ -35,10 +31,10 @@ class Profile(models.Model):
         built = ["ffmpeg"]
         built.extend(["-i", "/tmp/in.mp4"])
 
-        for c in self.spec_dict.get('components', {}):
-            if not c.get('params'):
+        for component in self.spec_dict.get('components', {}):
+            if not component.get('params'):
                 continue
-            for i in c.get('params', []):
+            for i in component.get('params', []):
                 built.extend([i.get('key', ''), i.get('value', '')])
 
         built.extend(["$OUTPUT/index.m3u8"])
