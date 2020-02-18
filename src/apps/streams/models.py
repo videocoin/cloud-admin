@@ -53,15 +53,15 @@ class Stream(models.Model):
     INPUT_TYPE_FILE = 'INPUT_TYPE_FILE'
 
     INPUT_TYPE_CHOICES = (
-        (INPUT_TYPE_RTMP, "INPUT_TYPE_RTMP"),
-        (INPUT_TYPE_WEBRTC, "INPUT_TYPE_WEBRTC"),
-        (INPUT_TYPE_FILE, "INPUT_TYPE_FILE"),
+        (INPUT_TYPE_RTMP, "RTMP"),
+        (INPUT_TYPE_WEBRTC, "WEBRTC"),
+        (INPUT_TYPE_FILE, "FILE"),
     )
 
     OUTPUT_TYPE_HLS = 'OUTPUT_TYPE_HLS'
 
     OUTPUT_TYPE_CHOICES = (
-        (OUTPUT_TYPE_HLS, "OUTPUT_TYPE_HLS"),
+        (OUTPUT_TYPE_HLS, "HLS"),
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
