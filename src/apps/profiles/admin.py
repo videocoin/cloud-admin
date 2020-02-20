@@ -43,8 +43,6 @@ class ProfileAdmin(DontLog, admin.ModelAdmin):
                 'is_enabled',
                 'spec',
                 'render',
-                'reward',
-                'deposit',
             )
         }),
     )
