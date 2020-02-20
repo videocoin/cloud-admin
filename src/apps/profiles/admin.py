@@ -25,8 +25,6 @@ class ProfileAdmin(DontLog, admin.ModelAdmin):
       'name',
       'id',
       'is_enabled',
-      'reward',
-      'deposit',
     )
 
     list_filter = ('is_enabled', )
