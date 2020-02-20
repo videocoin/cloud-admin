@@ -17,8 +17,6 @@ class Profile(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     is_enabled = models.BooleanField(default=False)
     spec = JSONField(null=True, blank=True)
-    deposit = models.CharField(max_length=255, null=True, blank=True)
-    reward = models.CharField(max_length=255, null=True, blank=True)
 
     @property
     def spec_dict(self):
