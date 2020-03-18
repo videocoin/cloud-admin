@@ -77,7 +77,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
     )
 
     change_form_template = 'admin/streams/stream_change_form.html'
-    search_fields = ('id', 'name')
+    search_fields = ('id', 'name', 'owned_by__email')
 
     def validation_field(self, obj):
         url_validate = reverse('admin:streams_stream_validate', args=[obj.id])

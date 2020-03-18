@@ -31,6 +31,12 @@ class DeletedFilter(admin.SimpleListFilter):
         return queryset
 
 
+class HideDeletedInlineMixin:
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(deleted_at__isnull=True)
+
+
 from django.contrib.auth.models import Group
 
 admin.site.unregister(Group)

@@ -10,7 +10,7 @@ from transfers.models import Transfer
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
-from common.admin import DontLog
+from common.admin import DontLog, HideDeletedInlineMixin
 
 
 class TestingFilter(admin.SimpleListFilter):
@@ -45,7 +45,7 @@ class TransfersInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-class StreamsInlineAdmin(admin.TabularInline):
+class StreamsInlineAdmin(HideDeletedInlineMixin, admin.TabularInline):
     model = Stream
     extra = 0
     fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
@@ -53,7 +53,7 @@ class StreamsInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-class MinersInlineAdmin(admin.TabularInline):
+class MinersInlineAdmin(HideDeletedInlineMixin, admin.TabularInline):
     model = Miner
     extra = 0
     readonly_fields = ('id', 'last_ping_at', 'status', 'current_task_id', 'address', 'tags',  'system_info')
