@@ -208,8 +208,8 @@ USE_HTTPS = True
 JSON_EDITOR_INIT_JS = "jsoneditor-init.js"
 
 TESTING_USER_EMAILS = [
-    'videocointtest@yandex.com'
-    'videocointtest@yandex.ru'
+    'videocointtest@yandex.com',
+    'videocointtest@yandex.ru',
 ]
 EMAIL_HOST = env.str('VC_ADMIN_EMAIL_HOST', None)
 EMAIL_HOST_USER = env.str('VC_ADMIN_EMAIL_USER', None)
