@@ -2,6 +2,7 @@ import logging
 import uuid
 
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
@@ -101,6 +102,8 @@ class User(PermissionsMixin, AbstractBaseUser):
     @property
     def is_testing(self):
         if hasattr(self, 'testing_user'):
+            return True
+        if self.email in settings.TESTING_USER_EMAILS:
             return True
         return False
 
