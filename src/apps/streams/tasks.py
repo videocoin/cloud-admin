@@ -43,7 +43,7 @@ class ValidateStreamsTask(Task):
             validators = []
             for k, v in validation_results.items():
                 if not v.get('is_valid'):
-                    validators.append('{}: {}'.format(k, ', '.join(v.get('errors'))))
+                    validators.append('<b>{}<b>: {}'.format(k, ', <br>'.join(v.get('errors'))))
             if not validator.is_valid or stream.is_failed:
                 results.append({
                     'id': stream.id,
