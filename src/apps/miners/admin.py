@@ -38,7 +38,6 @@ class MinerForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
           'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
-          'crypto_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
           'tags': JSONEditor(),
         }
 
@@ -47,7 +46,6 @@ class MinerForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['system_info'].widget.attrs['disabled'] = True
-            self.fields['crypto_info'].widget.attrs['disabled'] = True
 
 
 @admin.register(Miner)
@@ -93,7 +91,6 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'address',
                 'tags',
                 'system_info',
-                'crypto_info',
                 'deleted_at',
             )
         }),

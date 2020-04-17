@@ -31,7 +31,6 @@ class Miner(models.Model):
     address = models.CharField("Public Key", max_length=255, null=True, blank=True)
     tags = JSONField(null=True, blank=True)
     system_info = JSONField(null=True, blank=True)
-    crypto_info = JSONField(null=True, blank=True)
 
     deleted_at = models.DateTimeField(null=True, blank=True)
 
