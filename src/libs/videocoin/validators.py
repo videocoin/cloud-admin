@@ -56,6 +56,7 @@ class ChunkEventsValidator(BaseValidator):
     description = 'Check stream chunk events'
 
     CHUNKS_EVENTS = [
+        'InputChunkAdded',
         'ChunkProofSubmited',
         'ChunkProofValidated',
         'ChunkProofScrapped',
@@ -71,6 +72,12 @@ class ChunkEventsValidator(BaseValidator):
         output_chunks = self.get_chunks(self.output_url)
         for chunk in output_chunks:
             chunk_events = [x for x in self.events if x['args']['chunkId'] == chunk.number]
+            if 'InputChunkAdded' not in [x.get('event') for x in chunk_events]:
+                self.errors.append(VCValidationError('No corresponding InputChunkAdded event for chunk #{}'.
+                                                     format(chunk.number)))
+                self.is_valid = False
+                continue
+
             if 'ChunkProofSubmited' not in [x.get('event') for x in chunk_events]:
                 self.errors.append(VCValidationError('No corresponding ChunkProofSubmited event for chunk #{}'.
                                                      format(chunk.number)))

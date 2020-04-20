@@ -105,27 +105,28 @@
                                     <td class="content-block aligncenter"
                                         style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:0 0 20px; text-align:center;'>
                                         <h2 style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;font-family:"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;color:#3b4153;margin:40px 0 0;line-height:1.2em;font-weight:400;font-size:24px;'>
-                                            Validation tests for stream "{{ item.name }}" ({{ item.id }})
+                                            Validation tests for stream "{{ results.name }}"
                                         </h2>
                                     </td>
                                 </tr>
                                 <tr style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;'>
                                     <td class="content-block"
                                         style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:0 0 20px;'>
-                                        <p>Status: {{ item.status }}</p>
+                                        <p>Status: {{ results.status }}</p>
+                                        <p>ID: {{ results.id }}</p>
                                          <table class="results">
                                             <tr>
                                                 <th>Validator</th>
                                                 <th>Errors</th>
                                             </tr>
-                                            {% for name, item in results.validators %}
+                                            {% for validator in results.validators %}
                                                 <tr class="{{ item.status_class }}">
-                                                    <td width="200"><b>{{ name }}</b></td>
-                                                    <td width="200">{% for v in item.errors %} {{ v }} <br>{% endfor %}</td>
+                                                    <td width="200"><b>{{ validator.name }}</b></td>
+                                                    <td width="200">{% for v in validator.errors %} {{ v }} <br>{% endfor %}</td>
                                                 </tr>
                                             {% endfor %}
                                         </table>
-                                        <p><a href="{{ item.link }}">See details</a></p>
+                                        <p><a href="{{ results.link }}">See details</a></p>
                                     </td>
                                 </tr>
                               </table>
