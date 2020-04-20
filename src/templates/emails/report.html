@@ -97,39 +97,35 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0"
                        style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;background-color:#ffffff;border:1px solid #e9e9e9;border-radius:12px;box-shadow:0 2px 24px 0 rgba(179, 186, 203, .5);color:#3b4153;'>
                     <tr style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;'>
-                        <td class="content-wrap aligncenter"
-                            style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:30px;text-align:center;'>
+                        <td class="content-wrap "
+                            style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:30px;'>
                             <table width="100%" cellpadding="0" cellspacing="0"
                                    style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;'>
                                 <tr style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;'>
-                                    <td class="content-block"
-                                        style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:0 0 20px;'>
+                                    <td class="content-block aligncenter"
+                                        style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:0 0 20px; text-align:center;'>
                                         <h2 style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;font-family:"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;color:#3b4153;margin:40px 0 0;line-height:1.2em;font-weight:400;font-size:24px;'>
-                                            Stream validation tests
+                                            Validation tests for stream "{{ item.name }}" ({{ item.id }})
                                         </h2>
                                     </td>
                                 </tr>
                                 <tr style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;'>
                                     <td class="content-block"
                                         style='margin:0;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;box-sizing:border-box;font-size:14px;vertical-align:top;padding:0 0 20px;'>
-                                        <table class="results">
+                                        <p>Status: {{ item.status }}</p>
+                                         <table class="results">
                                             <tr>
-                                                <th>Stream ID</th>
-                                                <th>Name</th>
-                                                <th>Status</th>
-                                                <th>Failed Validators</th>
-                                                <th>Link</th>
+                                                <th>Validator</th>
+                                                <th>Errors</th>
                                             </tr>
-                                            {% for item in results %}
+                                            {% for name, item in results.validators %}
                                                 <tr class="{{ item.status_class }}">
-                                                    <td width="200">{{ item.id }}</td>
-                                                    <td width="200">{{ item.name }}</td>
-                                                    <td width="100">{{ item.status }}</td>
-                                                    <td width="130">{% for v in item.validators %} {{ v }} <br><br>{% endfor %}</td>
-                                                    <td width="130"><a href="{{ item.link }}">See details</a></td>
+                                                    <td width="200"><b>{{ name }}</b></td>
+                                                    <td width="200">{% for v in item.errors %} {{ v }} <br>{% endfor %}</td>
                                                 </tr>
                                             {% endfor %}
                                         </table>
+                                        <p><a href="{{ item.link }}">See details</a></p>
                                     </td>
                                 </tr>
                               </table>

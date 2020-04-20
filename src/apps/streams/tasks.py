@@ -24,7 +24,6 @@ class ValidateStreamsTask(Task):
 
         if not streams:
             return
-        results = []
         for stream in streams:
             blockchain = Blockchain(
                 settings.RPC_NODE_HTTP_ADDR,
@@ -43,17 +42,16 @@ class ValidateStreamsTask(Task):
             validators = []
             for k, v in validation_results.items():
                 if not v.get('is_valid'):
-                    validators.append('<b>{}<b>: {}'.format(k, ', <br>'.join(v.get('errors'))))
+                    validators.append(validators)
             if not validator.is_valid or stream.is_failed:
-                results.append({
+                results = {
                     'id': stream.id,
                     'name': stream.name,
                     'status': stream.get_status_display,
                     'link': '{}/imsgx72bs1pxd72mxs/streams/stream/{}/change/'.format(get_site_url(), stream.id),
                     'validators': validators,
-                })
-        if results:
-            self.send_email(results)
+                }
+                self.send_email(results)
 
     def send_email(self, results):
         subject = 'VC validations errors'
