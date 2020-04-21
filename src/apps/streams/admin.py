@@ -17,10 +17,16 @@ from .models import Stream, Task
 class TasksInlineAdmin(admin.TabularInline):
     model = Task
     extra = 0
-    fields = ('id', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
-    readonly_fields = ('id', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
+    fields = ('id_link', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
+    readonly_fields = ('id_link', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
     show_change_link = False
     show_delete_link = False
+
+    def id_link(self, obj):
+        url = resolve_url(admin_urlname(obj._meta, 'change'), obj.id)
+        return format_html('<a href="{}">{}</a>', url, obj.id)
+    id_link.short_description = 'Id'
+    id_link.allow_tags = True
 
 
 @admin.register(Stream)
