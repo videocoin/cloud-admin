@@ -13,7 +13,7 @@
 {% block content %}
     <div class="submit-row">
         <div style="text-align: left;">
-            <a href="{%url 'admin:streams_stream_change' original.id %}"
+            <a href="{% url 'admin:streams_stream_change' original.id %}"
             style="
                 line-height: 15px;
                 text-align: left;
@@ -45,5 +45,43 @@
         {% endfor %}
             </tbody>
         </table>
+        {% for task in tasks %}
+        <br><br>
+        <h2>Transsactions for task <a href="{% url 'admin:streams_task_change' task.id %}">{{ task.id }}</a> ({{ task.status }})</h2>
+            <table id="events-table" class="tablesorter" style="width:100%;table-layout: fixed;overflow-wrap: break-word;overflow-x: scroll">
+                <thead>
+                <tr>
+                  <th>id</th>
+                  <th>created_at</th>
+                  <th>chunk_id</th>
+                  <th>add_input_chunk_tx</th>
+                  <th>add_input_chunk_tx_status</th>
+                  <th>submit_proof_tx</th>
+                  <th>submit_proof_tx_status</th>
+                  <th>validate_proof_tx</th>
+                  <th>validate_proof_tx_status</th>
+                  <th>scrap_proof_tx</th>
+                  <th>scrap_proof_tx_status</th>
+                </tr>
+                </thead>
+                <tbody>
+            {% for transaction in task.transactions.all %}
+                <tr>
+                  <td>{{ transaction.id }}</td>
+                  <td>{{ transaction.created_at|date:'Y-m-d H:i:s.sss' }}</td>
+                  <td>{{ transaction.chunk_id }}</td>
+                  <td>{{ transaction.add_input_chunk_tx }}</td>
+                  <td>{{ transaction.add_input_chunk_tx_status }}</td>
+                  <td>{{ transaction.submit_proof_tx }}</td>
+                  <td>{{ transaction.submit_proof_tx_status }}</td>
+                  <td>{{ transaction.validate_proof_tx }}</td>
+                  <td>{{ transaction.validate_proof_tx_status }}</td>
+                  <td>{{ transaction.scrap_proof_tx }}</td>
+                  <td>{{ transaction.scrap_proof_tx_status }}</td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
     </div>
 {% endblock %}

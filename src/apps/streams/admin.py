@@ -11,7 +11,20 @@ from common.admin import DontLog, DeletedFilter
 from videocoin.blockchain import Blockchain
 from videocoin.validators import ValidatorCollection
 from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
-from .models import Stream, Task
+from .models import Stream, Task, TaskTransaction
+
+
+class TaskTransactionInlineAdmin(admin.TabularInline):
+    model = TaskTransaction
+    extra = 0
+    show_change_link = False
+    show_delete_link = False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class TasksInlineAdmin(admin.TabularInline):
@@ -238,6 +251,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
 
         context.update({
             'events': events,
+            'tasks': stream.tasks.all(),
         })
         template = loader.get_template('admin/streams/events.html')
 
@@ -271,8 +285,9 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
 
 
 @admin.register(Task)
-class TasksAdmin(admin.ModelAdmin):
+class TasksAdmin(DontLog, admin.ModelAdmin):
     model = Task
+    inlines = [TaskTransactionInlineAdmin]
     list_display = ('id', 'status', 'uri', 'path', 'client_id', 'machine_type')
     list_filter = ('status', )
     readonly_fields = ('id', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')

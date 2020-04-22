@@ -151,7 +151,7 @@ class Task(models.Model):
     stream_contract_id = models.BigIntegerField(null=True, blank=True)
     stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
     machine_type = models.CharField(max_length=255, null=True, blank=True)
-    stream = models.ForeignKey(Stream, blank=True, null=True, on_delete = models.CASCADE, db_column = 'stream_id')
+    stream = models.ForeignKey(Stream, blank=True, null=True, on_delete=models.CASCADE, db_column='stream_id')
 
     @property
     def can_be_stopped(self):
@@ -188,3 +188,25 @@ class Task(models.Model):
     class Meta:
         managed = False
         db_table = 'tasks'
+
+
+class TaskTransaction(models.Model):
+
+    id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, db_column='task_id', related_name='transactions')
+    stream_contract_id = models.CharField(max_length=255, editable=False)
+    stream_contract_address = models.CharField(max_length=255, editable=False)
+    chunk_id = models.PositiveSmallIntegerField()
+    add_input_chunk_tx = models.CharField(max_length=255, null=True, blank=True)
+    add_input_chunk_tx_status = models.CharField(max_length=255, null=True, blank=True)
+    submit_proof_tx = models.CharField(max_length=255, null=True, blank=True)
+    submit_proof_tx_status = models.CharField(max_length=255, null=True, blank=True)
+    validate_proof_tx = models.CharField(max_length=255, null=True, blank=True)
+    validate_proof_tx_status = models.CharField(max_length=255, null=True, blank=True)
+    scrap_proof_tx = models.CharField(max_length=255, null=True, blank=True)
+    scrap_proof_tx_status = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tasks_tx'
