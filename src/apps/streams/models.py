@@ -210,3 +210,4 @@ class TaskTransaction(models.Model):
     class Meta:
         managed = False
         db_table = 'tasks_tx'
+        ordering = ('-created_at',)
