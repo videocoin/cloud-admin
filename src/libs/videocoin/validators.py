@@ -19,11 +19,6 @@ class Chunk:
         self.number = number
         self.duration = duration
 
-    def __eq__(self, other):
-        if self.number == other.number and math.isclose(self.duration, other.duration, abs_tol=0.3):
-            return True
-        return False
-
 
 class BaseValidator:
     name = ''
@@ -121,11 +116,18 @@ class InOutValidator(BaseValidator):
             self.is_valid = False
             return
         for i in range(len(input_chunks)):
-            if (output_chunks[i].number != input_chunks[i].number) or \
-                    math.isclose(output_chunks[i].duration, input_chunks[i].duration, abs_tol=0.3):
+            if not self._chunks_equal(output_chunks[i], input_chunks[i]):
+
                 self.errors.append(VCValidationError('Different chunk #{} in input and output'.
                                                      format(input_chunks[i].number)))
                 self.is_valid = False
+
+    def _chunks_equal(self, output_chunk, input_chunk):
+        if output_chunk.number != input_chunk.number:
+            return False
+        if not input_chunk.duration:
+            return True
+        return math.isclose(output_chunk.duration, input_chunk.duration, abs_tol=0.3)
 
 
 class StreamStateInStreamManagerValidator(BaseValidator):
