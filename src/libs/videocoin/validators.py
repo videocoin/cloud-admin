@@ -1,4 +1,5 @@
 import requests
+import math
 
 import m3u8
 
@@ -19,7 +20,7 @@ class Chunk:
         self.duration = duration
 
     def __eq__(self, other):
-        if self.number == other.number and self.duration == other.duration:
+        if self.number == other.number and math.isclose(self.duration, other.duration, abs_tol=0.3):
             return True
         return False
 
@@ -121,7 +122,7 @@ class InOutValidator(BaseValidator):
             return
         for i in range(len(input_chunks)):
             if (output_chunks[i].number != input_chunks[i].number) or \
-                    (int(output_chunks[i].duration) != int(input_chunks[i].duration)):
+                    math.isclose(output_chunks[i].duration, input_chunks[i].duration, abs_tol=0.3):
                 self.errors.append(VCValidationError('Different chunk #{} in input and output'.
                                                      format(input_chunks[i].number)))
                 self.is_valid = False

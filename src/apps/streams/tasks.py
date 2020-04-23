@@ -51,6 +51,7 @@ class ValidateStreamsTask(Task):
                     'status': stream.get_status_display,
                     'link': '{}/imsgx72bs1pxd72mxs/streams/stream/{}/change/'.format(get_site_url(), stream.id),
                     'domain': get_site_url(),
+                    'user': '{} ({})'.format(stream.by.name, stream.by.email),
                     'validators': validators,
                 }
                 self.send_email(results)

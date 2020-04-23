@@ -19,6 +19,11 @@ class TaskTransactionInlineAdmin(admin.TabularInline):
     extra = 0
     show_change_link = False
     show_delete_link = False
+    readonly_fields = (
+        'id', 'created_at', 'stream_contract_id', 'stream_contract_address', 'add_input_chunk_tx',
+        'add_input_chunk_tx_status', 'submit_proof_tx',  'submit_proof_tx_status', 'validate_proof_tx', 'validate_proof_tx_status',
+        'scrap_proof_tx', 'scrap_proof_tx_status',
+    )
 
     def has_change_permission(self, request, obj=None):
         return False
