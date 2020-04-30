@@ -70,11 +70,23 @@ env:
       secretKeyRef:
         name: {{ .Release.Name }}
         key: emailPassword
-  - name: VC_ADMIN_RPC_NODE_HTTP_ADDR
+  - name: VC_ADMIN_SYMPHONY_KEY_FILE
+    value: "/etc/secrets/symphonyKey"
+  - name: VC_ADMIN_SYMPHONY_KEY
     valueFrom:
       secretKeyRef:
         name: {{ .Release.Name }}
-        key: rpcNodeHttpAddr
+        key: symphonyKey
+  - name: VC_ADMIN_SYMPHONY_ADDR
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: symphonyAddr
+  - name: VC_ADMIN_SYMPHONY_OAUTH2_CLIENTID
+    valueFrom:
+      configMapKeyRef:
+        name: {{ .Release.Name }}
+        key: symphonyOauth2Clientid
   - name: VC_ADMIN_FAUCET_URL
     valueFrom:
       secretKeyRef:

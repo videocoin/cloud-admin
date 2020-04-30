@@ -240,7 +240,9 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         }
 
         blockchain = Blockchain(
-            settings.RPC_NODE_HTTP_ADDR,
+            settings.SYMPHONY_KEY_FILE,
+            settings.SYMPHONY_ADDR,
+            settings.SYMPHONY_OAUTH2_CLIENTID,
             stream_id=stream.stream_contract_id,
             stream_address=stream.stream_contract_address,
             stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
@@ -268,7 +270,9 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         stream = Stream.objects.get(id=id)
 
         blockchain = Blockchain(
-            settings.RPC_NODE_HTTP_ADDR,
+            settings.SYMPHONY_KEY_FILE,
+            settings.SYMPHONY_ADDR,
+            settings.SYMPHONY_OAUTH2_CLIENTID,
             stream_id=stream.stream_contract_id,
             stream_address=stream.stream_contract_address,
             stream_manager_address=settings.STREAM_MANAGER_CONTRACT_ADDR
