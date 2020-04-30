@@ -54,7 +54,9 @@ function get_vars() {
     readonly SECRET_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/secretKey`
     readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetUrl`
     readonly STREAM_MANAGER_CONTRACT_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/streamManagerContractAddr`
-    readonly RPC_NODE_HTTP_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/rpcNodeHttpAddr`
+    readonly SYMPHONY_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/symphonyKey`
+    readonly SYMPHONY_OAUTH2_CLIENTID=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/symphonyOauth2Clientid`
+    readonly SYMPHONY_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/symphonyAddr`
     readonly EMAIL_PASSWORD=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/emailPassword`
     readonly DEFAULT_FROM_EMAIL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/defaultFromEmail`
     readonly EMAIL_USER=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/emailUser`
@@ -89,8 +91,10 @@ function deploy() {
         --set managerConfig.emailHost="${EMAIL_HOST}" \
         --set managerConfig.defaultFromEmail="${DEFAULT_FROM_EMAIL}" \
         --set managerConfig.validationEmails="${VALIDATION_EMAILS}" \
+        --set managerConfig.symphonyAddr="${SYMPHONY_ADDR}" \
+        --set managerConfig.symphonyOauth2Clientid="${SYMPHONY_OAUTH2_CLIENTID}" \
         --set secrets.emailPassword="${EMAIL_PASSWORD}" \
-        --set secrets.rpcNodeHttpAddr="${RPC_NODE_HTTP_ADDR}" \
+        --set secrets.symphonyKey="${SYMPHONY_KEY}" \
         --set secrets.streamManagerContractAddr="${STREAM_MANAGER_CONTRACT_ADDR}" \
         --set secrets.faucetUrl="${FAUCET_URL}" \
         --set secrets.databaseUrl="${DATABASE_URL}" \

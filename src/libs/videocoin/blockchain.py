@@ -8,8 +8,9 @@ from web3.utils.contracts import find_matching_event_abi
 from web3.utils.events import get_event_data
 from web3.utils.filters import construct_event_filter_params
 from web3.utils.abi import filter_by_type
-
 from web3.middleware import geth_poa_middleware
+from google.oauth2 import service_account
+from google.auth.transport.requests import AuthorizedSession
 import eth_utils
 
 
@@ -45,11 +46,21 @@ class Blockchain:
     toBlock = 'latest'
     block_infos = {}
 
-    def __init__(self, blockchain_url, stream_id,  stream_address, stream_manager_address):
-        self.w3 = Web3(Web3.HTTPProvider(blockchain_url))
+    def __init__(self, service_account_key, blockchain_url, client_id, stream_id,  stream_address, stream_manager_address):
+
+        creds = service_account.IDTokenCredentials.from_service_account_file(
+            service_account_key,
+            target_audience=client_id)
+        authed_session = AuthorizedSession(creds)
+        authed_session.get(blockchain_url)
+
+        self.w3 = Web3(Web3.HTTPProvider(blockchain_url, {
+            'headers': {'Authorization': 'Bearer {}'.format(creds.token), 'Content-type': 'application/json',
+                        'IAccept': 'application/json'}}))
         self.w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         self.stream_id = stream_id
         connected = self.w3.isConnected()
+
         if not connected:
             log_print('/n!!!! No connection to blockchain !!!!/n')
         if stream_address:
