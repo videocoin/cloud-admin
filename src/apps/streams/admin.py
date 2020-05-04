@@ -10,7 +10,6 @@ from django.template import loader
 from common.admin import DontLog, DeletedFilter
 from videocoin.blockchain import Blockchain
 from videocoin.validators import ValidatorCollection
-from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
 from .models import Stream, Task, TaskTransaction
 
 
@@ -204,6 +203,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         return my_urls + urls
 
     def start_stream(self, request, id):
+        from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
         original = Stream.objects.get(id=id)
@@ -214,6 +214,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         return redirect(reverse('admin:streams_stream_change', args=[original.id]))
 
     def stop_stream(self, request, id):
+        from github.com.videocoin.cloud_api.streams.private.v1.client import StreamsServiceClient
         if not request.user.is_superuser:
             raise PermissionError('you can\'t')
         original = Stream.objects.get(id=id)

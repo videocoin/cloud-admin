@@ -31,6 +31,11 @@ class Miner(models.Model):
     address = models.CharField("Public Key", max_length=255, null=True, blank=True)
     tags = JSONField(null=True, blank=True)
     system_info = JSONField(null=True, blank=True)
+    access_key = models.TextField(null=True, blank=True)
+    key = models.TextField(null=True, blank=True)
+    secret = models.TextField(null=True, blank=True)
+    is_internal = models.BooleanField()
+    is_lock = models.BooleanField()
 
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -59,6 +64,10 @@ class Miner(models.Model):
             self.system_info = json.loads(self.system_info)
 
         return self.system_info
+
+    @property
+    def hostname(self):
+        return self.system_info_dict.get('host', {}).get('hostname')
 
     @property
     def cpu_freq(self):
