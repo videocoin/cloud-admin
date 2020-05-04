@@ -52,7 +52,7 @@ class MinerForm(forms.ModelForm):
 class MinerAdmin(DontLog, admin.ModelAdmin):
     form = MinerForm
 
-    list_filter = (DeletedFilter, 'status', LocalityFilter)
+    list_filter = (DeletedFilter, 'status', 'is_internal')
 
     list_display = (
         'id',
@@ -61,19 +61,15 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'version',
         'owned_by',
         'task_assigned',
-        'address',
-        'cpu_freq',
-        'cpu_cores', 
-        'cpu_usage',
-        'memory_total',
-        'memory_used',
+        'is_internal',
+        'hostname',
+        'is_lock',
     )
 
     readonly_fields = (
         'id',
         'owned_by',
         'address',
-        'task_assigned',
         'last_ping_at',
         'deleted_at',
     )
@@ -85,13 +81,17 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'name',
                 'owned_by',
                 'status',
+                'is_internal',
+                'is_lock',
                 'current_task_id',
                 'last_ping_at',
-                'task_assigned',
                 'address',
                 'tags',
                 'system_info',
                 'deleted_at',
+                'access_key',
+                'key',
+                'secret',
             )
         }),
     )
@@ -117,32 +117,10 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
     task_assigned.short_description = 'Task'
     task_assigned.allow_tags = True
 
-    def internal(self, instance):
-        return instance.internal
-    internal.boolean = True
-
-    def cpu_freq(self, instance):
-        return instance.cpu_freq
-    cpu_freq.short_description = 'CPU Freq (MHz)'
-    cpu_freq.admin_order_field = 'system_info__cpu__freq'
-
-    def cpu_usage(self, instance):
-        return instance.cpu_usage
-    cpu_usage.short_description = 'CPU Usage (%)'
-    cpu_usage.admin_order_field = 'system_info__cpu_usage'
-
-    def memory_total(self, instance):
-        return instance.memory_total
-    memory_total.short_description = 'Memory total (GB)'
-    memory_total.admin_order_field = 'system_info__memory__total'
-
-    def memory_used(self, instance):
-        return instance.memory_used
-    memory_used.short_description = 'Memory used (GB)'
-    memory_used.admin_order_field = 'system_info__memory__used'
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+    def hostname(self, instance):
+        return instance.hostname
+    hostname.short_description = 'Hostname'
+    hostname.admin_order_field = 'system_info__host__hostname'
 
     def has_add_permission(self, request):
         return False
