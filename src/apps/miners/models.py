@@ -31,6 +31,7 @@ class Miner(models.Model):
     address = models.CharField("Public Key", max_length=255, null=True, blank=True)
     tags = JSONField(null=True, blank=True)
     system_info = JSONField(null=True, blank=True)
+    worker_info = JSONField(null=True, blank=True)
     access_key = models.TextField(null=True, blank=True)
     key = models.TextField(null=True, blank=True)
     secret = models.TextField(null=True, blank=True)

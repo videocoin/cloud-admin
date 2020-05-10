@@ -88,6 +88,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'address',
                 'tags',
                 'system_info',
+                'worker_info',
                 'deleted_at',
                 'access_key',
                 'key',
