@@ -72,6 +72,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'address',
         'last_ping_at',
         'deleted_at',
+        'reward',
     )
 
     fieldsets = (
@@ -93,6 +94,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'access_key',
                 'key',
                 'secret',
+                'reward',
             )
         }),
     )
