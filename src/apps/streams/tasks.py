@@ -20,7 +20,10 @@ class ValidateStreamsTask(Task):
     name = 'streams.tasks.ValidateStreamsTask'
 
     def run(self, *args, **kwargs):
-        streams = Stream.objects.filter(completed_at__gte=now()-timedelta(minutes=settings.STREAM_VALIDATION_FREQUENCY))
+        streams = Stream.objects.filter(
+            completed_at__gte=now()-timedelta(minutes=settings.STREAM_VALIDATION_FREQUENCY)-timedelta(minutes=1),
+            completed_at__lte=now()-timedelta(minutes=1),
+        )
 
         if not streams:
             return
