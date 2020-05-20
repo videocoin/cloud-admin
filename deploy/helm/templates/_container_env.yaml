@@ -87,11 +87,6 @@ env:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: symphonyOauth2Clientid
-  - name: VC_ADMIN_FAUCET_URL
-    valueFrom:
-      secretKeyRef:
-        name: {{ .Release.Name }}
-        key: faucetUrl
   - name: VC_ADMIN_SECRET_KEY
     valueFrom:
       secretKeyRef:

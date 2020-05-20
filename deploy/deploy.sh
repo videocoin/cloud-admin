@@ -52,7 +52,6 @@ function get_vars() {
     readonly KUBE_CONTEXT=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/common/kube_context`
     readonly DATABASE_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/databaseUrl`
     readonly SECRET_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/secretKey`
-    readonly FAUCET_URL=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/faucetUrl`
     readonly STREAM_MANAGER_CONTRACT_ADDR=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/streamManagerContractAddr`
     readonly SYMPHONY_KEY=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/secrets/symphonyKey`
     readonly SYMPHONY_OAUTH2_CLIENTID=`consul kv get -http-addr=${CONSUL_ADDR} config/${ENV}/services/${CHART_NAME}/vars/symphonyOauth2Clientid`
@@ -96,7 +95,6 @@ function deploy() {
         --set secrets.emailPassword="${EMAIL_PASSWORD}" \
         --set secrets.symphonyKey="${SYMPHONY_KEY}" \
         --set secrets.streamManagerContractAddr="${STREAM_MANAGER_CONTRACT_ADDR}" \
-        --set secrets.faucetUrl="${FAUCET_URL}" \
         --set secrets.databaseUrl="${DATABASE_URL}" \
         --set secrets.secretKey="${SECRET_KEY}" \
         --wait ${CHART_NAME} ${CHART_DIR}

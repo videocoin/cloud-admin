@@ -159,6 +159,7 @@ class AccountFundedValidator(BaseValidator):
 
     BALANCE_EVENTS = [
         'AccountFunded',
+        'ServiceFunded',
         'Refunded',
         'Deposited',
         'OutOfFunds',
@@ -170,6 +171,7 @@ class AccountFundedValidator(BaseValidator):
 
     def validate(self):
         account_funded_events = [x for x in self.events if x.get('event') == 'AccountFunded']
+        service_funded_events = [x for x in self.events if x.get('event') == 'ServiceFunded']
         refunded_events = [x for x in self.events if x.get('event') == 'Refunded']
         deposited_events = [x for x in self.events if x.get('event') == 'Deposited']
         outofFundsEvents = [x for x in self.events if x.get('event') == 'OutOfFunds']

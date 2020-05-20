@@ -22,19 +22,3 @@ class CleanupTestingUsersTask(Task):
 
 
 celery_app.tasks.register(CleanupTestingUsersTask())
-
-
-class FaucetTestingUsersTask(Task):
-    max_retries = 3
-    name = 'users.tasks.FaucetTestingUsersTask'
-
-    def run(self, user_id, balance, *args, **kwargs):
-        user = User.objects.get(id=user_id)
-        r = requests.post(
-            settings.FAUCET_URL,
-            json={"account": user.address, "amount": int(balance)},
-        )
-        assert r.status_code == 200, 'code: {}, response: {}'.format(r.status_code, r.text)
-
-
-celery_app.tasks.register(FaucetTestingUsersTask())

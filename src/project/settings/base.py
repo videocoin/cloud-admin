@@ -109,10 +109,6 @@ CELERY_RESULT_BACKEND = \
 STREAM_VALIDATION_FREQUENCY = 5  # minutes
 
 CELERYBEAT_SCHEDULE = {
-    'cleanup-testing-users': {
-        'task': 'users.tasks.CleanupTestingUsersTask',
-        'schedule': timedelta(seconds=3600)
-    },
     'validate-streams': {
         'task': 'streams.tasks.ValidateStreamsTask',
         'schedule': timedelta(seconds=STREAM_VALIDATION_FREQUENCY * 60)
@@ -218,8 +214,6 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = env.str('VC_ADMIN_DEFAULT_FROM_EMAIL', None)
 
 SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
-
-FAUCET_URL = env.str('VC_ADMIN_FAUCET_URL', '').strip()
 
 PRIVATE_STREAMS_RPC_ADDR = env.str('VC_ADMIN_PRIVATE_STREAMS_RPC_ADDR', None)
 

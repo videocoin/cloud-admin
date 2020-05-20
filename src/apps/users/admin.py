@@ -108,7 +108,6 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         urls = super().get_urls()
         my_urls = [
             path(r'<slug:id>/activate/', self.activate, name='users_user_activate'),
-            path(r'<slug:id>/faucet/', self.faucet, name='users_user_faucet'),
             path(r'<slug:id>/block/', self.block, name='users_user_block'),
             path(r'<slug:id>/unblock/', self.unblock, name='users_user_unblock'),
         ]
@@ -121,17 +120,6 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         original = User.objects.get(id=id)
         domain = '{}://{}'.format(request.scheme, request.get_host())
         requests.post('{}/api/v1/user/{}/activate'.format(domain, original.id), headers={'Authorization': 'Bearer {}'.format(request.user.token)})
-        return redirect(reverse('admin:users_user_change', args=[original.id]))
-
-    def faucet(self, request, id):
-        if not request.user.is_superuser:
-            raise PermissionError('you can\'t')
-        original = User.objects.get(id=id)
-        r = requests.post(
-            settings.FAUCET_URL,
-            json={"account": original.address, "amount": 10},
-        )
-        assert r.status_code == 200
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
     def block(self, request, id):

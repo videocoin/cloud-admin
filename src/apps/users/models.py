@@ -102,10 +102,6 @@ class User(PermissionsMixin, AbstractBaseUser):
             return True
         return False
 
-    @property
-    def can_faucet(self):
-        return self.is_testing or not self.is_regular
-
     class Meta:
         managed = False
         ordering = ('-created_at', )
