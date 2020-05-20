@@ -90,11 +90,6 @@ class User(PermissionsMixin, AbstractBaseUser):
         return Account.objects.filter(user_id=str(self.id)).first()
 
     @property
-    def balance(self):
-        if self.account:
-            return str(int(self.account.balance_wei or 0) / 10**18)
-
-    @property
     def address(self):
         if self.account:
             return self.account.address

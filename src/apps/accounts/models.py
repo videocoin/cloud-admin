@@ -13,7 +13,6 @@ class Account(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     address = models.CharField(max_length=42, null=True, blank=True)
     key = models.CharField(max_length=512, null=True, blank=True)
-    balance_wei = models.CharField(max_length=255, null=True, blank=True)
     updated_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:

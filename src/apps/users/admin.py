@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 from django.conf import settings
 
 from .models import User, ApiToken, TestingUser
-from transfers.models import Transfer
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
@@ -37,14 +36,6 @@ class ApiTokensInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-class TransfersInlineAdmin(admin.TabularInline):
-    model = Transfer
-    extra = 0
-    readonly_fields = ('id', 'pin', 'kind', 'status', 'to_address', 'amount', 'created_at', 'expires_at')
-    fields = ('id', 'pin', 'kind', 'status', 'to_address', 'amount', 'created_at', 'expires_at')
-    show_change_link = True
-
-
 class StreamsInlineAdmin(HideDeletedInlineMixin, admin.TabularInline):
     model = Stream
     extra = 0
@@ -64,8 +55,8 @@ class MinersInlineAdmin(HideDeletedInlineMixin, admin.TabularInline):
 class AccountsInlineAdmin(admin.TabularInline):
     model = Account
     extra = 0
-    readonly_fields = ('id', 'address', 'key', 'balance_wei', 'updated_at')
-    fields = ('id', 'address', 'key', 'balance_wei', 'updated_at')
+    readonly_fields = ('id', 'address', 'key', 'updated_at')
+    fields = ('id', 'address', 'key', 'updated_at')
     show_change_link = True
 
 
@@ -78,14 +69,14 @@ class TestingUserInlineAdmin(admin.TabularInline):
 
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role', 'balance', 'address', 'is_active', 'is_testing', 'created_at')
+    list_display = ('id', 'email', 'name', 'role', 'address', 'is_active', 'is_testing', 'created_at')
     list_filter = ('role', 'is_active', TestingFilter, 'created_at')
-    search_fields = ('id', 'email', 'name', 'apitoken__token__icontains', 'transfer__id__icontains')
+    search_fields = ('id', 'email', 'name', 'apitoken__token__icontains')
     exclude = ('password', )
-    readonly_fields = ['id', 'token', 'balance', 'is_testing']
+    readonly_fields = ['id', 'token', 'is_testing']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
-    inlines = [TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, TransfersInlineAdmin, MinersInlineAdmin]
+    inlines = [TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, MinersInlineAdmin]
 
     fieldsets = (
         ('USER', {
