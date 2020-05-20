@@ -27,10 +27,28 @@ class User(PermissionsMixin, AbstractBaseUser):
         (SUPER, "Super"),
     )
 
+    BOTH = 0
+    MINER = 1
+    PUBLISHER = 2
+
+    UI_ROLES_CHOICES = (
+        (BOTH, "Both"),
+        (MINER, "Miner"),
+        (PUBLISHER, "Publisher"),
+    )
+
     id = models.CharField(primary_key=True, max_length=36)
     email = models.EmailField(unique=True, max_length=255, null=True, blank=True)
     password = models.CharField(max_length=100, null=True, blank=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+
+    country = models.CharField(max_length=100, null=True, blank=True)
+    region = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    zip = models.CharField(max_length=100, null=True, blank=True)
+    address_1 = models.CharField(max_length=100, null=True, blank=True)
+    address_2 = models.CharField(max_length=100, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
 
@@ -39,6 +57,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     token = models.CharField(max_length=255, null=True, blank=True)
 
     role = models.IntegerField(choices=ROLES_CHOICES)
+    ui_role = models.IntegerField(choices=UI_ROLES_CHOICES)
 
     last_login = None
     is_superuser = True

@@ -69,11 +69,11 @@ class TestingUserInlineAdmin(admin.TabularInline):
 
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'role', 'address', 'is_active', 'is_testing', 'created_at')
-    list_filter = ('role', 'is_active', TestingFilter, 'created_at')
-    search_fields = ('id', 'email', 'name', 'apitoken__token__icontains')
+    list_display = ('id', 'email', 'name', 'ui_role', 'role', 'address', 'is_active', 'is_testing', 'created_at')
+    list_filter = ('role', 'ui_role', 'is_active', 'country', TestingFilter, 'created_at')
+    search_fields = ('id', 'email', 'first_name', 'lst_name', 'apitoken__token__icontains')
     exclude = ('password', )
-    readonly_fields = ['id', 'token', 'is_testing']
+    readonly_fields = ['id', 'token',  'name', 'is_testing']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
     inlines = [TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, MinersInlineAdmin]
@@ -83,12 +83,24 @@ class UserAdmin(DontLog, admin.ModelAdmin):
             'fields': (
                 'id',
                 'email',
-                'name',
+                'first_name',
+                'last_name',
                 'role',
+                'ui_role',
                 'token',
                 'created_at',
                 'activated_at',
                 'is_active',
+            )
+        }),
+        ('ADDRESS', {
+            'fields': (
+                'country',
+                'region',
+                'city',
+                'zip',
+                'address_1',
+                'address_2',
             )
         }),
     )
