@@ -176,9 +176,11 @@ class AccountFundedValidator(BaseValidator):
         deposited_events = [x for x in self.events if x.get('event') == 'Deposited']
         outofFundsEvents = [x for x in self.events if x.get('event') == 'OutOfFunds']
 
-        totalAccountFunded, deposited, refunded = 0, 0, 0
+        totalAccountFunded, totalServiceFunded, deposited, refunded = 0, 0, 0, 0
         for e in account_funded_events:
             totalAccountFunded += e['args'].weiAmount
+        for e in service_funded_events:
+            totalServiceFunded += e['args'].weiAmount
         for e in deposited_events:
             deposited += e['args'].weiAmount
         for e in refunded_events:
@@ -192,6 +194,11 @@ class AccountFundedValidator(BaseValidator):
         else:
             self.infos.append("Info: escrow events tally: deposited({}) == totalAccountFunded({}) + refunded({})".
                               format(deposited, totalAccountFunded, refunded))
+
+        service_fee_percent = totalServiceFunded / (totalServiceFunded + totalAccountFunded) * 100
+        if not math.isclose(service_fee_percent, 20, abs_tol=0.1):
+            self.errors.append(VCValidationError("Error: service funded not equals to 20%"))
+            self.is_valid = False
 
 
 class ValidatorCollection:

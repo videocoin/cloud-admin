@@ -38,8 +38,8 @@ def to_dict(data):
 
 
 class Blockchain:
-    sm_abi_file = '/abis/0.0.3/StreamManager.json'
-    st_abi_file = '/abis/0.0.3/Stream.json'
+    sm_abi_file = '/abis/0.0.7/StreamManager.abi'
+    st_abi_file = '/abis/0.0.7/Stream.abi'
     blockchain_url = ''
     stream_id = None
     fromBlock = 0
@@ -77,7 +77,7 @@ class Blockchain:
         file_path = module_dir + self.sm_abi_file
         with open(file_path) as f:
             info_streammanger_json = json.load(f)
-            self.streammanager_abi = info_streammanger_json['abi']
+            self.streammanager_abi = info_streammanger_json
             self.stream_manager_contract = self.w3.eth.contract(address=self.w3.toChecksumAddress(stream_manager_address), abi=self.streammanager_abi)
 
     def add_stream(self, stream_address):
@@ -85,7 +85,7 @@ class Blockchain:
         file_path = module_dir + self.st_abi_file
         with open(file_path) as f:
             info_stream_json = json.load(f)
-            self.stream_abi = info_stream_json['abi']
+            self.stream_abi = info_stream_json
             self.stream_contract = self.w3.eth.contract(address=self.w3.toChecksumAddress(stream_address), abi=self.stream_abi)
 
     def get_block(self):
