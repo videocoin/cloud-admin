@@ -37,6 +37,7 @@ class Miner(models.Model):
     secret = models.TextField(null=True, blank=True)
     is_internal = models.BooleanField()
     is_lock = models.BooleanField()
+    is_block = models.BooleanField()
     reward = models.DecimalField(max_digits=10, decimal_places=4)
 
     deleted_at = models.DateTimeField(null=True, blank=True)

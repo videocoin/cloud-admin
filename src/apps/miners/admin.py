@@ -52,7 +52,7 @@ class MinerForm(forms.ModelForm):
 class MinerAdmin(DontLog, admin.ModelAdmin):
     form = MinerForm
 
-    list_filter = (DeletedFilter, 'status', 'is_internal')
+    list_filter = (DeletedFilter, 'status', 'is_internal', 'is_lock', 'is_block')
 
     list_display = (
         'id',
@@ -64,6 +64,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
         'is_internal',
         'hostname',
         'is_lock',
+        'is_block',
     )
 
     readonly_fields = (
@@ -84,6 +85,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'status',
                 'is_internal',
                 'is_lock',
+                'is_block',
                 'current_task_id',
                 'last_ping_at',
                 'address',
