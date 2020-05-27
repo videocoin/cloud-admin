@@ -115,16 +115,8 @@ class User(PermissionsMixin, AbstractBaseUser):
             return self.account.address
 
     @property
-    def is_testing(self):
-        if hasattr(self, 'testing_user'):
-            return True
-        if self.email in settings.TESTING_USER_EMAILS:
-            return True
-        return False
-
-    @property
     def display_name(self):
-        return '{} {}'.format(self.first_name, self.last_name)
+        return '{} {}'.format(self.first_name or '', self.last_name or '')
 
     class Meta:
         managed = False

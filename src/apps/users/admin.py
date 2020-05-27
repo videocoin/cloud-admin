@@ -22,9 +22,12 @@ class ApiTokensInlineAdmin(admin.TabularInline):
 class StreamsInlineAdmin(HideDeletedInlineMixin, admin.TabularInline):
     model = Stream
     extra = 0
-    fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
-    readonly_fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at')
+    fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at', 'total_cost')
+    readonly_fields = ('id', 'name', 'profile_id', 'status', 'input_status', 'stream_contract_id', 'created_at', 'updated_at', 'total_cost')
     show_change_link = True
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 class MinersInlineAdmin(HideDeletedInlineMixin, admin.TabularInline):
@@ -43,14 +46,13 @@ class AccountsInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'display_name', 'uirole', 'role', 'address', 'is_active', 'is_testing', 'created_at')
+    list_display = ('id', 'email', 'display_name', 'uirole', 'role', 'address', 'is_active', 'created_at')
     list_filter = ('role', 'uirole', 'is_active', 'country', 'created_at')
-    search_fields = ('id', 'email', 'first_name', 'lst_name', 'apitoken__token__icontains')
+    search_fields = ('id', 'email', 'first_name', 'last_name', 'apitoken__token__icontains')
     exclude = ('password', )
-    readonly_fields = ['id', 'token',  'display_name', 'name', 'is_testing']
+    readonly_fields = ['id', 'token',  'display_name', 'name']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
     inlines = [AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, MinersInlineAdmin]
@@ -82,10 +84,6 @@ class UserAdmin(DontLog, admin.ModelAdmin):
             )
         }),
     )
-
-    def is_testing(self, instance):
-        return instance.is_testing
-    is_testing.boolean = True
 
     def is_active(self, instance):
         return instance.is_active

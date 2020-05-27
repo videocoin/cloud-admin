@@ -22,6 +22,7 @@ class Stream(models.Model):
     STREAM_STATUS_COMPLETED = 7
     STREAM_STATUS_CANCELLED = 8
     STREAM_STATUS_FAILED = 9
+    STREAM_STATUS_DELETED = 10
 
     STREAM_STATUS_CHOICES = (
         (STREAM_STATUS_NONE, "None"),
@@ -34,6 +35,7 @@ class Stream(models.Model):
         (STREAM_STATUS_COMPLETED, "Completed"),
         (STREAM_STATUS_CANCELLED, "Cancelled"),
         (STREAM_STATUS_FAILED, "Failed"),
+        (STREAM_STATUS_DELETED, "Deleted"),
     )
 
     INPUT_STATUS_NONE = 0
@@ -80,6 +82,8 @@ class Stream(models.Model):
     rtmp_url = models.CharField(max_length=255, null=True, blank=True)
 
     refunded = models.BooleanField(default=False)
+
+    total_cost = models.DecimalField(max_digits=10, decimal_places=6, default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -152,6 +156,10 @@ class Task(models.Model):
     stream_contract_address = models.CharField(max_length=255, editable=False, null=True, blank=True)
     machine_type = models.CharField(max_length=255, null=True, blank=True)
     stream = models.ForeignKey(Stream, blank=True, null=True, on_delete=models.CASCADE, db_column='stream_id')
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, db_column='user_id')
+    is_live = models.BooleanField(default=True)
+    is_lock = models.BooleanField(default=False)
+    capacity = JSONField(null=True, blank=True)
 
     @property
     def can_be_stopped(self):

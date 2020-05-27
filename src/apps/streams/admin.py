@@ -34,8 +34,8 @@ class TaskTransactionInlineAdmin(admin.TabularInline):
 class TasksInlineAdmin(admin.TabularInline):
     model = Task
     extra = 0
-    fields = ('id_link', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
-    readonly_fields = ('id_link', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
+    fields = ('id_link', 'status', 'cmdline', 'uri', 'is_live', 'is_lock', 'path', 'client_id', 'machine_type')
+    readonly_fields = ('id_link', 'status', 'cmdline', 'uri', 'is_live', 'is_lock', 'path', 'client_id', 'machine_type')
     show_change_link = False
     show_delete_link = False
 
@@ -44,6 +44,9 @@ class TasksInlineAdmin(admin.TabularInline):
         return format_html('<a href="{}">{}</a>', url, obj.id)
     id_link.short_description = 'Id'
     id_link.allow_tags = True
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Stream)
@@ -57,6 +60,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'profile_set',
         'status',
         'input_status',
+        'total_cost',
         'get_input_url',
         'get_output_url',
         'input_type',
@@ -97,6 +101,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'validation_field',
         'input_type',
         'output_type',
+        'total_cost',
     )
 
     change_form_template = 'admin/streams/stream_change_form.html'
@@ -127,6 +132,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'name',
                 'status',
                 'input_status',
+                'total_cost',
                 'input_type',
                 'output_type',
                 'profile_set',
@@ -298,6 +304,6 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
 class TasksAdmin(DontLog, admin.ModelAdmin):
     model = Task
     inlines = [TaskTransactionInlineAdmin]
-    list_display = ('id', 'status', 'uri', 'path', 'client_id', 'machine_type')
+    list_display = ('id', 'status', 'is_lock', 'is_live', 'uri', 'path', 'client_id', 'machine_type')
     list_filter = ('status', )
-    readonly_fields = ('id', 'status', 'cmdline', 'uri', 'path', 'client_id', 'machine_type')
+    readonly_fields = ('id', 'status', 'cmdline', 'uri', 'is_lock', 'is_live', 'path', 'client_id', 'machine_type')
