@@ -40,6 +40,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     id = models.CharField(primary_key=True, max_length=36)
     email = models.EmailField(unique=True, max_length=255, null=True, blank=True)
     password = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
 
@@ -57,7 +58,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     token = models.CharField(max_length=255, null=True, blank=True)
 
     role = models.IntegerField(choices=ROLES_CHOICES)
-    ui_role = models.IntegerField(choices=UI_ROLES_CHOICES)
+    uirole = models.IntegerField(choices=UI_ROLES_CHOICES)
 
     last_login = None
     is_superuser = True
@@ -120,6 +121,10 @@ class User(PermissionsMixin, AbstractBaseUser):
         if self.email in settings.TESTING_USER_EMAILS:
             return True
         return False
+
+    @property
+    def display_name(self):
+        return '{} {}'.format(self.first_name, self.last_name)
 
     class Meta:
         managed = False

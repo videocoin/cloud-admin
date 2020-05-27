@@ -3,29 +3,12 @@ import requests
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect
-from django.conf import settings
 
-from .models import User, ApiToken, TestingUser
+from .models import User, ApiToken
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
 from common.admin import DontLog, HideDeletedInlineMixin
-
-
-class TestingFilter(admin.SimpleListFilter):
-    title = 'testing'
-    parameter_name = 'testing'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('testing', 'testing'),
-        )
-
-    def queryset(self, request, queryset):
-        value = self.value()
-        if value == 'testing':
-            return queryset.filter(testing_user__isnull=False)
-        return queryset
 
 
 class ApiTokensInlineAdmin(admin.TabularInline):
@@ -60,33 +43,28 @@ class AccountsInlineAdmin(admin.TabularInline):
     show_change_link = True
 
 
-class TestingUserInlineAdmin(admin.TabularInline):
-    model = TestingUser
-    extra = 0
-    fields = ('delete_date',)
-    can_delete = False
-
 
 @admin.register(User)
 class UserAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'ui_role', 'role', 'address', 'is_active', 'is_testing', 'created_at')
-    list_filter = ('role', 'ui_role', 'is_active', 'country', TestingFilter, 'created_at')
+    list_display = ('id', 'email', 'display_name', 'uirole', 'role', 'address', 'is_active', 'is_testing', 'created_at')
+    list_filter = ('role', 'uirole', 'is_active', 'country', 'created_at')
     search_fields = ('id', 'email', 'first_name', 'lst_name', 'apitoken__token__icontains')
     exclude = ('password', )
-    readonly_fields = ['id', 'token',  'name', 'is_testing']
+    readonly_fields = ['id', 'token',  'display_name', 'name', 'is_testing']
     ordering = ('-created_at',)
     change_form_template = 'admin/users/user_change_form.html'
-    inlines = [TestingUserInlineAdmin, AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, MinersInlineAdmin]
+    inlines = [AccountsInlineAdmin, StreamsInlineAdmin, ApiTokensInlineAdmin, MinersInlineAdmin]
 
     fieldsets = (
         ('USER', {
             'fields': (
                 'id',
                 'email',
+                'name',
                 'first_name',
                 'last_name',
                 'role',
-                'ui_role',
+                'uirole',
                 'token',
                 'created_at',
                 'activated_at',
