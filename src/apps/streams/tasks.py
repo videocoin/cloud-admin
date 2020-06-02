@@ -53,6 +53,7 @@ class ValidateStreamsTask(Task):
                 results = {
                     'id': stream.id,
                     'name': stream.name,
+                    'date': now(),
                     'status': stream.get_status_display,
                     'link': '{}/imsgx72bs1pxd72mxs/streams/stream/{}/change/'.format(get_site_url(), stream.id),
                     'domain': get_site_url(),
