@@ -21,7 +21,7 @@ data:
                       application/atom+xml;
 
     upstream manager {
-        server admin fail_timeout=0;
+        server {{ .Chart.Name }} fail_timeout=0;
     }
 
     server {
