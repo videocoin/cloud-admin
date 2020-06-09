@@ -1,13 +1,9 @@
-from django.conf import settings
 from django.contrib import admin
-from django.urls import path, reverse
-from django.shortcuts import redirect, resolve_url
+from django.shortcuts import resolve_url
 from django.utils.html import format_html
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.http import HttpResponse, JsonResponse
-from django.template import loader
 
-from common.admin import DontLog, DeletedFilter
+from common.admin import DontLog
 from .models import Account, Transaction
 
 
@@ -21,6 +17,8 @@ class AccountAdmin(DontLog, admin.ModelAdmin):
         'balance',
         'created_at',
     )
+
+    search_fields = ('email', 'user__email')
 
     def has_add_permission(self, request):
         return False
@@ -43,7 +41,7 @@ class AccountAdmin(DontLog, admin.ModelAdmin):
 @admin.register(Transaction)
 class TransactionAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'from_account_link', 'to_account_link', 'created_at', 'amount', 'status', 'stream_link', 'profile_link')
-    # list_display_links = ["from_account", "to_account"]
+    search_fields = ('from_account__email', 'to_account__email')
 
     list_filter = ('status', )
 
@@ -69,7 +67,7 @@ class TransactionAdmin(DontLog, admin.ModelAdmin):
             url = resolve_url(admin_urlname(obj.to_account._meta, 'change'), obj.to_account.id)
             return format_html('<a href="{}">{}</a>', url, obj.to_account.email)
         return ''
-    to_account_link.short_description = 'from'
+    to_account_link.short_description = 'to'
     to_account_link.allow_tags = True
 
     def stream_link(self, obj):
