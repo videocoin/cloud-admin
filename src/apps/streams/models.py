@@ -115,6 +115,9 @@ class Stream(models.Model):
             self.STREAM_STATUS_READY
         ]
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         managed = False
         verbose_name = "Stream"

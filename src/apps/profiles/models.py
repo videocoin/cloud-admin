@@ -42,6 +42,9 @@ class Profile(models.Model):
         built.extend(["$OUTPUT/index.m3u8"])
         return ' '.join(built)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         managed = False
         verbose_name = "Profile"
