@@ -1,15 +1,16 @@
 GOOS?=linux
 GOARCH?=amd64
 
-DOCKER_REGISTRY?=gcr.io
+REGISTRY_SERVER?=registry.videocoin.net
+REGISTRY_PROJECT?=cloud
+
 NAME=admin
 NAME_STATIC=admin-static
-GCP_PROJECT?=videocoin-network
-VERSION?=$$(git rev-parse --short HEAD)
-IMAGE_TAG=${DOCKER_REGISTRY}/${GCP_PROJECT}/${NAME}:${VERSION}
-IMAGE_TAG_STATIC=${DOCKER_REGISTRY}/${GCP_PROJECT}/${NAME_STATIC}:${VERSION}
 
-DBM_MSQLURI=root:@tcp(127.0.0.1:3306)/videocoin?charset=utf8&parseTime=True&loc=Local
+VERSION?=$$(git rev-parse --short HEAD)
+
+IMAGE_TAG=${REGISTRY_SERVER}/${REGISTRY_PROJECT}/${NAME}:${VERSION}
+IMAGE_TAG_STATIC=${REGISTRY_SERVER}/${REGISTRY_PROJECT}/${NAME_STATIC}:${VERSION}
 ENV?=dev
 
 .PHONY: deploy
@@ -36,4 +37,4 @@ docker-push-static:
 release: docker-build docker-push docker-build-static docker-push-static
 
 deploy:
-	ENV=${ENV} GCP_PROJECT=${GCP_PROJECT} deploy/deploy.sh
+	cd deploy && helm upgrade -i --wait --set image.tag="${VERSION}" -n console admin ./helm

@@ -24,8 +24,10 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/nginx/conf.d
-      nodeSelector:
-        cloud.google.com/gke-nodepool: api
+      {{- with .Values.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: config
           configMap:

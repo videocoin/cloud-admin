@@ -36,5 +36,7 @@ spec:
 {{ include (print $.Template.BasePath "/_container_env.yaml") . | indent 10 }}
 {{ include (print $.Template.BasePath "/_container_volume_mounts.yaml") . | indent 10 }}
 {{ include (print $.Template.BasePath "/_pod_volumes.yaml") . | indent 6 }}
-      nodeSelector:
-        cloud.google.com/gke-nodepool: api
+      {{- with .Values.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}

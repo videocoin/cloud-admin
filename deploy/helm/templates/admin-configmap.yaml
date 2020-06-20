@@ -8,4 +8,4 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service }}
 data:
-{{ toYaml .Values.managerConfig | indent 2 }}
+{{ toYaml .Values.config | indent 2 }}
