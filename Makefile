@@ -4,8 +4,8 @@ GOARCH?=amd64
 DOCKER_REGISTRY?=gcr.io
 NAME=admin
 NAME_STATIC=admin-static
-GCP_PROJECT=videocoin-network
-VERSION=$$(git rev-parse --short HEAD)
+GCP_PROJECT?=videocoin-network
+VERSION?=$$(git rev-parse --short HEAD)
 IMAGE_TAG=${DOCKER_REGISTRY}/${GCP_PROJECT}/${NAME}:${VERSION}
 IMAGE_TAG_STATIC=${DOCKER_REGISTRY}/${GCP_PROJECT}/${NAME_STATIC}:${VERSION}
 
