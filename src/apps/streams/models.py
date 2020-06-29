@@ -61,9 +61,11 @@ class Stream(models.Model):
     )
 
     OUTPUT_TYPE_HLS = 'OUTPUT_TYPE_HLS'
+    OUTPUT_TYPE_FILE = 'OUTPUT_TYPE_FILE'
 
     OUTPUT_TYPE_CHOICES = (
         (OUTPUT_TYPE_HLS, "HLS"),
+        (OUTPUT_TYPE_FILE, "File"),
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
