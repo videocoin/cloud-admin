@@ -5,7 +5,7 @@ from datetime import timedelta
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)
 
-env_file = os.getenv("VC_ADMIN_ENV_FILE", None)
+env_file = os.getenv("ENV_FILE", None)
 
 if env_file is None:
     environ.Env.read_env()
@@ -21,14 +21,14 @@ SITE_ROOT = root()
 sys.path.append(os.path.join(SITE_ROOT, 'apps'))
 sys.path.append(os.path.join(SITE_ROOT, 'libs'))
 
-DEBUG = env('VC_ADMIN_DEBUG')
+DEBUG = env('DEBUG')
 TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
-    'default': env.db('VC_ADMIN_DATABASE_URL', engine='django.db.backends.mysql')
+    'default': env.db('DATABASE_URL', engine='django.db.backends.mysql')
 }
 
-SECRET_KEY = env('VC_ADMIN_SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ['*']
 
@@ -89,7 +89,7 @@ LANGUAGES = [
 ]
 USE_TZ = True
 
-STATIC_URL = env.str('VC_ADMIN_STATIC_URL', '/imsgx72bs1pxd72mxs/assets/')
+STATIC_URL = env.str('STATIC_URL', '/imsgx72bs1pxd72mxs/assets/')
 STATIC_ROOT = os.path.join(SITE_ROOT, 'assets')
 
 MEDIA_URL = '/media/'
@@ -101,11 +101,11 @@ STATICFILES_DIRS = (
 
 APPEND_SLASH = False
 
-DJANGO_LOG_LEVEL = env.str('VC_ADMIN_LOGLEVEL', 'INFO')
+DJANGO_LOG_LEVEL = env.str('LOGLEVEL', 'INFO')
 
-BROKER_URL = env.str('VC_ADMIN_BROKER_URL', 'redis://localhost:6379/1')
+BROKER_URL = env.str('BROKER_URL', 'redis://localhost:6379/1')
 CELERY_RESULT_BACKEND = \
-    env.str('VC_ADMIN_CELERY_RESULT_BACKEND', 'redis://localhost:6379/2')
+    env.str('CELERY_RESULT_BACKEND', 'redis://localhost:6379/2')
 
 STREAM_VALIDATION_FREQUENCY = 5  # minutes
 
@@ -115,7 +115,7 @@ CELERYBEAT_SCHEDULE = {
         'schedule': timedelta(seconds=STREAM_VALIDATION_FREQUENCY * 60)
     },
 }
-VALIDATION_EMAILS = env.str('VC_ADMIN_VALIDATION_EMAILS', '').split(';')
+VALIDATION_EMAILS = env.str('VALIDATION_EMAILS', '').split(';')
 
 DEFAULT_LOGGER = {
     'handlers': ['console'],
@@ -207,22 +207,22 @@ TESTING_USER_EMAILS = [
     'videocointtest@yandex.com',
     'videocointtest@yandex.ru',
 ]
-EMAIL_HOST = env.str('VC_ADMIN_EMAIL_HOST', None)
-EMAIL_HOST_USER = env.str('VC_ADMIN_EMAIL_USER', None)
-EMAIL_HOST_PASSWORD = env.str('VC_ADMIN_EMAIL_PASSWORD', None)
+EMAIL_HOST = env.str('EMAIL_HOST', None)
+EMAIL_HOST_USER = env.str('EMAIL_USER', None)
+EMAIL_HOST_PASSWORD = env.str('EMAIL_PASSWORD', None)
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = env.str('VC_ADMIN_DEFAULT_FROM_EMAIL', None)
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', None)
 
-SENTRY_DSN = env.str('VC_ADMIN_SENTRY_DSN', None)
+SENTRY_DSN = env.str('SENTRY_DSN', None)
 
-PRIVATE_STREAMS_RPC_ADDR = env.str('VC_ADMIN_PRIVATE_STREAMS_RPC_ADDR', None)
+PRIVATE_STREAMS_RPC_ADDR = env.str('PRIVATE_STREAMS_RPC_ADDR', None)
 
-SYMPHONY_KEY_FILE = env.str('VC_ADMIN_SYMPHONY_KEY_FILE', '')
-SYMPHONY_OAUTH2_CLIENTID = env.str('VC_ADMIN_SYMPHONY_OAUTH2_CLIENTID', '')
-SYMPHONY_ADDR = env.str('VC_ADMIN_SYMPHONY_ADDR', '')
+SYMPHONY_KEY_FILE = env.str('SYMPHONY_KEY_FILE', '')
+SYMPHONY_OAUTH2_CLIENTID = env.str('SYMPHONY_OAUTH2_CLIENTID', '')
+SYMPHONY_ADDR = env.str('SYMPHONY_ADDR', '')
 
-STREAM_MANAGER_CONTRACT_ADDR = env.str('VC_ADMIN_STREAM_MANAGER_CONTRACT_ADDR').strip()
+STREAM_MANAGER_CONTRACT_ADDR = env.str('STREAM_MANAGER_CONTRACT_ADDR').strip()
 
 if SENTRY_DSN:
     import sentry_sdk
