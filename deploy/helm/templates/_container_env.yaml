@@ -13,87 +13,62 @@ env:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: djangoSettingsModule
-  - name: VC_ADMIN_DEBUG
+  - name: DEBUG
     value: "off"
-  - name: VC_ADMIN_STATIC_URL
+  - name: STATIC_URL
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: staticUrl
-  - name: VC_ADMIN_PRIVATE_STREAMS_RPC_ADDR
+  - name: PRIVATE_STREAMS_RPC_ADDR
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: privateStreamsRpcAddr
-  - name: VC_ADMIN_BROKER_URL
+  - name: BROKER_URL
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: brokerUrl
-  - name: VC_ADMIN_CELERY_RESULT_BACKEND
+  - name: CELERY_RESULT_BACKEND
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: celeryResultBackend
-  - name: VC_ADMIN_EMAIL_HOST
+  - name: EMAIL_HOST
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: emailHost
-  - name: VC_ADMIN_EMAIL_USER
+  - name: EMAIL_USER
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: emailUser
-  - name: VC_ADMIN_DEFAULT_FROM_EMAIL
+  - name: DEFAULT_FROM_EMAIL
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: defaultFromEmail
-  - name: VC_ADMIN_VALIDATION_EMAILS
+  - name: VALIDATION_EMAILS
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: validationEmails
-  - name: VC_ADMIN_SENTRY_DSN
+  - name: SENTRY_DSN
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: sentryDsn
-  - name: VC_ADMIN_STREAM_MANAGER_CONTRACT_ADDR
-    valueFrom:
-      secretKeyRef:
-        name: {{ .Release.Name }}
-        key: streamManagerContractAddr
-  - name: VC_ADMIN_EMAIL_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: {{ .Release.Name }}
-        key: emailPassword
-  - name: VC_ADMIN_SYMPHONY_KEY_FILE
+  - name: SYMPHONY_KEY_FILE
     value: "/etc/secrets/symphonyKey"
-  - name: VC_ADMIN_SYMPHONY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: {{ .Release.Name }}
-        key: symphonyKey
-  - name: VC_ADMIN_SYMPHONY_ADDR
+  - name: SYMPHONY_ADDR
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: symphonyAddr
-  - name: VC_ADMIN_SYMPHONY_OAUTH2_CLIENTID
+  - name: SYMPHONY_OAUTH2_CLIENTID
     valueFrom:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: symphonyOauth2Clientid
-  - name: VC_ADMIN_SECRET_KEY
-    valueFrom:
-      secretKeyRef:
-        name: {{ .Release.Name }}
-        key: secretKey
-  - name: VC_ADMIN_DATABASE_URL
-    valueFrom:
-      secretKeyRef:
-        name: {{ .Release.Name }}
-        key: databaseUrl

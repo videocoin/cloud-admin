@@ -34,7 +34,7 @@ ADD ./src /srv/src
 
 WORKDIR /srv/src
 
-ENV VC_ADMIN_ENV_FILE=project/settings/.env.example
+ENV ENV_FILE=project/settings/.env.example
 
 RUN python manage.py collectstatic --noinput
 

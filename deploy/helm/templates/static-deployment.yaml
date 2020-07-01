@@ -12,7 +12,17 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}-static
+      {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: true
       containers:
         - name: {{ .Chart.Name }}-static
           image: "{{ .Values.staticImage.repository }}:{{ .Values.image.tag | replace "#" ""}}"

@@ -5,6 +5,3 @@ volumes:
   - name: config
     configMap:
       name: {{ .Release.Name }}
-  - name: secrets
-    secret:
-      secretName: {{ .Release.Name }}

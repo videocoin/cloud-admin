@@ -17,22 +17,23 @@ spec:
       labels:
         app: {{ .Release.Name }}
         component: {{ .Release.Name }}-worker-beat
+      {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
-      serviceAccountName: {{ .Values.serviceAccountName }}
-      automountServiceAccountToken: false
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: true
       containers:
         - name: {{ .Release.Name }}-worker-beat
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | replace "#" ""}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: 
-            - celery
-            - beat
-            - -A
-            - project.celery
-            - -l
-            - INFO
+          command: ["bash", "-c", "source /vault/secrets/common && source /vault/secrets/config && celery beat -A project.celery -l WARNING"]
 {{ include (print $.Template.BasePath "/_container_env.yaml") . | indent 10 }}
-{{ include (print $.Template.BasePath "/_container_volume_mounts.yaml") . | indent 10 }}
 {{ include (print $.Template.BasePath "/_pod_volumes.yaml") . | indent 6 }}
       {{- with .Values.nodeSelector }}
         nodeSelector:

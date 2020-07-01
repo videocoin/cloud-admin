@@ -17,12 +17,22 @@ spec:
       labels:
         app: {{ .Release.Name }}
         component: {{ .Release.Name }}
+      {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: true
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | replace "#" ""}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["gunicorn", "project.wsgi.staging:application", "-b", "0.0.0.0:8000", "-w", "4", "-k", "tornado"]
+          command: ["bash", "-c", "source /vault/secrets/common && source /vault/secrets/config && gunicorn project.wsgi.staging:application -b 0.0.0.0:8000 -w 4 -k tornado"]
           ports:
             - containerPort: {{ .Values.service.internalPort }}
 #          livenessProbe:
@@ -34,7 +44,6 @@ spec:
 #              path: /healthz
 #              port: {{ .Values.service.internalPort }}
 {{ include (print $.Template.BasePath "/_container_env.yaml") . | indent 10 }}
-{{ include (print $.Template.BasePath "/_container_volume_mounts.yaml") . | indent 10 }}
 {{ include (print $.Template.BasePath "/_pod_volumes.yaml") . | indent 6 }}
       {{- with .Values.nodeSelector }}
         nodeSelector:
