@@ -47,9 +47,8 @@ class Blockchain:
     block_infos = {}
 
     def __init__(self, service_account_key, blockchain_url, client_id, stream_id,  stream_address, stream_manager_address):
-
-        creds = service_account.IDTokenCredentials.from_service_account_file(
-            service_account_key,
+        creds = service_account.IDTokenCredentials.from_service_account_info(
+            json.loads(service_account_key),
             target_audience=client_id)
         authed_session = AuthorizedSession(creds)
         authed_session.get(blockchain_url)

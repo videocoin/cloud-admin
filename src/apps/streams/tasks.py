@@ -29,7 +29,7 @@ class ValidateStreamsTask(Task):
             return
         for stream in streams:
             blockchain = Blockchain(
-                settings.SYMPHONY_KEY_FILE,
+                settings.SYMPHONY_KEY,
                 settings.SYMPHONY_ADDR,
                 settings.SYMPHONY_OAUTH2_CLIENTID,
                 stream_id=stream.stream_contract_id,

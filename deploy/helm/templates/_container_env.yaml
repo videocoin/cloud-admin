@@ -60,8 +60,6 @@ env:
       configMapKeyRef:
         name: {{ .Release.Name }}
         key: sentryDsn
-  - name: SYMPHONY_KEY_FILE
-    value: "/etc/secrets/symphonyKey"
   - name: SYMPHONY_ADDR
     valueFrom:
       configMapKeyRef:

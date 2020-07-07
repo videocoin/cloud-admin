@@ -247,7 +247,7 @@ class StreamAdmin(admin.ModelAdmin):
         }
 
         blockchain = Blockchain(
-            settings.SYMPHONY_KEY_FILE,
+            settings.SYMPHONY_KEY,
             settings.SYMPHONY_ADDR,
             settings.SYMPHONY_OAUTH2_CLIENTID,
             stream_id=stream.stream_contract_id,
@@ -277,7 +277,7 @@ class StreamAdmin(admin.ModelAdmin):
         stream = Stream.objects.get(id=id)
 
         blockchain = Blockchain(
-            settings.SYMPHONY_KEY_FILE,
+            settings.SYMPHONY_KEY,
             settings.SYMPHONY_ADDR,
             settings.SYMPHONY_OAUTH2_CLIENTID,
             stream_id=stream.stream_contract_id,
