@@ -142,8 +142,8 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     revert_url = '/admin/events/userreport/'
     model_name = 'userreport'
 
-    list_display = ('email', 'display_name', 'streams_count',  'loaded_usd')
-    readonly_fields = ('email', 'display_name', 'streams_count',  'loaded_usd')
+    list_display = ('email', 'display_name', 'streams_count', 'loaded_usd', 'created_at')
+    readonly_fields = ('email', 'display_name', 'streams_count', 'loaded_usd', 'created_at')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
