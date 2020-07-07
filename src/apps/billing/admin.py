@@ -61,6 +61,7 @@ class TransactionAdmin(DontLog, admin.ModelAdmin):
         return ''
     from_account_link.short_description = 'from'
     from_account_link.allow_tags = True
+    from_account_link.admin_order_field = 'from_account'
 
     def to_account_link(self, obj):
         if obj.to_account:
@@ -69,6 +70,7 @@ class TransactionAdmin(DontLog, admin.ModelAdmin):
         return ''
     to_account_link.short_description = 'to'
     to_account_link.allow_tags = True
+    to_account_link.admin_order_field = 'to_account'
 
     def stream_link(self, obj):
         if obj.stream:

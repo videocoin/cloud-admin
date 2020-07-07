@@ -145,3 +145,15 @@ class TestingUser(models.Model):
     # user_id = models.CharField(max_length=255)
     user = models.OneToOneField(User, related_name='testing_user', on_delete=models.CASCADE)
     delete_date = models.DateTimeField(null=True, blank=True)
+
+
+class UserReportProxy(User):
+    """
+    Proxy model for user report admin
+    """
+
+    class Meta:
+        proxy = True
+        app_label = 'users'
+        verbose_name = 'User Report'
+        verbose_name_plural = 'User Report'

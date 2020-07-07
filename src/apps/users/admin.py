@@ -3,8 +3,9 @@ import requests
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect
+from django.db.models import Count
 
-from .models import User, ApiToken
+from .models import User, ApiToken, UserReportProxy
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
@@ -133,4 +134,50 @@ class ApiTokenAdmin(DontLog, admin.ModelAdmin):
     readonly_fields = ('id', 'token', 'user',)
 
     def has_add_permission(self, request):
+        return False
+
+
+@admin.register(UserReportProxy)
+class UserReportAdmin(DontLog, admin.ModelAdmin):
+    revert_url = '/admin/events/userreport/'
+    model_name = 'userreport'
+
+    list_display = ('email', 'display_name', 'streams_count',  'loaded_usd')
+    readonly_fields = ('email', 'display_name', 'streams_count',  'loaded_usd')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.extra(
+            select={
+                'loaded_usd': '''
+                    SELECT SUM(billing_transactions.amount) FROM billing_transactions
+                    INNER JOIN billing_accounts ON (billing_transactions.from = billing_accounts.id)
+                    INNER JOIN billing_accounts T3 ON (billing_transactions.to = T3.id)
+                    WHERE (billing_accounts.email = "bank@videocoin.net" AND T3.email = users.email AND `billing_transactions`.`status` = "SUCCESS")'''
+            },
+        )
+        qs = qs.annotate(streams_count=Count('stream', distinct=True))
+        return qs
+
+    def streams_count(self, obj):
+        return obj.streams_count
+
+    streams_count.short_description = 'Streams count'
+    streams_count.allow_tags = True
+    streams_count.admin_order_field = 'streams_count'
+
+    def loaded_usd(self, obj):
+        return int((obj.loaded_usd or 0) / 100)
+
+    loaded_usd.short_description = 'Loaded USD'
+    loaded_usd.allow_tags = True
+    loaded_usd.admin_order_field = 'loaded_usd'
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False
