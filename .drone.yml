@@ -1,0 +1,63 @@
+kind: pipeline
+type: kubernetes
+name: admin-release
+
+steps:
+  - name: build backend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+      registry: registry.videocoin.net
+      repo: registry.videocoin.net/cloud/admin
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA}
+
+  - name: build static
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+      registry: registry.videocoin.net
+      repo: registry.videocoin.net/cloud/admin-static
+      dockerfile: Dockerfile.static
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA}
+
+trigger:
+  event:
+  - push
+  - pull_request
+
+
+---
+
+kind: pipeline
+type: kubernetes
+name: admin-deploy
+
+steps:
+ - name: deploy
+   image: devth/helm:v3.1.1
+   environment:
+     USERNAME:
+       from_secret: registry_username
+     PASSWORD:
+       from_secret: registry_password
+   commands:
+     - cd deploy && helm upgrade -i --wait --timeout 60s --set image.tag="${DRONE_COMMIT_SHA}" -n console admin ./helm
+
+trigger:
+  event:
+  - push
+  - pull_request
+  branch:
+  - develop
+  - drone
+
