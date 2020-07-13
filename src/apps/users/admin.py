@@ -3,9 +3,9 @@ import requests
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect
-from django.db.models import Count
+from django.db.models import Count, Q
 
-from .models import User, ApiToken, UserReportProxy
+from .models import User, ApiToken, UserReportProxy, StaffReportProxy
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
@@ -48,7 +48,7 @@ class AccountsInlineAdmin(admin.TabularInline):
 
 
 @admin.register(User)
-class UserAdmin(DontLog, admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'email', 'display_name', 'uirole', 'role', 'address', 'is_active', 'created_at')
     list_filter = ('role', 'uirole', 'is_active', 'country', 'created_at')
     search_fields = ('id', 'email', 'first_name', 'last_name', 'apitoken__token__icontains')
@@ -129,7 +129,7 @@ class UserAdmin(DontLog, admin.ModelAdmin):
 
 
 @admin.register(ApiToken)
-class ApiTokenAdmin(DontLog, admin.ModelAdmin):
+class ApiTokenAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'token', 'name', 'created_at')
     readonly_fields = ('id', 'token', 'user',)
 
@@ -172,6 +172,30 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     loaded_usd.short_description = 'Loaded USD'
     loaded_usd.allow_tags = True
     loaded_usd.admin_order_field = 'loaded_usd'
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(StaffReportProxy)
+class StaffReportAdmin(DontLog, admin.ModelAdmin):
+    revert_url = '/admin/events/staffreport/'
+    model_name = 'staffreport'
+
+    list_display = ('email', 'display_name', 'role', 'is_active', 'created_at')
+    list_filter = ('role', 'is_active', 'created_at')
+    readonly_fields = ('email', 'display_name', 'role', 'is_active', 'created_at')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.filter(Q(role=User.MANAGER) | Q(role=User.SUPER))
+        return qs
 
     def has_add_permission(self, request):
         return False
