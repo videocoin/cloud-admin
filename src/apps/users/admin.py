@@ -181,27 +181,3 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-
-@admin.register(StaffReportProxy)
-class StaffReportAdmin(DontLog, admin.ModelAdmin):
-    revert_url = '/admin/events/staffreport/'
-    model_name = 'staffreport'
-
-    list_display = ('email', 'display_name', 'role', 'is_active', 'created_at')
-    list_filter = ('role', 'is_active', 'created_at')
-    readonly_fields = ('email', 'display_name', 'role', 'is_active', 'created_at')
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        qs = qs.filter(Q(role=User.MANAGER) | Q(role=User.SUPER))
-        return qs
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
