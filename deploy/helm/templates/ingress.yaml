@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: {{ .Release.Name }}
+          servicePort: 80
+        path: /imsgx72bs1pxd72mxs
+      - backend:
+          serviceName: {{ .Release.Name }}-static
+          servicePort: 80
+        path: /imsgx72bs1pxd72mxs/assets
+    host: {{ .Values.ingress.host }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: {{ .Values.ingress.secret }}
+{{- end -}}

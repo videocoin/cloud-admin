@@ -74,6 +74,13 @@ config:
   symphonyAddr: "https://symphony.dev.videocoin.net"
   symphonyOauth2Clientid: "47928468404-hfuqhrb6lhtv9sem30rkjc1djcrlpt4v.apps.googleusercontent.com"
 
+ingress:
+  enabled: true
+  host: adm.dev.videocoin.net
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dns-prod
+    kubernetes.io/ingress.class: nginx
+  secret: tls-cert-console-admin
 
 annotations:
   vault.hashicorp.com/agent-inject: "true"
