@@ -1,9 +1,9 @@
 kind: pipeline
 type: kubernetes
-name: release-develop
+name: develop
 
 steps:
-  - name: build backend
+ - name: build backend
     image: plugins/docker
     settings:
       username:
@@ -13,6 +13,7 @@ steps:
       registry: registry.videocoin.net
       repo: registry.videocoin.net/cloud/admin
       tags:
+        - latest
         - ${DRONE_COMMIT_SHA}
   - name: build static
     image: plugins/docker
@@ -25,23 +26,74 @@ steps:
       repo: registry.videocoin.net/cloud/admin-static
       dockerfile: Dockerfile.static
       tags:
+        - latest
         - ${DRONE_COMMIT_SHA}
   - name: deploy
     image: devth/helm:v3.1.1
     environment:
-        KUBE_CONFIG:
-          from_secret: dev_kube_config
+      KUBE_CONFIG:
+        from_secret: dev_kube_config
     commands:
       - echo $KUBE_CONFIG | base64 -d > kube.config
-      - helm --kubeconfig=kube.config upgrade -i --wait --set image.tag=${DRONE_COMMIT_SHA} -n console admin ./deploy/helm
+      - helm --kubeconfig=kube.config upgrade -i --wait --set image.tag=$DRONE_COMMIT_SHA -n console admin ./deploy/helm
 
 trigger:
   event:
-  - push
-  - pull_request
-
+    - push
+  branch:
+    - infra
 
 ---
+
+kind: pipeline
+type: kubernetes
+name: release
+
+steps:
+  - name: build backend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+      registry: registry.videocoin.net
+      repo: registry.videocoin.net/cloud/admin
+      tags:
+        - ${DRONE_TAG}
+  - name: build static
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
+      registry: registry.videocoin.net
+      repo: registry.videocoin.net/cloud/admin-static
+      dockerfile: Dockerfile.static
+      tags:
+        - ${DRONE_TAG}
+  - name: deploy
+    image: devth/helm:v3.1.1
+    environment:
+      KUBE_CONFIG:
+        from_secret: stage_kube_config
+    commands:
+      - echo $KUBE_CONFIG | base64 -d > kube.config
+      - helm --kubeconfig=kube.config upgrade -i --wait --set image.tag=$DRONE_TAG -n console admin ./deploy/helm
+    when:
+      branch:
+      - master
+trigger:
+  event:
+    - push
+  branch:
+    - pe-1
+    - pe-2
+    - master
+
+---
+
 kind: pipeline
 type: kubernetes
 name: helm-push
