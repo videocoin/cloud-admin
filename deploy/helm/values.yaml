@@ -15,6 +15,14 @@ service:
   ports:
     http: 8000
 
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 10m
+    memory: 128Mi
+
 autoscaler:
   minCount: 1
   maxCount: 3
@@ -24,6 +32,22 @@ autoscaler:
 worker:
   replicasCount: 1
   maxUnavailableCount: 0
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
+workerbeat:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
 
 static:
   image:
@@ -35,6 +59,13 @@ static:
   service:
     ports:
       http: 80
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 16Mi
   config:
     nginx.conf: |
       events {
