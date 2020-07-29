@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    component: backend
+spec:
+  replicas: {{ .Values.replicasCount }}
+  strategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.maxUnavailableCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        component: backend
+    {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+    {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["bash", "-c", "source /vault/secrets/common && source /vault/secrets/config && python manage.py migrate && gunicorn project.wsgi.staging:application -b 0.0.0.0:8000 -w 4 -k tornado"]
+          ports:
+            - containerPort: {{ .Values.service.ports.http }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}
+        - name: {{ .Chart.Name }}-static
+          image: "{{ .Values.static.image.repository }}:{{ .Values.static.image.tag }}"
+          imagePullPolicy: {{ .Values.static.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.static.service.ports.http }}
+          volumeMounts:
+          - mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+            name: static-config
+      volumes:
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: config
+          configMap:
+            name: {{ .Chart.Name }}
+        - name: static-config
+          configMap:
+            name: {{ .Chart.Name }}-static
+      {{- with .Values.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,17 +1,13 @@
-GOOS?=linux
-GOARCH?=amd64
-
 REGISTRY_SERVER?=registry.videocoin.net
 REGISTRY_PROJECT?=cloud
 
 NAME=admin
 NAME_STATIC=admin-static
 
-VERSION?=$$(git rev-parse --short HEAD)
+VERSION?=$$(git rev-parse HEAD)
 
 IMAGE_TAG=${REGISTRY_SERVER}/${REGISTRY_PROJECT}/${NAME}:${VERSION}
 IMAGE_TAG_STATIC=${REGISTRY_SERVER}/${REGISTRY_PROJECT}/${NAME_STATIC}:${VERSION}
-ENV?=dev
 
 .PHONY: deploy
 
@@ -37,4 +33,4 @@ docker-push-static:
 release: docker-build docker-push docker-build-static docker-push-static
 
 deploy:
-	cd deploy && helm upgrade -i --wait --timeout 60s --set image.tag="${VERSION}" -n console admin ./helm
+	helm upgrade -i --wait --timeout 60s --set image.tag="${VERSION}" -n console admin ./deploy/helm

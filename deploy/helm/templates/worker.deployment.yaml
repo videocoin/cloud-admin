@@ -1,40 +1,46 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-worker
+  name: {{ .Chart.Name }}-worker
   labels:
-    app: {{ .Release.Name }}
-    component: {{ .Release.Name }}-worker
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service }}
+    app: {{ .Chart.Name }}
+    component: worker
 spec:
-  replicas: 1
+  replicas: {{ .Values.worker.replicasCount }}
   strategy:
     rollingUpdate:
-      maxUnavailable: {{ .Values.maxUnavailableCount }}
+      maxUnavailable: {{ .Values.worker.maxUnavailableCount }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
-        component: {{ .Release.Name }}-worker
-      {{- with .Values.annotations }}
+        app: {{ .Chart.Name }}
+        component: worker
+    {{- with .Values.annotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+    {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       automountServiceAccountToken: true
       containers:
-        - name: {{ .Release.Name }}-worker
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | replace "#" ""}}"
+        - name: {{ .Chart.Name }}-worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["bash", "-c", "source /vault/secrets/common && source /vault/secrets/config && celery worker -A project.celery -l WARNING"]
-{{ include (print $.Template.BasePath "/_container_env.yaml") . | indent 10 }}
-{{ include (print $.Template.BasePath "/_pod_volumes.yaml") . | indent 6 }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}
+      volumes:
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: config
+          configMap:
+            name: {{ .Chart.Name }}
       {{- with .Values.nodeSelector }}
         nodeSelector:
           {{- toYaml . | nindent 8 }}

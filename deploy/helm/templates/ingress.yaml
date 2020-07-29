@@ -2,11 +2,9 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Chart.Name }}
   labels:
-    app: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    heritage: {{ .Release.Service }}
+    app: {{ .Chart.Name }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -16,12 +14,12 @@ spec:
   - http:
       paths:
       - backend:
-          serviceName: {{ .Release.Name }}
-          servicePort: 80
+          serviceName: {{ .Chart.Name }}
+          servicePort: {{ .Values.service.ports.http }}
         path: /imsgx72bs1pxd72mxs
       - backend:
-          serviceName: {{ .Release.Name }}-static
-          servicePort: 80
+          serviceName: {{ .Chart.Name }}
+          servicePort: {{ .Values.static.service.ports.http }}
         path: /imsgx72bs1pxd72mxs/assets
     host: {{ .Values.ingress.host }}
   tls:

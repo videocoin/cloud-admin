@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+data:
+{{ toYaml .Values.config | indent 2 }}
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-static
+  labels:
+    app: {{ .Chart.Name }}-static
+data:
+{{ toYaml .Values.static.config | indent 2 }}

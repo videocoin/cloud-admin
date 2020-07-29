@@ -1,78 +1,75 @@
-replicaCount: 1
-proxyReplicaCount: 1
-workerReplicaCount: 1
+replicasCount: 1
 maxUnavailableCount: 0
-
-image:
-  repository: registry.videocoin.net/cloud/admin
-  tag: latest
-  pullPolicy: Always
-  pullSecrets:
-  - name: regcred
-proxyImage:
-  repository: nginx
-  tag: 1.11.10-alpine
-  pullPolicy: IfNotPresent
-  pullSecrets:
-  - name: regcred
-staticImage:
-  repository: registry.videocoin.net/cloud/admin-static
-  tag: latest
-  pullPolicy: Always
-  pullSecrets:
-  - name: regcred
 
 serviceAccount:
   name: default
 
+image:
+  repository: registry.videocoin.net/cloud/admin
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecrets:
+  - name: regcred
+
 service:
-  name: http
-  type: ClusterIP
-  externalPort: 80
-  internalPort: 8000
-proxyService:
-  name: http
-  type: NodePort
-  externalPort: 80
-  internalPort: 80
-staticService:
-  name: http
-  type: NodePort
-  externalPort: 80
-  internalPort: 80
-
-db:
-  connectionName:
-  port: 3306
-
-admin:
-  email:
-  password:
+  ports:
+    http: 8000
 
 autoscaler:
-  minCount: 3
-  maxCount: 10
-  targets:
-    targetCPUUtilizationPercentage: 70
-proxyAutoscaler:
-  minCount: 3
-  maxCount: 10
+  minCount: 1
+  maxCount: 3
   targets:
     targetCPUUtilizationPercentage: 70
 
+worker:
+  replicasCount: 1
+  maxUnavailableCount: 0
+
+static:
+  image:
+    repository: registry.videocoin.net/cloud/admin-static
+    tag: latest
+    pullPolicy: IfNotPresent
+    pullSecrets:
+    - name: regcred
+  service:
+    ports:
+      http: 80
+  config:
+    nginx.conf: |
+      events {
+          worker_connections 1024;
+      }
+
+      http {
+          include /etc/nginx/mime.types;
+
+          server {
+              listen 80;
+
+              server_name localhost;
+
+              root /usr/share/nginx/html;
+
+              location / {
+                  try_files $uri /index.html;
+              }
+          }
+      }
+
 config:
-  djangoSettingsModule: "project.settings.staging"
-  staticUrl: "/imsgx72bs1pxd72mxs/assets/"
-  privateStreamsRpcAddr: "streams:5102"
-  brokerUrl: "redis://:redis@redis-master:6379/6"
-  celeryResultBackend: "redis://:redis@redis-master:6379/7"
-  sentryDsn: ""
-  emailUser: "monitoring@liveplanet.net"
-  emailHost: "smtp.gmail.com"
-  defaultFromEmail: "monitoring@liveplanet.net"
-  validationEmails: "adidenko@liveplanet.net;asysoev@liveplanet.net;dmitry@liveplanet.net"
-  symphonyAddr: "https://symphony.dev.videocoin.net"
-  symphonyOauth2Clientid: "47928468404-hfuqhrb6lhtv9sem30rkjc1djcrlpt4v.apps.googleusercontent.com"
+  DJANGO_SETTINGS_MODULE: "project.settings.staging"
+  DEBUG: "off"
+  STATIC_URL: "/imsgx72bs1pxd72mxs/assets/"
+  PRIVATE_STREAMS_RPC_ADDR: "streams.console.svc.cluster.local:5102"
+  BROKER_URL: "redis://:redis@redis-master:6379/6"
+  CELERY_RESULT_BACKEND: "redis://:redis@redis-master:6379/7"
+  EMAIL_HOST: "smtp.gmail.com"
+  EMAIL_USER: "monitoring@liveplanet.net"
+  DEFAULT_FROM_EMAIL: "monitoring@liveplanet.net"
+  VALIDATION_EMAILS: "adidenko@liveplanet.net;asysoev@liveplanet.net;dmitry@liveplanet.net"
+  SYMPHONY_ADDR: "https://symphony.dev.videocoin.net"
+  SYMPHONY_OAUTH2_CLIENTID: "47928468404-hfuqhrb6lhtv9sem30rkjc1djcrlpt4v.apps.googleusercontent.com"
 
 ingress:
   enabled: true
@@ -85,35 +82,13 @@ ingress:
 annotations:
   vault.hashicorp.com/agent-inject: "true"
   vault.hashicorp.com/role: "console-admin"
-  vault.hashicorp.com/agent-inject-secret-common: "videocoin/v1/networks/everest-dev/console/common"
-  vault.hashicorp.com/agent-inject-secret-config: "videocoin/v1/networks/everest-dev/console/admin"
+  vault.hashicorp.com/agent-inject-secret-common: "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/common/config"
+  vault.hashicorp.com/agent-inject-secret-config: "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/admin/config"
   vault.hashicorp.com/agent-inject-template-common: |
-    {{ with secret "videocoin/v1/networks/everest-dev/console/common" }}{{ range $k, $v := .Data }}
+    {{ with secret "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/common/config" }}{{ range $k, $v := .Data }}
     export {{ $k }}="{{ $v }}"
     {{ end }}{{ end }}
   vault.hashicorp.com/agent-inject-template-config: |
-    {{ with secret "videocoin/v1/networks/everest-dev/console/admin" }}{{ range $k, $v := .Data }}
+    {{ with secret "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/admin/config" }}{{ range $k, $v := .Data }}
     export {{ $k }}="{{ $v }}"
     {{ end }}{{ end }}
-
-staticConfig:
-  nginx.conf: |
-    events {
-        worker_connections 1024;
-    }
-
-    http {
-        include /etc/nginx/mime.types;
-
-        server {
-            listen 80;
-
-            server_name localhost;
-
-            root /usr/share/nginx/html;
-
-            location / {
-                try_files $uri /index.html;
-            }
-        }
-    }
