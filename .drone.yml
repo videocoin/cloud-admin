@@ -34,7 +34,7 @@ steps:
         from_secret: dev_kube_config
     commands:
       - echo $KUBE_CONFIG | base64 -d > kube.config
-      - helm --kubeconfig=kube.config upgrade -i --wait --set image.tag=$DRONE_COMMIT_SHA -n console admin ./deploy/helm
+      - helm --kubeconfig=kube.config upgrade -i --wait --set image.tag=$DRONE_COMMIT_SHA -n vcn-admin admin ./deploy/helm
 trigger:
   event:
     - push
