@@ -49,4 +49,4 @@ class Profile(models.Model):
         managed = False
         verbose_name = "Profile"
         verbose_name_plural = "Profiles"
-        db_table = 'profiles'
+        db_table = 'streams_profiles'
