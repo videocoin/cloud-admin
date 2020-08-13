@@ -3,9 +3,9 @@ import requests
 from django.contrib import admin
 from django.urls import path, reverse
 from django.shortcuts import redirect
-from django.db.models import Count, Q
+from django.db.models import Count
 
-from .models import User, ApiToken, UserReportProxy, StaffReportProxy
+from .models import User, ApiToken, UserReportProxy
 from streams.models import Stream
 from miners.models import Miner
 from accounts.models import Account
@@ -48,7 +48,7 @@ class AccountsInlineAdmin(admin.TabularInline):
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'email', 'display_name', 'uirole', 'role', 'address', 'is_active', 'created_at')
     list_filter = ('role', 'uirole', 'is_active', 'country', 'created_at')
     search_fields = ('id', 'email', 'first_name', 'last_name', 'apitoken__token__icontains')
@@ -129,7 +129,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(ApiToken)
-class ApiTokenAdmin(admin.ModelAdmin):
+class ApiTokenAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'user', 'token', 'name', 'created_at')
     readonly_fields = ('id', 'token', 'user',)
 

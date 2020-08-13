@@ -3,11 +3,12 @@ from django.shortcuts import resolve_url
 from django.utils.html import format_html
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
+from common.admin import DontLog
 from .models import Account, Transaction
 
 
 @admin.register(Account)
-class AccountAdmin(admin.ModelAdmin):
+class AccountAdmin(DontLog, admin.ModelAdmin):
 
     list_display = (
         'id',
@@ -38,7 +39,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 @admin.register(Transaction)
-class TransactionAdmin(admin.ModelAdmin):
+class TransactionAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'from_account_link', 'to_account_link', 'created_at', 'amount', 'status', 'stream_link', 'profile_link')
     search_fields = ('from_account__email', 'to_account__email')
 

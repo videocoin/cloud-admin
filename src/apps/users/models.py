@@ -157,15 +157,3 @@ class UserReportProxy(User):
         app_label = 'users'
         verbose_name = 'User Report'
         verbose_name_plural = 'User Report'
-
-
-class StaffReportProxy(User):
-    """
-    Proxy model for staff report admin
-    """
-
-    class Meta:
-        proxy = True
-        app_label = 'users'
-        verbose_name = 'Staff Report'
-        verbose_name_plural = 'Staff Report'

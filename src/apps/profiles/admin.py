@@ -4,6 +4,7 @@ from django import forms
 from prettyjson import PrettyJSONWidget
 
 from .models import Profile
+from common.admin import DontLog
 
 
 class ProfileForm(forms.ModelForm):
@@ -16,7 +17,7 @@ class ProfileForm(forms.ModelForm):
 
 
 @admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(DontLog, admin.ModelAdmin):
 
     form = ProfileForm
 

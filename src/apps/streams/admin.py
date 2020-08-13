@@ -7,7 +7,7 @@ from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
-from common.admin import DeletedFilter
+from common.admin import DontLog, DeletedFilter
 from videocoin.blockchain import Blockchain
 from videocoin.validators import ValidatorCollection
 from .models import Stream, Task, TaskTransaction
@@ -50,7 +50,7 @@ class TasksInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Stream)
-class StreamAdmin(admin.ModelAdmin):
+class StreamAdmin(DontLog, admin.ModelAdmin):
     inlines = [TasksInlineAdmin]
 
     list_display = (
@@ -301,7 +301,7 @@ class StreamAdmin(admin.ModelAdmin):
 
 
 @admin.register(Task)
-class TasksAdmin(admin.ModelAdmin):
+class TasksAdmin(DontLog, admin.ModelAdmin):
     model = Task
     inlines = [TaskTransactionInlineAdmin]
     list_display = ('id', 'status', 'is_lock', 'is_live', 'uri', 'path', 'client_id', 'machine_type')

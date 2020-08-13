@@ -40,23 +40,3 @@ class HideDeletedInlineMixin:
 from django.contrib.auth.models import Group
 
 admin.site.unregister(Group)
-
-
-from django.contrib.admin.models import LogEntry
-
-
-@admin.register(LogEntry)
-class LogEntryAdmin(DontLog, admin.ModelAdmin):
-    list_display = ('user', 'content_type', 'object_repr', 'action_flag', 'action_time')
-    list_filter = ('content_type', 'action_flag', 'action_time')
-
-    search_fields = ('user__email__icontains', )
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False

@@ -5,10 +5,11 @@ from django import forms
 from django.shortcuts import resolve_url
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 
+from django_mysql.models import JSONField
 from jsoneditor.forms import JSONEditor
 from prettyjson import PrettyJSONWidget
 
-from common.admin import DeletedFilter
+from common.admin import DontLog, DeletedFilter
 from .models import Miner
 
 
@@ -48,7 +49,7 @@ class MinerForm(forms.ModelForm):
 
 
 @admin.register(Miner)
-class MinerAdmin(admin.ModelAdmin):
+class MinerAdmin(DontLog, admin.ModelAdmin):
     form = MinerForm
 
     list_filter = (DeletedFilter, 'status', 'is_internal', 'is_lock', 'is_block')
