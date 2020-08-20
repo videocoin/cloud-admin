@@ -33,4 +33,4 @@ docker-push-static:
 release: docker-build docker-push docker-build-static docker-push-static
 
 deploy:
-	helm upgrade -i --wait --timeout 60s --set image.tag="${VERSION}" -n console admin ./deploy/helm
+	helm upgrade -i --wait --timeout 60s --set image.tag="${VERSION}" -n vcn-admin admin ./deploy/helm

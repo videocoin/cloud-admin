@@ -93,8 +93,8 @@ config:
   DEBUG: "off"
   STATIC_URL: "/imsgx72bs1pxd72mxs/assets/"
   PRIVATE_STREAMS_RPC_ADDR: "streams.console.svc.cluster.local:5102"
-  BROKER_URL: "redis://:redis@redis-master:6379/6"
-  CELERY_RESULT_BACKEND: "redis://:redis@redis-master:6379/7"
+  BROKER_URL: "redis://:redis@redis-master.redis.svc.cluster.local:6379/6"
+  CELERY_RESULT_BACKEND: "redis://:redis@redis-master.redis.svc.cluster.local:6379/7"
   EMAIL_HOST: "smtp.gmail.com"
   EMAIL_USER: "monitoring@liveplanet.net"
   DEFAULT_FROM_EMAIL: "monitoring@liveplanet.net"
@@ -117,9 +117,9 @@ annotations:
   vault.hashicorp.com/agent-inject-secret-config: "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/admin/config"
   vault.hashicorp.com/agent-inject-template-common: |
     {{ with secret "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/common/config" }}{{ range $k, $v := .Data }}
-    export {{ $k }}="{{ $v }}"
+    export {{ $k }}='{{ $v }}'
     {{ end }}{{ end }}
   vault.hashicorp.com/agent-inject-template-config: |
     {{ with secret "dev-videocoin-net/github-repo/dev-apps-videocoin-net/charts/console/admin/config" }}{{ range $k, $v := .Data }}
-    export {{ $k }}="{{ $v }}"
+    export {{ $k }}='{{ $v }}'
     {{ end }}{{ end }}
