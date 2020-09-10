@@ -63,7 +63,7 @@ spec:
         - name: static-config
           configMap:
             name: {{ .Chart.Name }}-static
-      {{- with .Values.nodeSelector }}
-        nodeSelector:
-          {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
