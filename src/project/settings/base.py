@@ -110,10 +110,10 @@ CELERY_RESULT_BACKEND = \
 STREAM_VALIDATION_FREQUENCY = 5  # minutes
 
 CELERYBEAT_SCHEDULE = {
-    'validate-streams': {
-        'task': 'streams.tasks.ValidateStreamsTask',
-        'schedule': timedelta(seconds=STREAM_VALIDATION_FREQUENCY * 60)
-    },
+    # 'validate-streams': {
+    #     'task': 'streams.tasks.ValidateStreamsTask',
+    #     'schedule': timedelta(seconds=STREAM_VALIDATION_FREQUENCY * 60)
+    # },
 }
 VALIDATION_EMAILS = env.str('VALIDATION_EMAILS', '').split(';')
 
