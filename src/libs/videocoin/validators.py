@@ -195,7 +195,11 @@ class AccountFundedValidator(BaseValidator):
             self.infos.append("Info: escrow events tally: deposited({}) == totalAccountFunded({}) + refunded({})".
                               format(deposited, totalAccountFunded, refunded))
 
-        service_fee_percent = totalServiceFunded / (totalServiceFunded + totalAccountFunded) * 100
+        service_fee_percent = 0
+        total_funded = (totalServiceFunded + totalAccountFunded) * 100
+        if total_funded:
+            service_fee_percent = totalServiceFunded / total_funded
+            
         if not math.isclose(service_fee_percent, 20, abs_tol=0.1):
             self.errors.append(VCValidationError("Error: service funded not equals to 20%"))
             self.is_valid = False
