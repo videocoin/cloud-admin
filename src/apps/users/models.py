@@ -61,7 +61,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     uirole = models.IntegerField(choices=UI_ROLES_CHOICES)
 
     last_login = None
-    is_superuser = True
+    is_superuser = False
     groups = []
     user_permissions = []
     USERNAME_FIELD = 'email'
@@ -117,6 +117,9 @@ class User(PermissionsMixin, AbstractBaseUser):
     @property
     def display_name(self):
         return '{} {}'.format(self.first_name or '', self.last_name or '')
+
+    def has_perm(self, perm, obj=None):
+        return self.is_staff
 
     class Meta:
         managed = False
