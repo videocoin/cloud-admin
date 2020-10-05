@@ -128,7 +128,7 @@ class UserAdmin(DontLog, admin.ModelAdmin):
         return redirect(reverse('admin:users_user_change', args=[original.id]))
 
 
-@admin.register(ApiToken)
+# @admin.register(ApiToken)
 class ApiTokenAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'user', 'token', 'name', 'created_at')
     readonly_fields = ('id', 'token', 'user',)
