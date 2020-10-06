@@ -1,9 +1,12 @@
 import requests
+import csv
 
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, reverse
 from django.shortcuts import redirect
 from django.db.models import Count
+from functools import update_wrapper
 
 from .models import User, ApiToken, UserReportProxy
 from streams.models import Stream
@@ -145,6 +148,8 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     list_display = ('email', 'display_name', 'streams_count', 'loaded_usd', 'created_at')
     readonly_fields = ('email', 'display_name', 'streams_count', 'loaded_usd', 'created_at')
 
+    change_list_template = 'admin/users/userreport_change_list.html'
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         qs = qs.extra(
@@ -181,3 +186,43 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_urls(self):
+        from django.urls import path
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return update_wrapper(wrapper, view)
+
+        urls = super().get_urls()
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        custom_urls = [
+            path(
+                'download/',
+                wrap(self.download_view),
+                name='%s_%s_download' % info),
+        ]
+        return custom_urls + urls
+
+    def download_view(self, request):
+        qs = self.get_queryset(request)
+
+        if not request.user or not request.user.is_staff:
+            return HttpResponse()
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="user-report.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['email', 'name', 'streams_count', 'loaded_usd',
+                         'created_at'])
+        for item in qs:
+            writer.writerow([
+                item.email, item.display_name, item.streams_count,
+                item.loaded_usd, item.created_at])
+
+        return response
