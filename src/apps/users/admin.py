@@ -145,8 +145,12 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     revert_url = '/admin/events/userreport/'
     model_name = 'userreport'
 
-    list_display = ('email', 'display_name', 'streams_count', 'loaded_usd', 'created_at')
-    readonly_fields = ('email', 'display_name', 'streams_count', 'loaded_usd', 'created_at')
+    list_display = (
+        'email', 'display_name', 'streams_count', 'loaded_usd', 'spent',
+        'created_at')
+    readonly_fields = (
+        'email', 'display_name', 'streams_count', 'loaded_usd', 'spent',
+        'created_at')
 
     change_list_template = 'admin/users/userreport_change_list.html'
 
@@ -158,9 +162,18 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
                     SELECT SUM(billing_transactions.amount) FROM billing_transactions
                     INNER JOIN billing_accounts ON (billing_transactions.from = billing_accounts.id)
                     INNER JOIN billing_accounts T3 ON (billing_transactions.to = T3.id)
-                    WHERE (billing_accounts.email = "bank@videocoin.net" AND T3.email = users.email AND `billing_transactions`.`status` = "SUCCESS")'''
-            },
-        )
+                    WHERE (
+                        billing_accounts.email = "bank@videocoin.net" AND 
+                        T3.email = users.email AND 
+                        `billing_transactions`.`status` = "SUCCESS")''',
+                'spent': '''
+                    SELECT SUM(bt.amount) FROM billing_transactions as bt
+                    INNER JOIN billing_accounts as ba ON (bt.from = ba.id)
+                    WHERE (
+                        ba.email = users.email AND 
+                        bt.status = "SUCCESS")''',
+                },
+            )
         qs = qs.annotate(streams_count=Count('stream', distinct=True))
         return qs
 
@@ -177,6 +190,13 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     loaded_usd.short_description = 'Loaded USD'
     loaded_usd.allow_tags = True
     loaded_usd.admin_order_field = 'loaded_usd'
+
+    def spent(self, obj):
+        return "%f" % float((obj.spent or 0) / 100)
+
+    spent.short_description = 'Spent'
+    spent.allow_tags = True
+    spent.admin_order_field = 'spent'
 
     def has_add_permission(self, request):
         return False
@@ -218,11 +238,12 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
         response['Content-Disposition'] = 'attachment; filename="user-report.csv"'
 
         writer = csv.writer(response)
-        writer.writerow(['email', 'name', 'streams_count', 'loaded_usd',
-                         'created_at'])
+        writer.writerow([
+            'email', 'name', 'streams_count', 'loaded_usd', 'spent',
+            'created_at'])
         for item in qs:
             writer.writerow([
                 item.email, item.display_name, item.streams_count,
-                item.loaded_usd, item.created_at])
+                item.loaded_usd, item.spent, item.created_at])
 
         return response

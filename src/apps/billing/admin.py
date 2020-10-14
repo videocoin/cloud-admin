@@ -43,7 +43,7 @@ class TransactionAdmin(DontLog, admin.ModelAdmin):
     list_display = ('id', 'from_account_link', 'to_account_link', 'created_at', 'amount', 'status', 'stream_link', 'profile_link')
     search_fields = ('from_account__email', 'to_account__email')
 
-    list_filter = ('status', )
+    list_filter = ('status', 'from_account__email', 'to_account__email')
 
     def has_add_permission(self, request):
         return False
