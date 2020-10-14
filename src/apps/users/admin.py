@@ -1,18 +1,20 @@
-import requests
 import csv
-
-from django.contrib import admin
-from django.http import HttpResponse
-from django.urls import path, reverse
-from django.shortcuts import redirect
-from django.db.models import Count
+from collections import defaultdict
 from functools import update_wrapper
 
-from .models import User, ApiToken, UserReportProxy
-from streams.models import Stream
-from miners.models import Miner
+import requests
+from django.contrib import admin
+from django.db.models import Count
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.urls import path, reverse
+
 from accounts.models import Account
+from billing.models import Transaction
 from common.admin import DontLog, HideDeletedInlineMixin
+from miners.models import Miner
+from streams.models import Stream
+from .models import User, ApiToken, UserReportProxy
 
 
 class ApiTokensInlineAdmin(admin.TabularInline):
@@ -144,6 +146,8 @@ class ApiTokenAdmin(DontLog, admin.ModelAdmin):
 class UserReportAdmin(DontLog, admin.ModelAdmin):
     revert_url = '/admin/events/userreport/'
     model_name = 'userreport'
+    loaded_usd_cache = defaultdict(int)
+    spent_cache = defaultdict(int)
 
     list_display = (
         'email', 'display_name', 'streams_count', 'loaded_usd', 'spent',
@@ -155,26 +159,20 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     change_list_template = 'admin/users/userreport_change_list.html'
 
     def get_queryset(self, request):
+        self.loaded_usd_cache = defaultdict(int)
+        self.spent_cache = defaultdict(int)
+
         qs = super().get_queryset(request)
-        qs = qs.extra(
-            select={
-                'loaded_usd': '''
-                    SELECT SUM(billing_transactions.amount) FROM billing_transactions
-                    INNER JOIN billing_accounts ON (billing_transactions.from = billing_accounts.id)
-                    INNER JOIN billing_accounts T3 ON (billing_transactions.to = T3.id)
-                    WHERE (
-                        billing_accounts.email = "bank@videocoin.net" AND 
-                        T3.email = users.email AND 
-                        `billing_transactions`.`status` = "SUCCESS")''',
-                'spent': '''
-                    SELECT SUM(bt.amount) FROM billing_transactions as bt
-                    INNER JOIN billing_accounts as ba ON (bt.from = ba.id)
-                    WHERE (
-                        ba.email = users.email AND 
-                        bt.status = "SUCCESS")''',
-                },
-            )
         qs = qs.annotate(streams_count=Count('stream', distinct=True))
+
+        txs = Transaction.objects\
+            .filter(status="SUCCESS")\
+            .select_related('from_account', 'to_account')
+        for tx in txs:
+            if tx.from_account.email == "bank@videocoin.net":
+                self.loaded_usd_cache[tx.to_account.email] += tx.amount
+            self.spent_cache[tx.from_account.email] += tx.amount
+
         return qs
 
     def streams_count(self, obj):
@@ -185,14 +183,14 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
     streams_count.admin_order_field = 'streams_count'
 
     def loaded_usd(self, obj):
-        return int((obj.loaded_usd or 0) / 100)
+        return int(self.loaded_usd_cache[obj.email] / 100)
 
     loaded_usd.short_description = 'Loaded USD'
     loaded_usd.allow_tags = True
     loaded_usd.admin_order_field = 'loaded_usd'
 
     def spent(self, obj):
-        return "%f" % float((obj.spent or 0) / 100)
+        return round(float(self.spent_cache[obj.email]) / 100, 2)
 
     spent.short_description = 'Spent'
     spent.allow_tags = True
@@ -244,6 +242,6 @@ class UserReportAdmin(DontLog, admin.ModelAdmin):
         for item in qs:
             writer.writerow([
                 item.email, item.display_name, item.streams_count,
-                item.loaded_usd, item.spent, item.created_at])
+                self.loaded_usd(item), self.spent(item), item.created_at])
 
         return response
