@@ -39,6 +39,11 @@ class Miner(models.Model):
     is_lock = models.BooleanField()
     is_block = models.BooleanField()
     reward = models.DecimalField(max_digits=10, decimal_places=4)
+    orgname = models.CharField(max_length=255, null=True, blank=True)
+    orgemail = models.CharField(max_length=255, null=True, blank=True)
+    orgdesc = models.TextField(null=True, blank=True)
+    allow_thirdparty_delegates = models.BooleanField(default=False)
+    delegate_policy = models.TextField(null=True, blank=True)
 
     deleted_at = models.DateTimeField(null=True, blank=True)
 
