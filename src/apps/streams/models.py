@@ -3,6 +3,7 @@ import json
 import uuid
 
 from django.db import models
+from django.db.models.lookups import Transform
 from django_mysql.models import JSONField
 
 from users.models import User
@@ -62,10 +63,14 @@ class Stream(models.Model):
 
     OUTPUT_TYPE_HLS = 'OUTPUT_TYPE_HLS'
     OUTPUT_TYPE_FILE = 'OUTPUT_TYPE_FILE'
+    OUTPUT_TYPE_DASH = 'OUTPUT_TYPE_DASH'
+    OUTPUT_TYPE_DASH_DRM = 'OUTPUT_TYPE_DASH_DRM'
 
     OUTPUT_TYPE_CHOICES = (
         (OUTPUT_TYPE_HLS, "HLS"),
         (OUTPUT_TYPE_FILE, "File"),
+        (OUTPUT_TYPE_DASH, "DASH"),
+        (OUTPUT_TYPE_DASH_DRM, "DASH+DRM"),
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, max_length=255)
@@ -96,6 +101,8 @@ class Stream(models.Model):
     input_type = models.CharField(max_length=255, choices=INPUT_TYPE_CHOICES, null=True, blank=True)
     output_type = models.CharField(max_length=255, choices=OUTPUT_TYPE_CHOICES, null=True, blank=True)
     
+    drm_xml = models.TextField(null=True, blank=True)
+
     @property
     def tasks(self):
         return Task.objects.filter(stream_id=str(self.id))

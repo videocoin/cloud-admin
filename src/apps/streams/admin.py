@@ -100,7 +100,6 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
         'owned_by',
         'validation_field',
         'input_type',
-        'output_type',
         'total_cost',
     )
 
