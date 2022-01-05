@@ -304,4 +304,4 @@ class TasksAdmin(DontLog, admin.ModelAdmin):
     inlines = [TaskTransactionInlineAdmin]
     list_display = ('id', 'status', 'is_lock', 'is_live', 'uri', 'path', 'client_id', 'machine_type')
     list_filter = ('status', )
-    readonly_fields = ('id', 'status', 'cmdline', 'uri', 'is_lock', 'is_live', 'path', 'client_id', 'machine_type')
+    readonly_fields = ('id', 'uri', 'is_live', 'path', 'client_id', 'machine_type')
