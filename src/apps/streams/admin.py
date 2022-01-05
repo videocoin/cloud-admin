@@ -84,9 +84,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
     readonly_fields = (
         'id',
         'profile_set',
-        'status',
         'refunded',
-        'input_status',
         'stream_contract_id',
         'stream_contract_address',
         'get_input_url',
@@ -186,15 +184,15 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
     owned_by.allow_tags = True
 
     def get_rtmp_url(self, obj):
-         return format_html('<a target="_blank" href="{}" />Link</a>', obj.rtmp_url)
+         return format_html('<a target="_blank" href="{}" />{}</a>', obj.rtmp_url, obj.rtmp_url)
     get_rtmp_url.short_description = "RTMP"
 
     def get_input_url(self, obj):
-         return format_html('<a target="_blank" href="{}" />Link</a>', obj.input_url)
+         return format_html('<a target="_blank" href="{}" />{}</a>', obj.input_url, obj.input_url)
     get_input_url.short_description = "Input"
 
     def get_output_url(self, obj):
-         return format_html('<a target="_blank" href="{}" />Link</a>', obj.output_url)
+         return format_html('<a target="_blank" href="{}" />{}</a>', obj.output_url, obj.output_url)
     get_output_url.short_description = "Output"
 
     def get_urls(self):
