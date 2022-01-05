@@ -136,6 +136,7 @@ class StreamAdmin(DontLog, admin.ModelAdmin):
                 'stream_contract_id',
                 'stream_contract_address',
                 'owned_by',
+                'drm_xml',
             )
         }),
         ('Stream urls', {
