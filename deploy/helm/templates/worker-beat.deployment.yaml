@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-worker-beat
@@ -6,6 +6,9 @@ metadata:
     app: {{ .Chart.Name }}
     component: worker
 spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-worker-beat
   replicas: 1
   strategy:
     rollingUpdate:
