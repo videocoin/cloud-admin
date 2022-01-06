@@ -14,14 +14,16 @@ spec:
   - http:
       paths:
       - backend:
-          name: {{ .Chart.Name }}
-          port:
-            number: {{ .Values.service.ports.http }}
+          service:
+            name: {{ .Chart.Name }}
+            port:
+              number: {{ .Values.service.ports.http }}
         path: /imsgx72bs1pxd72mxs
       - backend:
-          name: {{ .Chart.Name }}
-          port:
-            number: {{ .Values.service.ports.http }}
+          service:
+            name: {{ .Chart.Name }}
+            port:
+              number: {{ .Values.service.ports.http }}
         path: /imsgx72bs1pxd72mxs/assets
     host: {{ .Values.ingress.host }}
   tls:
