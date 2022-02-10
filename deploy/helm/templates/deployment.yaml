@@ -14,9 +14,6 @@ spec:
   strategy:
     rollingUpdate:
       maxUnavailable: {{ .Values.maxUnavailableCount }}
-  selector:
-    matchLabels:
-      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
