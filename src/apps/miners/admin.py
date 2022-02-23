@@ -97,6 +97,11 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'key',
                 'secret',
                 'reward',
+                'org_name',
+                'org_email',
+                'org_desc',
+                'allow_thirdparty_delegates',
+                'delegate_policy'
             )
         }),
     )
