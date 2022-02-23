@@ -38,6 +38,8 @@ class MinerForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
           'system_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
+          'worker_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
+          'capacity_info': PrettyJSONWidget(attrs={'initial': 'parsed'}),
           'tags': JSONEditor(),
         }
 
@@ -92,6 +94,7 @@ class MinerAdmin(DontLog, admin.ModelAdmin):
                 'tags',
                 'system_info',
                 'worker_info',
+                'capacity_info',
                 'deleted_at',
                 'access_key',
                 'key',
